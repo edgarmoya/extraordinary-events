@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.pwd-icon {
+  color: rgba(92, 93, 97, 0.911);
+  bottom: 25%;
+  right: 5%;
+}
