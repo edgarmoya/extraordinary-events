@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }) => {
         setAuthTokens(data);
         setUser(jwt_decode(data.access));
         localStorage.setItem(AUTH_TOKEN, JSON.stringify(data));
-        navigate(Paths.EVENTS);
       } else {
         throw new Error("Error de autenticación");
       }

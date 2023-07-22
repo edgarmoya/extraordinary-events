@@ -36,7 +36,7 @@ export const LoginForm = () => {
 
     loginUser(username, password)
       .then((data) => {
-        navigate(`${Paths.EVENTS}`);
+        navigate(`${Paths.HOME}`);
         toast.success(`Bienvenido, ${formState.username}`);
       })
       .catch((error) => {
