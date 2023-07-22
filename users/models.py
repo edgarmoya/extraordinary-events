@@ -30,17 +30,21 @@ class CustomAccountManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
-    user_name = models.CharField(max_length=150, unique=True)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    user_name = models.CharField(max_length=150, unique=True, verbose_name='usuario')
+    first_name = models.CharField(max_length=150, verbose_name='Nombre')
+    last_name = models.CharField(max_length=150, verbose_name='Apellidos')
     start_date = models.DateTimeField(default=timezone.now)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False, verbose_name='admin')
+    is_active = models.BooleanField(default=True, verbose_name='activo')
 
     objects = CustomAccountManager()
 
     USERNAME_FIELD = 'user_name'
     REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    class Meta:
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
 
     def __str__(self):
         return self.user_name
