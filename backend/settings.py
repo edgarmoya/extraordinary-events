@@ -20,6 +20,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "admin_interface",
+    "colorfield",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,6 +35,7 @@ INSTALLED_APPS = [
     'events',
     'users',
     'locations',
+    'grades',
 ]
 
 MIDDLEWARE = [
@@ -129,7 +132,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-X_FRAME_OPTIONS = 'ALLOW-FROM http://localhost:3000'
+# Para ser posible entrar al admin desde react
+X_FRAME_OPTIONS = 'http://localhost:3000'
+
+# Django Admin Interface
+# X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 # DjangoRestFramework Settings
 REST_FRAMEWORK = {
@@ -141,7 +149,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 9,
+    'PAGE_SIZE': 25,
 }
 
 SIMPLE_JWT = {
