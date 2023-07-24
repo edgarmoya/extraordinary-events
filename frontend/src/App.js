@@ -8,7 +8,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/AuthContext";
 import Paths from "./routes/Paths";
 import PrivateRoute from "./routes/PrivateRoute";
-import BasePage from "./pages/BasePage";
+import BasePage from "./pages/Layout";
 import HomePage from "./pages/HomePage";
 
 function App() {
@@ -21,12 +21,8 @@ function App() {
           <Route path={Paths.LOGIN} element={<LoginPage />} />
 
           <Route element={<PrivateRoute />}>
-            <Route element={<BasePage />}>
-              <Route path={Paths.HOME} element={<HomePage />} />
-            </Route>
-            <Route element={<BasePage />}>
-              <Route path={Paths.EVENTS} element={<EventsPage />} />
-            </Route>
+            <Route path={Paths.HOME} element={<HomePage />} />
+            <Route path={Paths.EVENTS} element={<EventsPage />} />
           </Route>
         </Routes>
         <Toaster />
