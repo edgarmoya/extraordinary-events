@@ -13,8 +13,9 @@ class UserAdminConfig(UserAdmin):
     list_display = ('user_name', 'first_name', 'last_name', 'is_active', 'is_staff')
     fieldsets = (
         (None, {'fields': ('password',)}),
-        ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'groups')}),
+        ('Información Personal', {'fields': ('first_name', 'last_name')}),
+        ('Permisos', {'fields': ('is_staff', 'groups')}),
+        ('Estado actual', {'fields': ('is_active', )}),
     )
     add_fieldsets = (
         (None, {

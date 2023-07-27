@@ -34,7 +34,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=150, verbose_name='Nombre')
     last_name = models.CharField(max_length=150, verbose_name='Apellidos')
     start_date = models.DateTimeField(default=timezone.now)
-    is_staff = models.BooleanField(default=False, verbose_name='admin')
+    is_staff = models.BooleanField(default=False, verbose_name='Acceso al panel de administración')
     is_active = models.BooleanField(default=True, verbose_name='activo')
 
     objects = CustomAccountManager()

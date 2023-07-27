@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import logo from "../images/logo_he.png";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Paths from "../routes/Paths";
@@ -49,16 +48,10 @@ export const LoginForm = () => {
   return (
     <div className="card shadow d-flex bg-light justify-content-center p-4">
       <div className="card-body">
-        <div className="d-flex justify-content-center">
-          <img
-            className="w-auto mb-2"
-            src={logo}
-            alt="logo"
-            width={100}
-            height={100}
-          ></img>
-        </div>
-        <h2 className="w-100 text-center mb-3">Autenticación</h2>
+        <h2 className="w-100 text-center mb-2">Bienvenido</h2>
+        <p className="w-100 text-center mb-4">
+          Inserte los datos de autenticación
+        </p>
         <form onSubmit={handleSubmit}>
           <div className="form-floating">
             <input
@@ -135,12 +128,30 @@ export const LoginForm = () => {
           </div>
           <button className="btn btn-primary w-100 mt-4">Iniciar sesión</button>
         </form>
+        <div className="container mt-4">
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="flex-grow-1">
+              <hr className="w-100" />
+            </div>
+            <div className="px-3">o</div>
+            <div className="flex-grow-1">
+              <hr className="w-100" />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="mx-3 text-center">
-        <hr className="border-top border-dark" />
-        <p className="d-inline">¿Eres administrador del sistema?</p>
-        <Link className="btn btn-link d-inline-block" to={Paths.ADMIN}>
-          Admin
+      <div className="container-fluid px-3">
+        <Link className="btn btn-admin w-100" to={Paths.ADMIN}>
+          <svg
+            className="me-1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            height={"1.2rem"}
+          >
+            <path d="M15,6c0-3.309-2.691-6-6-6S3,2.691,3,6s2.691,6,6,6,6-2.691,6-6Zm-6,3c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Zm-.012,6.314c.103,.822-.48,1.571-1.303,1.674-2.627,.328-4.686,2.749-4.686,5.512,0,.829-.671,1.5-1.5,1.5s-1.5-.671-1.5-1.5c0-4.249,3.213-7.977,7.314-8.488,.818-.106,1.571,.48,1.674,1.303Zm14.012,3.184l-.638-.376c.084-.362,.138-.735,.138-1.123s-.054-.76-.138-1.123l.638-.376c.714-.42,.952-1.34,.531-2.054-.421-.714-1.34-.95-2.054-.531l-.648,.382c-.523-.471-1.144-.825-1.83-1.043v-.755c0-.829-.671-1.5-1.5-1.5s-1.5,.671-1.5,1.5v.755c-.686,.218-1.307,.572-1.83,1.043l-.648-.382c-.713-.418-1.632-.183-2.054,.531-.42,.714-.183,1.633,.531,2.054l.638,.376c-.084,.362-.138,.735-.138,1.123s.054,.76,.138,1.123l-.638,.376c-.714,.42-.952,1.34-.531,2.054,.28,.475,.78,.739,1.294,.739,.259,0,.521-.067,.76-.208l.648-.382c.523,.471,1.144,.825,1.83,1.043v.755c0,.829,.671,1.5,1.5,1.5s1.5-.671,1.5-1.5v-.755c.686-.218,1.307-.572,1.83-1.043l.648,.382c.239,.141,.501,.208,.76,.208,.514,0,1.014-.264,1.294-.739,.42-.714,.183-1.633-.531-2.054Zm-5.5,.001c-.827,0-1.5-.673-1.5-1.5s.673-1.5,1.5-1.5,1.5,.673,1.5,1.5-.673,1.5-1.5,1.5Z" />
+          </svg>
+          Continuar como administrador
         </Link>
       </div>
     </div>
