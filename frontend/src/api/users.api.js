@@ -18,8 +18,8 @@ const UserService = {
 
   changePassword: async (authTokens, idUser, oldPassword, newPassword) => {
     const requestData = {
-      oldPassword,
-      newPassword,
+      old_password: oldPassword,
+      new_password: newPassword,
     };
 
     try {

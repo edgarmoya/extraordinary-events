@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import AuthContext from "../contexts/AuthContext";
 import ModalConfirmLogout from "./ModalConfirmLogout";
+import ModalChangePassword from "./ModalChangePassword";
 
 function Navbar({ onToggleSidebar, pageTitle }) {
   const { user, logoutUser } = useContext(AuthContext);
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
   const [modalLogoutIsOpen, setModalLogoutIsOpen] = useState(false);
+  const [modalChangeIsOpen, setModalChangeIsOpen] = useState(false);
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -17,9 +19,9 @@ function Navbar({ onToggleSidebar, pageTitle }) {
     };
   }, []);
 
-  const handleChangePassword = async () => {
-    // TODO
-    console.log("change password");
+  const handleChangePassword = async (event) => {
+    event.preventDefault();
+    setModalChangeIsOpen(true);
   };
 
   const handleProfile = async () => {
@@ -90,10 +92,18 @@ function Navbar({ onToggleSidebar, pageTitle }) {
         </div>
       </nav>
 
+      {/* Modal para confirmar si desea cerrar sesión */}
       <ModalConfirmLogout
         isOpen={modalLogoutIsOpen}
         onClose={() => setModalLogoutIsOpen(false)}
         onLogout={logoutUser}
+      />
+
+      {/* Modal para cambiar contraseña */}
+      <ModalChangePassword
+        isOpen={modalChangeIsOpen}
+        onClose={() => setModalChangeIsOpen(false)}
+        onChangePassword={onToggleSidebar}
       />
     </React.Fragment>
   );
