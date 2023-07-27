@@ -2,12 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import AuthContext from "../contexts/AuthContext";
 import ModalConfirmLogout from "./ModalConfirmLogout";
 import ModalChangePassword from "./ModalChangePassword";
+import ModalProfile from "./ModalProfile";
 
 function Navbar({ onToggleSidebar, pageTitle }) {
   const { user, logoutUser } = useContext(AuthContext);
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
   const [modalLogoutIsOpen, setModalLogoutIsOpen] = useState(false);
   const [modalChangeIsOpen, setModalChangeIsOpen] = useState(false);
+  const [modalProfileIsOpen, setModalProfileIsOpen] = useState(false);
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -19,14 +21,14 @@ function Navbar({ onToggleSidebar, pageTitle }) {
     };
   }, []);
 
-  const handleChangePassword = async (event) => {
+  const handleChangePassword = (event) => {
     event.preventDefault();
     setModalChangeIsOpen(true);
   };
 
-  const handleProfile = async () => {
-    // TODO
-    console.log("profile");
+  const handleProfile = async (event) => {
+    event.preventDefault();
+    setModalProfileIsOpen(true);
   };
 
   const handleLogout = (event) => {
@@ -104,6 +106,12 @@ function Navbar({ onToggleSidebar, pageTitle }) {
         isOpen={modalChangeIsOpen}
         onClose={() => setModalChangeIsOpen(false)}
         onChangePassword={onToggleSidebar}
+      />
+
+      {/* Modal para ver perfil */}
+      <ModalProfile
+        isOpen={modalProfileIsOpen}
+        onClose={() => setModalProfileIsOpen(false)}
       />
     </React.Fragment>
   );

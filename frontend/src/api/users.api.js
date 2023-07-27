@@ -16,6 +16,12 @@ const UserService = {
     });
   },
 
+  getUserGroups: async (authTokens, idUser) => {
+    return userAPI.get(`/${idUser}/groups/`, {
+      headers: createHeaders(authTokens),
+    });
+  },
+
   changePassword: async (authTokens, idUser, oldPassword, newPassword) => {
     const requestData = {
       old_password: oldPassword,

@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CustomUserSerializer
 from .models import CustomUser
+from django.contrib.auth.models import Group
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -35,3 +36,19 @@ class UserView(viewsets.ModelViewSet):
         user.save()
 
         return Response({'detail': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['GET'])
+    def groups(self, request, pk=None):
+        # Get the user instance
+        user = self.get_object()
+
+        # Check if the current user is the same as the requested user or is an admin
+        if request.user != user and not request.user.is_staff:
+            return Response({'detail': 'You do not have permission to view this user\'s groups.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        # Get the groups to which the user belongs
+        groups = Group.objects.filter(user=user)
+        group_names = [group.name for group in groups]
+
+        return Response({'groups': group_names}, status=status.HTTP_200_OK)

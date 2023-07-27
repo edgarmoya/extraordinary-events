@@ -14,12 +14,12 @@ class UserAdminConfig(UserAdmin):
     fieldsets = (
         (None, {'fields': ('password',)}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'groups')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('user_name', 'first_name', 'last_name', 'password1', 'password2', 'is_active', 'is_staff')}
+            'fields': ('user_name', 'first_name', 'last_name', 'password1', 'password2', 'is_active', 'is_staff', 'groups')}
         ),
     )
 
