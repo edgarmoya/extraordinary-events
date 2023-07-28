@@ -4,7 +4,9 @@ export const LOGIN = "/login";
 export const LOGOUT = "/logout";
 export const EVENTS = "/events";
 export const ENTITIES = "/entities";
-export const CLASSIFICATION = "/classification";
+export const CLASSIFICATIONS = "/classifications";
+export const TYPES = "/types";
+export const SECTORS = "/sectors";
 export const ADMIN = "/admin";
 
 const Paths = {
@@ -14,7 +16,9 @@ const Paths = {
   LOGOUT,
   EVENTS,
   ENTITIES,
-  CLASSIFICATION,
+  CLASSIFICATIONS,
+  TYPES,
+  SECTORS,
   ADMIN,
 };
 
