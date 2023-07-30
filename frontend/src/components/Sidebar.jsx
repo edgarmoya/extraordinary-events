@@ -23,7 +23,7 @@ function Sidebar({ isOpen, onClose }) {
 
   // Función para verificar si el enlace debe estar activo
   const isActiveLink = (path) => {
-    return currentURL === path ? "active" : "link-body-emphasis";
+    return currentURL.startsWith(path) ? "active" : "link-body-emphasis";
   };
 
   return (
@@ -112,7 +112,7 @@ function Sidebar({ isOpen, onClose }) {
           </li>
           <li className="nav-item pb-1">
             <a
-              href={Paths.SECTORS}
+              href={Paths.ACTIVE_SECTORS}
               className={`nav-link ${isActiveLink(Paths.SECTORS)}`}
             >
               <svg
