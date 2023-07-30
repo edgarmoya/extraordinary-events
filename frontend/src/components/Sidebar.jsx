@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Paths from "../routes/Paths";
-import logo from "../images/logo_he.png";
+import logo from "../images/logo_he_lg.png";
 
 function Sidebar({ isOpen, onClose }) {
   // Estado para almacenar la URL actual
@@ -23,21 +23,19 @@ function Sidebar({ isOpen, onClose }) {
 
   // Función para verificar si el enlace debe estar activo
   const isActiveLink = (path) => {
-    return currentURL.startsWith(path) ? "active" : "link-body-emphasis";
+    return currentURL.startsWith(path) ? "active" : "inactive";
   };
 
   return (
-    <div
-      className={`sidebar p-3 bg-body-tertiary text-body ${
-        isOpen ? "is-open" : ""
-      }`}
+    <aside
+      className={`sidebar p-2 bg-white shadow-sm ${isOpen ? "is-open" : ""}`}
     >
       <div className="sidebar-header">
         <a
           href={Paths.HOME}
           className="d-flex justify-content-center mb-1 mb-md-0 me-md-auto text-decoration-none"
         >
-          <img className="" src={logo} alt="logo" height={30} width={30}></img>
+          <img className="" src={logo} alt="logo" height={36} width={126}></img>
         </a>
         <hr />
         <ul className="nav nav-pills flex-column mb-auto">
@@ -47,7 +45,7 @@ function Sidebar({ isOpen, onClose }) {
               className={`nav-link ${isActiveLink(Paths.HOME)}`}
             >
               <svg
-                className="me-3"
+                className="nav-icon me-3"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -65,7 +63,7 @@ function Sidebar({ isOpen, onClose }) {
               className={`nav-link ${isActiveLink(Paths.EVENTS)}`}
             >
               <svg
-                className="me-3"
+                className="nav-icon me-3"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -82,7 +80,7 @@ function Sidebar({ isOpen, onClose }) {
               className={`nav-link ${isActiveLink(Paths.CLASSIFICATIONS)}`}
             >
               <svg
-                className="me-3"
+                className="nav-icon me-3"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -99,7 +97,7 @@ function Sidebar({ isOpen, onClose }) {
               className={`nav-link ${isActiveLink(Paths.ENTITIES)}`}
             >
               <svg
-                className="me-3"
+                className="nav-icon me-3"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -116,7 +114,7 @@ function Sidebar({ isOpen, onClose }) {
               className={`nav-link ${isActiveLink(Paths.SECTORS)}`}
             >
               <svg
-                className="me-3"
+                className="nav-icon me-3"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -133,7 +131,7 @@ function Sidebar({ isOpen, onClose }) {
               className={`nav-link ${isActiveLink(Paths.TYPES)}`}
             >
               <svg
-                className="me-3"
+                className="nav-icon me-3"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -146,7 +144,7 @@ function Sidebar({ isOpen, onClose }) {
           </li>
         </ul>
       </div>
-    </div>
+    </aside>
   );
 }
 

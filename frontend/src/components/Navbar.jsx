@@ -38,25 +38,36 @@ function Navbar({ onToggleSidebar, pageTitle }) {
 
   return (
     <React.Fragment>
-      <nav className="navbar bg-body-tertiary">
+      <nav className="navbar bg-light">
         <div className="container-fluid">
-          <div className="col">
+          <div className="col-auto">
             {/* Toggle */}
             <button
-              className="navbar-toggler me-2"
               id="toggleSidebarBtn"
               type="button"
               onClick={onToggleSidebar}
+              className="btn btn-home bg-light px-2 ms-2"
             >
-              <span className="navbar-toggler-icon"></span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                height={"1.5rem"}
+              >
+                <path d="M0,3.5c0-.83,.67-1.5,1.5-1.5H17.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5H1.5c-.83,0-1.5-.67-1.5-1.5Zm17.5,14.5H1.5c-.83,0-1.5,.67-1.5,1.5s.67,1.5,1.5,1.5H17.5c.83,0,1.5-.67,1.5-1.5s-.67-1.5-1.5-1.5Zm5-8H6.5c-.83,0-1.5,.67-1.5,1.5s.67,1.5,1.5,1.5H22.5c.83,0,1.5-.67,1.5-1.5s-.67-1.5-1.5-1.5Z" />
+              </svg>
             </button>
-
-            {/* Title */}
-            <a className="navbar-brand mx-3" href={currentURL}>
+          </div>
+          {/* Title */}
+          <div className="col-auto me-auto">
+            <a
+              className="d-flex navbar-brand mx-2 align-items-center"
+              href={currentURL}
+            >
               {pageTitle}
             </a>
           </div>
-          <div className="col-auto me-4">
+          <div className="col-auto me-2">
             {/* User */}
             <div className="dropdown">
               <button

@@ -20,7 +20,7 @@ function TopBar({ onAdd, onEdit, onDelete }) {
   };
 
   return (
-    <div className="row row-cols-auto ms-1 me-0">
+    <div className="row row-cols-auto ms-1">
       <button
         name="addBtn"
         type="button"
@@ -109,17 +109,17 @@ function TopBar({ onAdd, onEdit, onDelete }) {
           </li>
         </ul>
       </div>
-      <form className="d-flex ms-md-auto justify-content-end" role="search">
+      <div className="d-flex ms-auto text-end">
         <input
           className="form-control me-2"
           type="search"
           placeholder="Buscar sector"
           aria-label="Search"
         />
-        <button className="btn btn-primary shadow-sm" type="submit">
+        <button className="btn btn-primary ms-auto me-1" type="submit">
           Buscar
         </button>
-      </form>
+      </div>
     </div>
   );
 }

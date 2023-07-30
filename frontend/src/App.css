@@ -1,5 +1,4 @@
 .App {
-
   display: flex;
   width: 100%;
   align-items: stretch;
@@ -41,11 +40,25 @@
   max-width: 250px;
   margin-left: -250px;
   transition: all 0.5s;
+  word-wrap: break-word;
+  background-color: #fff;
+  border: 1px solid transparent;
+  border-right-color: rgba(0, 0, 0, 0.125);
+  
 }
 
 .sidebar.is-open {
   margin-left: 0;
   transition: 0.5s;
+}
+
+.nav-link.inactive{
+  background-color: #ffffff;
+  color: #131313;
+}
+
+.nav-link.inactive .nav-icon {
+  color: #4d4d4d;
 }
 
 .nav-link:hover {
@@ -106,10 +119,9 @@
 /* ---------------------------------------------------
     TOP BAR
 ----------------------------------------------------- */
-
 .btn-accions-blue{
   background-color: #ffffff;
-  color: #888;
+  color: #5f5f5f;
 }
 
 .btn-accions-blue:hover{
@@ -119,10 +131,18 @@
 
 .btn-accions-red{
   background-color: #ffffff;
-  color: #888;
+  color: #5f5f5f;
 }
 
 .btn-accions-red:hover{
   background-color: #ffffff;
   color: #dc3545;
+}
+
+/* ---------------------------------------------------
+    NAVBAR STYLE
+----------------------------------------------------- */
+.btn-home{
+  background-color: #ffffff;
+  color: #5f5f5f;
 }

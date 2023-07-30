@@ -16,7 +16,7 @@ function GridSectors({ data }) {
             <tr key={sector.id}>
               <th scope="row">{sector.id}</th>
               <td>{sector.description}</td>
-              <td>{sector.is_active ? "Si" : "No"}</td>
+              <td>{sector.is_active ? "Sí" : "No"}</td>
             </tr>
           ))}
         </tbody>
