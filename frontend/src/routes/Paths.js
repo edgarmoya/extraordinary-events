@@ -7,6 +7,8 @@ export const ENTITIES = "/entities";
 export const CLASSIFICATIONS = "/classifications";
 export const TYPES = "/types";
 export const SECTORS = "/sectors";
+export const ACTIVE_SECTORS = "/sectors/active";
+export const INACTIVE_SECTORS = "/sectors/inactive";
 export const ADMIN = "/admin";
 
 const Paths = {
@@ -19,6 +21,8 @@ const Paths = {
   CLASSIFICATIONS,
   TYPES,
   SECTORS,
+  ACTIVE_SECTORS,
+  INACTIVE_SECTORS,
   ADMIN,
 };
 

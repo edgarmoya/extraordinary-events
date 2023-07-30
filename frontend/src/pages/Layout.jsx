@@ -30,7 +30,9 @@ function Layout({ children, pageTitle }) {
     <div className="App wrapper">
       <Sidebar onClose={toggleSidebar} isOpen={sidebarIsOpen} />
       <div
-        className={`container-fluid content ${sidebarIsOpen ? "is-open" : ""}`}
+        className={`container-fluid content bg-light ${
+          sidebarIsOpen ? "is-open" : ""
+        }`}
       >
         <Navbar onToggleSidebar={toggleSidebar} pageTitle={pageTitle} />
         {children}

@@ -97,9 +97,32 @@
 
 /* Estilos para el botón cuando el cursor está sobre él */
 .btn-admin:hover {
-  /* Mantener los estilos originales */
   background: #ffffff;
   border-color: #e5e5e5;
   color: #242424;
   filter: drop-shadow(0px 1px 0px #efefef) drop-shadow(0px 1px 0.5px rgba(239,239,239,0.5));
+}
+
+/* ---------------------------------------------------
+    TOP BAR
+----------------------------------------------------- */
+
+.btn-accions-blue{
+  background-color: #ffffff;
+  color: #888;
+}
+
+.btn-accions-blue:hover{
+  background-color: #ffffff;
+  color: #0d6efd;
+}
+
+.btn-accions-red{
+  background-color: #ffffff;
+  color: #888;
+}
+
+.btn-accions-red:hover{
+  background-color: #ffffff;
+  color: #dc3545;
 }
