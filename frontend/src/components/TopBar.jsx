@@ -19,12 +19,17 @@ function TopBar({ onAdd, onEdit, onDelete }) {
     return currentURL === path ? "active" : "";
   };
 
+  const handleAdd = (event) => {
+    event.preventDefault();
+    onAdd();
+  };
+
   return (
-    <div className="row row-cols-auto ms-1">
+    <div className="row row-cols-auto ms-1 mt-1">
       <button
         name="addBtn"
         type="button"
-        onClick={onAdd}
+        onClick={handleAdd}
         className="btn border-secondary-subtle btn-accions-blue shadow-sm me-2"
       >
         <svg
@@ -82,7 +87,7 @@ function TopBar({ onAdd, onEdit, onDelete }) {
         >
           <span className="visually-hidden">Toggle Dropdown</span>
         </button>
-        <ul className="dropdown-menu">
+        <ul className="dropdown-menu shadow">
           <li>
             <a
               className={`dropdown-item ${isActive(Paths.SECTORS)}`}

@@ -27,7 +27,7 @@ function Layout({ children, pageTitle }) {
   }, []);
 
   return (
-    <div className="App wrapper">
+    <div className="App">
       <Sidebar onClose={toggleSidebar} isOpen={sidebarIsOpen} />
       <div
         className={`container-fluid content bg-light ${

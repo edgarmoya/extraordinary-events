@@ -44,7 +44,6 @@
   background-color: #fff;
   border: 1px solid transparent;
   border-right-color: rgba(0, 0, 0, 0.125);
-  
 }
 
 .sidebar.is-open {
@@ -71,7 +70,7 @@
 .content {
   padding: 0px;
   margin-left: 0;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 @media only screen and (max-width: 675px) {

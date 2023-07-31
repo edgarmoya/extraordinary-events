@@ -36,6 +36,12 @@ const SectorsService = {
       },
     });
   },
+
+  addSector: async (authTokens, sector) => {
+    return sectorsAPI.post(`/sectors/`, sector, {
+      headers: createHeaders(authTokens),
+    });
+  },
 };
 
 export default SectorsService;

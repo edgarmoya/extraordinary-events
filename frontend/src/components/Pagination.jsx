@@ -69,7 +69,7 @@ function Pagination({ totalRows, currentPage, onPageChange }) {
 
   return (
     <nav aria-label="Page navigation example">
-      <ul className="pagination justify-content-center">
+      <ul className="pagination m-0 justify-content-center">
         <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
           <button
             className="page-link"
