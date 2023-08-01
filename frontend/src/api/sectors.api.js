@@ -48,6 +48,12 @@ const SectorsService = {
       headers: createHeaders(authTokens),
     });
   },
+
+  updateSector: async (authTokens, id, sector) => {
+    return sectorsAPI.put(`/sectors/${id}/`, sector, {
+      headers: createHeaders(authTokens),
+    });
+  },
 };
 
 export default SectorsService;

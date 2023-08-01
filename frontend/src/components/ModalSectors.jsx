@@ -5,7 +5,7 @@ import AuthContext from "../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import SectorsService from "../api/sectors.api";
 
-function ModalAddSectors({ isOpen, onClose, onSectorAdded }) {
+function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
   const { authTokens } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -23,32 +23,48 @@ function ModalAddSectors({ isOpen, onClose, onSectorAdded }) {
     onClose();
   };
 
-  const handleAddSector = (data) => {
-    setIsLoading(true);
-    SectorsService.addSector(authTokens, data)
+  const handleAddSector = async (data) => {
+    await SectorsService.addSector(authTokens, data)
       .then((data) => {
         showSuccessToast("Sector agregado");
-        onSectorAdded();
+        onRefresh();
         handleCloseModal();
       })
       .catch((error) => {
         showErrorToast("Error al agregar sector");
+      });
+  };
+
+  const handleUpdateSector = async (sectorId, data) => {
+    await SectorsService.updateSector(authTokens, sectorId, data)
+      .then((data) => {
+        showSuccessToast("Sector actualizado");
+        onRefresh();
+        handleCloseModal();
       })
-      .finally(() => setIsLoading(false));
+      .catch((error) => {
+        showErrorToast("Error al actualizar sector");
+      });
+  };
+
+  const handleSaveSector = async (data) => {
+    setIsLoading(true);
+    if (sectorData && sectorData.id) {
+      await handleUpdateSector(sectorData.id, data);
+    } else {
+      await handleAddSector(data);
+    }
+    setIsLoading(false);
   };
 
   const handleFormSubmit = (data) => {
     setFormSubmitted(true);
-    handleSubmit(handleAddSector)(data);
+    handleSubmit(handleSaveSector)(data);
   };
 
   return (
     <div>
-      <Modal
-        isOpen={isOpen}
-        title={"Añadir nuevo sector"}
-        onClose={handleCloseModal}
-      >
+      <Modal isOpen={isOpen} title={title} onClose={handleCloseModal}>
         <div className="modal-body">
           <form>
             <div className="form-floating">
@@ -58,6 +74,7 @@ function ModalAddSectors({ isOpen, onClose, onSectorAdded }) {
                 className={`form-control ${
                   formSubmitted && errors.description ? "is-invalid" : ""
                 }`}
+                defaultValue={sectorData ? sectorData.description : ""}
                 {...register("description", { required: true })}
               ></input>
               <label htmlFor="floatingInput">Descripción</label>
@@ -83,7 +100,7 @@ function ModalAddSectors({ isOpen, onClose, onSectorAdded }) {
             className="btn btn-primary"
             disabled={isLoading}
           >
-            {isLoading ? "Añadiendo..." : "Añadir"}
+            {isLoading ? "Guardando..." : sectorData ? "Modificar" : "Añadir"}
           </button>
         </div>
       </Modal>
@@ -91,4 +108,4 @@ function ModalAddSectors({ isOpen, onClose, onSectorAdded }) {
   );
 }
 
-export default ModalAddSectors;
+export default ModalSectors;

@@ -17,7 +17,7 @@ class SectorView(viewsets.ModelViewSet):
     page_size = 25
 
     def get_queryset(self):
-        return Sector.objects.all()
+        return Sector.objects.all().order_by("-id")
 
 
 class ActiveSectorView(viewsets.ModelViewSet):
@@ -27,7 +27,7 @@ class ActiveSectorView(viewsets.ModelViewSet):
     page_size = 25
 
     def get_queryset(self):
-        return Sector.objects.filter(is_active=True)
+        return Sector.objects.filter(is_active=True).order_by("-id")
 
 
 class InactiveSectorView(viewsets.ModelViewSet):
@@ -37,5 +37,5 @@ class InactiveSectorView(viewsets.ModelViewSet):
     page_size = 25
 
     def get_queryset(self):
-        return Sector.objects.filter(is_active=False)
+        return Sector.objects.filter(is_active=False).order_by("-id")
 

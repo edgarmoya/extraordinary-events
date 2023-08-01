@@ -7,8 +7,8 @@ function ModalConfirmDelete({ isOpen, onClose, onDelete, message }) {
   const handleDelete = async () => {
     setIsLoading(true);
     await onDelete();
-    setIsLoading(false);
     onClose();
+    setIsLoading(false);
   };
 
   return (

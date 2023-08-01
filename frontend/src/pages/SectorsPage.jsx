@@ -7,7 +7,7 @@ import SectorService from "../api/sectors.api";
 import Pagination from "../components/Pagination";
 import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
-import ModalAddSectors from "../components/ModalAddSectors";
+import ModalSectors from "../components/ModalSectors";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import SectorsService from "../api/sectors.api";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
@@ -20,6 +20,7 @@ function SectorsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalSectors, setTotalSectors] = useState(1);
   const [modalAddIsOpen, setModalAddIsOpen] = useState(false);
+  const [modalUpdateIsOpen, setModalUpdateIsOpen] = useState(false);
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
 
   //* Función para cargar todos los sectores
@@ -81,8 +82,8 @@ function SectorsPage() {
     setCurrentPage(page);
   };
 
-  const handleDeleteSector = () => {
-    SectorsService.deleteSector(authTokens, selectedRow.id)
+  const handleDeleteSector = async () => {
+    await SectorsService.deleteSector(authTokens, selectedRow.id)
       .then((data) => {
         showSuccessToast("Sector eliminado");
         loadSectors();
@@ -100,22 +101,29 @@ function SectorsPage() {
   return (
     <Layout pageTitle="Sectores">
       <div className="container-fluid">
-        {/* Accions */}
-        <TopBar
-          onAdd={() => setModalAddIsOpen(true)}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el sector que desea eliminar");
-            }
-          }}
-        />
         {/* Grid */}
         <div
           className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 115px)" }}
+          style={{ maxHeight: "calc(100vh - 70px)" }}
         >
+          {/* Accions */}
+          <TopBar
+            onAdd={() => setModalAddIsOpen(true)}
+            onUpdate={() => {
+              if (selectedRow) {
+                setModalUpdateIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el sector que desea modificar");
+              }
+            }}
+            onDelete={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el sector que desea eliminar");
+              }
+            }}
+          />
           <GridSectors
             data={sectors}
             onRowSelected={(row) => setSelectedRow(row)}
@@ -131,10 +139,20 @@ function SectorsPage() {
       </div>
 
       {/* Modal para agregar un nuevo sector */}
-      <ModalAddSectors
+      <ModalSectors
         isOpen={modalAddIsOpen}
         onClose={() => setModalAddIsOpen(false)}
-        onSectorAdded={loadSectors}
+        title={"Añadir sector"}
+        onRefresh={loadSectors}
+      />
+
+      {/* Modal para modificar un sector */}
+      <ModalSectors
+        isOpen={modalUpdateIsOpen}
+        onClose={() => setModalUpdateIsOpen(false)}
+        title={"Modificar sector"}
+        onRefresh={loadSectors}
+        sectorData={selectedRow}
       />
 
       {/* Modal para eliminar un sector */}

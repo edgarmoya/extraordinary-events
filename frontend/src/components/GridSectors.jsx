@@ -9,7 +9,7 @@ function GridSectors({ data, onRowSelected }) {
   };
 
   return (
-    <section className="overflow-y-auto">
+    <section className="overflow-y-auto mt-1">
       <table className="table table-sm table-hover table-responsive">
         <thead className="sticky-top z-1">
           <tr>

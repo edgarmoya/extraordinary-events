@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Paths from "../routes/Paths";
 
-function TopBar({ onAdd, onEdit, onDelete }) {
+function TopBar({ onAdd, onUpdate, onDelete }) {
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
 
   useEffect(() => {
@@ -42,9 +42,9 @@ function TopBar({ onAdd, onEdit, onDelete }) {
         </svg>
       </button>
       <button
-        name="editBtn"
+        name="updateBtn"
         type="button"
-        onClick={onEdit}
+        onClick={onUpdate}
         className="btn border-secondary-subtle btn-accions-blue shadow-sm me-2"
       >
         <svg
