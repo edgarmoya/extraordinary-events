@@ -8,14 +8,19 @@ import Pagination from "../components/Pagination";
 import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
 import ModalAddSectors from "../components/ModalAddSectors";
+import ModalConfirmDelete from "../components/ModalConfirmDelete";
+import SectorsService from "../api/sectors.api";
+import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 
 function SectorsPage() {
   const { authTokens } = useContext(AuthContext);
   const location = useLocation();
   const [sectors, setSectors] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalSectors, setTotalSectors] = useState(1);
   const [modalAddIsOpen, setModalAddIsOpen] = useState(false);
+  const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
 
   //* Función para cargar todos los sectores
   const loadAllSectors = useCallback(async () => {
@@ -76,8 +81,16 @@ function SectorsPage() {
     setCurrentPage(page);
   };
 
-  const handleAddSector = () => {
-    setModalAddIsOpen(true);
+  const handleDeleteSector = () => {
+    SectorsService.deleteSector(authTokens, selectedRow.id)
+      .then((data) => {
+        showSuccessToast("Sector eliminado");
+        loadSectors();
+        setSelectedRow(null);
+      })
+      .catch((error) => {
+        showErrorToast("Error al eliminar sector");
+      });
   };
 
   useEffect(() => {
@@ -88,13 +101,25 @@ function SectorsPage() {
     <Layout pageTitle="Sectores">
       <div className="container-fluid">
         {/* Accions */}
-        <TopBar onAdd={handleAddSector} />
+        <TopBar
+          onAdd={() => setModalAddIsOpen(true)}
+          onDelete={() => {
+            if (selectedRow) {
+              setModalDeleteIsOpen(true);
+            } else {
+              showErrorToast("Seleccione el sector que desea eliminar");
+            }
+          }}
+        />
         {/* Grid */}
         <div
           className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
           style={{ maxHeight: "calc(100vh - 115px)" }}
         >
-          <GridSectors data={sectors} />
+          <GridSectors
+            data={sectors}
+            onRowSelected={(row) => setSelectedRow(row)}
+          />
           <div className="card card-footer bg-white border-0">
             <Pagination
               onPageChange={handlePageChange}
@@ -110,6 +135,18 @@ function SectorsPage() {
         isOpen={modalAddIsOpen}
         onClose={() => setModalAddIsOpen(false)}
         onSectorAdded={loadSectors}
+      />
+
+      {/* Modal para eliminar un sector */}
+      <ModalConfirmDelete
+        isOpen={modalDeleteIsOpen}
+        onClose={() => {
+          setModalDeleteIsOpen(false);
+        }}
+        onDelete={handleDeleteSector}
+        message={`Está a punto de eliminar el sector "${
+          selectedRow && selectedRow.description
+        }". ¿Desea eliminarlo?`}
       />
     </Layout>
   );

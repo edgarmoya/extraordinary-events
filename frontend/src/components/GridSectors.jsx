@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 
-function GridSectors({ data }) {
+function GridSectors({ data, onRowSelected }) {
   const [selectedRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (row) => {
     setSelectedRow(row);
+    onRowSelected(row);
   };
 
   return (

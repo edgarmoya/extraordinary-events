@@ -42,6 +42,12 @@ const SectorsService = {
       headers: createHeaders(authTokens),
     });
   },
+
+  deleteSector: async (authTokens, id) => {
+    return sectorsAPI.delete(`/sectors/${id}/`, {
+      headers: createHeaders(authTokens),
+    });
+  },
 };
 
 export default SectorsService;

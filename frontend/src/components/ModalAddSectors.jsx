@@ -27,12 +27,12 @@ function ModalAddSectors({ isOpen, onClose, onSectorAdded }) {
     setIsLoading(true);
     SectorsService.addSector(authTokens, data)
       .then((data) => {
-        showSuccessToast("Sector agregado correctamente.");
+        showSuccessToast("Sector agregado");
         onSectorAdded();
         handleCloseModal();
       })
       .catch((error) => {
-        showErrorToast("Error al agregar sector.");
+        showErrorToast("Error al agregar sector");
       })
       .finally(() => setIsLoading(false));
   };
