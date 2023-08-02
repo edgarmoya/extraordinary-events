@@ -101,34 +101,34 @@ function SectorsPage() {
   return (
     <Layout pageTitle="Sectores">
       <div className="container-fluid">
+        {/* Accions */}
+        <TopBar
+          onAdd={() => setModalAddIsOpen(true)}
+          onUpdate={() => {
+            if (selectedRow) {
+              setModalUpdateIsOpen(true);
+            } else {
+              showErrorToast("Seleccione el sector que desea modificar");
+            }
+          }}
+          onDelete={() => {
+            if (selectedRow) {
+              setModalDeleteIsOpen(true);
+            } else {
+              showErrorToast("Seleccione el sector que desea eliminar");
+            }
+          }}
+        />
         {/* Grid */}
         <div
           className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 70px)" }}
+          style={{ maxHeight: "calc(100vh - 115px)" }}
         >
-          {/* Accions */}
-          <TopBar
-            onAdd={() => setModalAddIsOpen(true)}
-            onUpdate={() => {
-              if (selectedRow) {
-                setModalUpdateIsOpen(true);
-              } else {
-                showErrorToast("Seleccione el sector que desea modificar");
-              }
-            }}
-            onDelete={() => {
-              if (selectedRow) {
-                setModalDeleteIsOpen(true);
-              } else {
-                showErrorToast("Seleccione el sector que desea eliminar");
-              }
-            }}
-          />
           <GridSectors
             data={sectors}
             onRowSelected={(row) => setSelectedRow(row)}
           />
-          <div className="card card-footer bg-white border-0">
+          <div className="card card-footer bg-body border-0">
             <Pagination
               onPageChange={handlePageChange}
               currentPage={currentPage}

@@ -11,7 +11,7 @@ function Modal({ isOpen, title, onClose, children }) {
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">{title}</h5>
+            <h5 className="modal-title text-body-emphasis">{title}</h5>
             <button className="btn btn-close" onClick={onClose} />
           </div>
           {children}

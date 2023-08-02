@@ -38,7 +38,7 @@ function Navbar({ onToggleSidebar, pageTitle }) {
 
   return (
     <React.Fragment>
-      <nav className="navbar bg-light">
+      <nav className="navbar bg-body-secondary">
         <div className="container-fluid">
           <div className="col-auto">
             {/* Toggle */}
@@ -46,7 +46,7 @@ function Navbar({ onToggleSidebar, pageTitle }) {
               id="toggleSidebarBtn"
               type="button"
               onClick={onToggleSidebar}
-              className="btn btn-home bg-light px-2 ms-2"
+              className="btn btn-home text-body-secondary bg-body-secondary px-2 ms-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ function Navbar({ onToggleSidebar, pageTitle }) {
             {/* User */}
             <div className="dropdown">
               <button
-                className="dropdown-toggle border-0 bg-body-tertiary"
+                className="dropdown-toggle border-0 bg-body-secondary"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >

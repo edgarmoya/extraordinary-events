@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import useLocalStorage from "use-local-storage";
 
 function Layout({ children, pageTitle }) {
   const [sidebarIsOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!sidebarIsOpen);
+
+  const [theme, setTheme] = useLocalStorage("theme", "light");
+
+  const switchTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,10 +35,10 @@ function Layout({ children, pageTitle }) {
   }, []);
 
   return (
-    <div className="App">
-      <Sidebar onClose={toggleSidebar} isOpen={sidebarIsOpen} />
+    <div className="App" data-bs-theme={theme}>
+      <Sidebar isOpen={sidebarIsOpen} onModeDark={switchTheme} theme={theme} />
       <div
-        className={`container-fluid content bg-light ${
+        className={`container-fluid content bg-body-secondary ${
           sidebarIsOpen ? "is-open" : ""
         }`}
       >

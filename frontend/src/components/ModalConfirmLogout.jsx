@@ -14,9 +14,8 @@ function ModalConfirmLogout({ isOpen, onClose, onLogout }) {
   return (
     <div>
       <Modal isOpen={isOpen} title={"Confirmación"} onClose={onClose}>
-        <div className="modal-body">
-          ¿Está seguro de que desea cerrar la sesión? Cualquier cambio no
-          guardado se perderá.
+        <div className="modal-body text-body-emphasis">
+          ¿Está seguro de que desea cerrar la sesión?
         </div>
         <div className="modal-footer">
           <button type="button" onClick={onClose} className="btn btn-secondary">

@@ -2,12 +2,12 @@ import { toast } from "react-hot-toast";
 
 export const showSuccessToast = (message) => {
   toast.success(message, {
-    position: "bottom-right",
+    position: "center-top",
   });
 };
 
 export const showErrorToast = (message) => {
   toast.error(message, {
-    position: "bottom-right",
+    position: "center-top",
   });
 };

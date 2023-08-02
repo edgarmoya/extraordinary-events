@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Paths from "../routes/Paths";
 import logo from "../images/logo_he_lg.png";
 
-function Sidebar({ isOpen, onClose }) {
+function Sidebar({ isOpen, onModeDark, theme }) {
   // Estado para almacenar la URL actual
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
 
@@ -27,17 +27,15 @@ function Sidebar({ isOpen, onClose }) {
   };
 
   return (
-    <aside
-      className={`sidebar p-2 bg-white shadow-sm ${isOpen ? "is-open" : ""}`}
-    >
+    <aside className={`sidebar p-2 shadow-sm ${isOpen ? "is-open" : ""}`}>
       <div className="sidebar-header">
         <a
           href={Paths.HOME}
-          className="d-flex justify-content-center mb-1 mb-md-0 me-md-auto text-decoration-none"
+          className="d-flex justify-content-center mb-1 mb-md-0 me-md-auto"
         >
           <img className="" src={logo} alt="logo" height={36} width={126}></img>
         </a>
-        <hr />
+        <hr className="text-body" />
         <ul className="nav nav-pills flex-column mb-auto">
           <li className="nav-item pb-1">
             <a
@@ -141,6 +139,24 @@ function Sidebar({ isOpen, onClose }) {
               </svg>
               Tipos
             </a>
+          </li>
+          <hr className="text-body" />
+          <li className="nav-item pb-1">
+            <button className="d-flex nav-link inactive w-100">
+              <div className="form-check form-switch me-1">
+                <input
+                  className="form-check-input"
+                  onClick={onModeDark}
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckDefault"
+                  checked={theme === "dark"}
+                />
+              </div>
+              <label className="form-check-label" for="flexSwitchCheckDefault">
+                Modo oscuro
+              </label>
+            </button>
           </li>
         </ul>
       </div>

@@ -46,9 +46,11 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="card shadow d-flex bg-light justify-content-center p-4">
+    <div className="card shadow d-flex bg-body-tertiary justify-content-center p-4">
       <div className="card-body">
-        <h2 className="w-100 text-center mb-2">Bienvenido</h2>
+        <h2 className="w-100 text-center text-body-emphasis mb-2">
+          Bienvenido
+        </h2>
         <p className="w-100 text-center mb-4">
           Inserte los datos de autenticación
         </p>
@@ -141,7 +143,10 @@ export const LoginForm = () => {
         </div>
       </div>
       <div className="container-fluid px-3">
-        <Link className="btn btn-admin w-100" to={Paths.ADMIN}>
+        <Link
+          className="btn btn-admin w-100 border-dark-subtle"
+          to={Paths.ADMIN}
+        >
           <svg
             className="me-1"
             xmlns="http://www.w3.org/2000/svg"

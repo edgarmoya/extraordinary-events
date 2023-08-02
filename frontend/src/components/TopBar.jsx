@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Paths from "../routes/Paths";
 
-function TopBar({ onAdd, onUpdate, onDelete }) {
+function TopBar({ onAdd, onUpdate, onDelete, onEnable }) {
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
 
   useEffect(() => {
@@ -19,17 +19,12 @@ function TopBar({ onAdd, onUpdate, onDelete }) {
     return currentURL === path ? "active" : "";
   };
 
-  const handleAdd = (event) => {
-    event.preventDefault();
-    onAdd();
-  };
-
   return (
     <div className="row row-cols-auto ms-1 mt-1">
       <button
         name="addBtn"
         type="button"
-        onClick={handleAdd}
+        onClick={onAdd}
         className="btn border-secondary-subtle btn-accions-blue shadow-sm me-2"
       >
         <svg
@@ -60,7 +55,7 @@ function TopBar({ onAdd, onUpdate, onDelete }) {
         name="deleteBtn"
         type="button"
         onClick={onDelete}
-        className="btn border-secondary-subtle btn-accions-red shadow-sm"
+        className="btn border-secondary-subtle btn-accions-red shadow-sm me-2"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -71,17 +66,31 @@ function TopBar({ onAdd, onUpdate, onDelete }) {
           <path d="m15.561 13.561-1.44 1.439 1.44 1.439a1.5 1.5 0 0 1 -2.122 2.122l-1.439-1.44-1.439 1.44a1.5 1.5 0 0 1 -2.122-2.122l1.44-1.439-1.44-1.439a1.5 1.5 0 0 1 2.122-2.122l1.439 1.44 1.439-1.44a1.5 1.5 0 0 1 2.122 2.122zm6.439-5.404v10.343a5.506 5.506 0 0 1 -5.5 5.5h-9a5.506 5.506 0 0 1 -5.5-5.5v-13a5.506 5.506 0 0 1 5.5-5.5h6.343a5.464 5.464 0 0 1 3.889 1.611l2.657 2.657a5.464 5.464 0 0 1 1.611 3.889zm-3 10.343v-9.5h-4a2 2 0 0 1 -2-2v-4h-5.5a2.5 2.5 0 0 0 -2.5 2.5v13a2.5 2.5 0 0 0 2.5 2.5h9a2.5 2.5 0 0 0 2.5-2.5z" />
         </svg>
       </button>
-
-      <div className="btn-group dropdown-center">
+      <button
+        name="enableBtn"
+        type="button"
+        onClick={onEnable}
+        className="btn border-secondary-subtle btn-accions-blue shadow-sm me-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          height={"1.5rem"}
+        >
+          <path d="m20.389 4.268-2.657-2.657a5.462 5.462 0 0 0 -3.889-1.611h-6.343a5.506 5.506 0 0 0 -5.5 5.5v13a5.506 5.506 0 0 0 5.5 5.5h9a5.506 5.506 0 0 0 5.5-5.5v-10.343a5.464 5.464 0 0 0 -1.611-3.889zm-3.889 16.732h-9a2.5 2.5 0 0 1 -2.5-2.5v-13a2.5 2.5 0 0 1 2.5-2.5h5.5v4a2 2 0 0 0 2 2h4v9.5a2.5 2.5 0 0 1 -2.5 2.5zm.586-9.534a1.5 1.5 0 0 1 -.052 2.12l-3.586 3.414a3.5 3.5 0 0 1 -4.923-.025l-1.525-1.355a1.5 1.5 0 1 1 2-2.24l1.586 1.414a.584.584 0 0 0 .414.206.5.5 0 0 0 .353-.146l3.613-3.44a1.5 1.5 0 0 1 2.12.052z" />
+        </svg>
+      </button>
+      <div className="btn-group dropdown-center px-0">
         <button
-          className="btn btn-light text-body bg-white border-secondary-subtle shadow-sm"
+          className="btn bg-body text-body border-secondary-subtle shadow-sm"
           type="button"
         >
           Estado
         </button>
         <button
           type="button"
-          className="btn btn-light bg-white border-secondary-subtle shadow-sm dropdown-toggle dropdown-toggle-split"
+          className="btn bg-body text-body border-secondary-subtle shadow-sm dropdown-toggle dropdown-toggle-split"
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >

@@ -41,7 +41,7 @@
   margin-left: -250px;
   transition: all 0.5s;
   word-wrap: break-word;
-  background-color: #fff;
+  background-color: var(--bs-body-bg);
   border: 1px solid transparent;
   border-right-color: rgba(0, 0, 0, 0.125);
 }
@@ -52,16 +52,16 @@
 }
 
 .nav-link.inactive{
-  background-color: #ffffff;
-  color: #131313;
+  background-color: var(--bg-body-bg);
+  color: var(--bs-body-color);
 }
 
 .nav-link.inactive .nav-icon {
-  color: #4d4d4d;
+  color: var(--bs-secondary-color);
 }
 
 .nav-link:hover {
-  background-color: rgb(233, 233, 233);
+  background-color: var(--bs-secondary-bg)
 }
 
 /* ---------------------------------------------------
@@ -98,52 +98,41 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: #ffffff;
+  background: var(--bs-body-bg);
   border-radius: 7px;
   outline: none;
-  color: #242424;
-  border: 1px solid #e5e5e5;
-  filter: drop-shadow(0px 1px 0px #efefef) drop-shadow(0px 1px 0.5px rgba(239,239,239,0.5));
+  color: var(--bs-tertiary-color);
+  border: 1px solid var(--bs-tertiary-bg);
   cursor: pointer;
 }
 
 /* Estilos para el botón cuando el cursor está sobre él */
 .btn-admin:hover {
-  background: #ffffff;
-  border-color: #e5e5e5;
-  color: #242424;
-  filter: drop-shadow(0px 1px 0px #efefef) drop-shadow(0px 1px 0.5px rgba(239,239,239,0.5));
+  background: var(--bs-body-bg);
+  border-color: var(--bs-tertiary-bg);
 }
 
 /* ---------------------------------------------------
     TOP BAR
 ----------------------------------------------------- */
 .btn-accions-blue{
-  background-color: #ffffff;
-  color: #5f5f5f;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-secondary-color);
 }
 
 .btn-accions-blue:hover{
-  background-color: rgb(233, 233, 233);
+  background-color: var(--bs-tertiary-bg);
   color: #0d6efd;
 }
 
 .btn-accions-red{
-  background-color: #ffffff;
-  color: #5f5f5f;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-secondary-color);
 }
 
 .btn-accions-red:hover{
-  background-color: #ffffff;
+  background-color: var(--bs-tertiary-bg);
   color: #dc3545;
-}
-
-/* ---------------------------------------------------
-    NAVBAR STYLE
------------------------------------------------------ */
-.btn-home{
-  background-color: #ffffff;
-  color: #5f5f5f;
 }
 
 
