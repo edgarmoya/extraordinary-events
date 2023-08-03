@@ -9,11 +9,6 @@ function Layout({ children, pageTitle }) {
 
   const [theme, setTheme] = useLocalStorage("theme", "light");
 
-  const switchTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-  };
-
   useEffect(() => {
     const handleResize = () => {
       // Verificar el ancho de la pantalla y cambiar el estado de isOpen en consecuencia
@@ -36,13 +31,18 @@ function Layout({ children, pageTitle }) {
 
   return (
     <div className="App" data-bs-theme={theme}>
-      <Sidebar isOpen={sidebarIsOpen} onModeDark={switchTheme} theme={theme} />
+      <Sidebar isOpen={sidebarIsOpen} />
       <div
         className={`container-fluid content bg-body-secondary ${
           sidebarIsOpen ? "is-open" : ""
         }`}
       >
-        <Navbar onToggleSidebar={toggleSidebar} pageTitle={pageTitle} />
+        <Navbar
+          onToggleSidebar={toggleSidebar}
+          pageTitle={pageTitle}
+          onSwitchTheme={(newTheme) => setTheme(newTheme)}
+          theme={theme}
+        />
         {children}
       </div>
     </div>

@@ -3,7 +3,7 @@ import { LoginForm } from "../components/LoginForm";
 import useLocalStorage from "use-local-storage";
 
 const LoginPage = () => {
-  const [theme, setTheme] = useLocalStorage("theme", "light");
+  const [theme] = useLocalStorage("theme", "light");
 
   return (
     <div className="container-fluid bg-body vh-100" data-bs-theme={theme}>

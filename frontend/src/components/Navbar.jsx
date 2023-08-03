@@ -3,8 +3,9 @@ import AuthContext from "../contexts/AuthContext";
 import ModalConfirmLogout from "./ModalConfirmLogout";
 import ModalChangePassword from "./ModalChangePassword";
 import ModalProfile from "./ModalProfile";
+import ThemeToggle from "./ThemeToggle";
 
-function Navbar({ onToggleSidebar, pageTitle }) {
+function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   const { user, logoutUser } = useContext(AuthContext);
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
   const [modalLogoutIsOpen, setModalLogoutIsOpen] = useState(false);
@@ -77,15 +78,18 @@ function Navbar({ onToggleSidebar, pageTitle }) {
               >
                 <strong>{user.username}</strong>
               </button>
-              <ul className="dropdown-menu dropdown-menu-end text-small shadow">
+              <ul className="dropdown-menu dropdown-menu-end text-small p-1 shadow">
                 <li>
-                  <button className="dropdown-item" onClick={handleProfile}>
+                  <button
+                    className="dropdown-item rounded-1"
+                    onClick={handleProfile}
+                  >
                     Perfil
                   </button>
                 </li>
                 <li>
                   <button
-                    className="dropdown-item"
+                    className="dropdown-item rounded-1"
                     onClick={handleChangePassword}
                   >
                     Cambiar contraseña
@@ -95,13 +99,17 @@ function Navbar({ onToggleSidebar, pageTitle }) {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <button className="dropdown-item" onClick={handleLogout}>
+                  <button
+                    className="dropdown-item rounded-1"
+                    onClick={handleLogout}
+                  >
                     Cerrar sesión
                   </button>
                 </li>
               </ul>
             </div>
           </div>
+          <ThemeToggle theme={theme} onSwitchTheme={onSwitchTheme} />
         </div>
       </nav>
 

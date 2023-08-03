@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Paths from "../routes/Paths";
 import logo from "../images/logo_he_lg.png";
 
-function Sidebar({ isOpen, onModeDark, theme }) {
+function Sidebar({ isOpen }) {
   // Estado para almacenar la URL actual
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
 
@@ -139,24 +139,6 @@ function Sidebar({ isOpen, onModeDark, theme }) {
               </svg>
               Tipos
             </a>
-          </li>
-          <hr className="text-body" />
-          <li className="nav-item pb-1">
-            <button className="d-flex nav-link inactive w-100">
-              <div className="form-check form-switch me-1">
-                <input
-                  className="form-check-input"
-                  onClick={onModeDark}
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckDefault"
-                  checked={theme === "dark"}
-                />
-              </div>
-              <label className="form-check-label" for="flexSwitchCheckDefault">
-                Modo oscuro
-              </label>
-            </button>
           </li>
         </ul>
       </div>

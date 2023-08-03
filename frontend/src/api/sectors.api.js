@@ -54,6 +54,16 @@ const SectorsService = {
       headers: createHeaders(authTokens),
     });
   },
+
+  activateSector: async (authTokens, id, activated) => {
+    return sectorsAPI.patch(
+      `/sectors/${id}/`,
+      { is_active: !activated },
+      {
+        headers: createHeaders(authTokens),
+      }
+    );
+  },
 };
 
 export default SectorsService;

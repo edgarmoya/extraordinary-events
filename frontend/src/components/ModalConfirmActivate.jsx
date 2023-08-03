@@ -1,12 +1,18 @@
 import { React, useState } from "react";
 import Modal from "./Modal";
 
-function ModalConfirmDelete({ isOpen, onClose, onDelete, message }) {
+function ModalConfirmActivate({
+  isOpen,
+  onClose,
+  onActivate,
+  message,
+  activated,
+}) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDelete = async () => {
+  const handleActivate = async () => {
     setIsLoading(true);
-    await onDelete();
+    await onActivate();
     onClose();
     setIsLoading(false);
   };
@@ -21,10 +27,10 @@ function ModalConfirmDelete({ isOpen, onClose, onDelete, message }) {
           </button>
           <button
             className="btn btn-danger"
-            onClick={handleDelete}
+            onClick={handleActivate}
             disabled={isLoading}
           >
-            {isLoading ? "Eliminando..." : "Eliminar"}
+            {isLoading ? "Guardando..." : activated ? "Inactivar" : "Activar"}
           </button>
         </div>
       </Modal>
@@ -32,4 +38,4 @@ function ModalConfirmDelete({ isOpen, onClose, onDelete, message }) {
   );
 }
 
-export default ModalConfirmDelete;
+export default ModalConfirmActivate;

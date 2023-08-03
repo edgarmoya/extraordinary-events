@@ -9,6 +9,7 @@ import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
 import ModalSectors from "../components/ModalSectors";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
+import ModalConfirmActivate from "../components/ModalConfirmActivate";
 import SectorsService from "../api/sectors.api";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 
@@ -22,6 +23,7 @@ function SectorsPage() {
   const [modalAddIsOpen, setModalAddIsOpen] = useState(false);
   const [modalUpdateIsOpen, setModalUpdateIsOpen] = useState(false);
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
+  const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
 
   //* Función para cargar todos los sectores
   const loadAllSectors = useCallback(async () => {
@@ -82,10 +84,32 @@ function SectorsPage() {
     setCurrentPage(page);
   };
 
+  //* Función para eliminar un sector
   const handleDeleteSector = async () => {
     await SectorsService.deleteSector(authTokens, selectedRow.id)
       .then((data) => {
         showSuccessToast("Sector eliminado");
+        loadSectors();
+        setSelectedRow(null);
+      })
+      .catch((error) => {
+        showErrorToast("Error al eliminar sector");
+      });
+  };
+
+  //* Función para activar/inactivar un sector
+  const handleActivateSector = async () => {
+    await SectorsService.activateSector(
+      authTokens,
+      selectedRow.id,
+      selectedRow.is_active
+    )
+      .then((data) => {
+        if (selectedRow.is_active) {
+          showSuccessToast("Sector inactivado");
+        } else {
+          showSuccessToast("Sector activado");
+        }
         loadSectors();
         setSelectedRow(null);
       })
@@ -116,6 +140,15 @@ function SectorsPage() {
               setModalDeleteIsOpen(true);
             } else {
               showErrorToast("Seleccione el sector que desea eliminar");
+            }
+          }}
+          onActivate={() => {
+            if (selectedRow) {
+              setModalActivateIsOpen(true);
+            } else {
+              showErrorToast(
+                "Seleccione el sector que desea activar/inactivar"
+              );
             }
           }}
         />
@@ -164,7 +197,20 @@ function SectorsPage() {
         onDelete={handleDeleteSector}
         message={`Está a punto de eliminar el sector "${
           selectedRow && selectedRow.description
-        }". ¿Desea eliminarlo?`}
+        }".`}
+      />
+
+      {/* Modal para activar/inactivar un sector */}
+      <ModalConfirmActivate
+        isOpen={modalActivateIsOpen}
+        onClose={() => {
+          setModalActivateIsOpen(false);
+        }}
+        onActivate={handleActivateSector}
+        message={`Está a punto de ${
+          selectedRow && selectedRow.is_active ? "inactivar" : "activar"
+        } el sector "${selectedRow && selectedRow.description}".`}
+        activated={selectedRow && selectedRow.is_active}
       />
     </Layout>
   );
