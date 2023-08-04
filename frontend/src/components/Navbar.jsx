@@ -73,7 +73,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
             {/* User */}
             <div className="dropdown">
               <button
-                className="dropdown-toggle border-0 bg-body-secondary"
+                className="dropdown-toggle border-0 bg-body-secondary m-2"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >

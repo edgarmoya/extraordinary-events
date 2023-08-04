@@ -10,29 +10,32 @@ const createHeaders = (authTokens) => ({
 });
 
 const SectorsService = {
-  getSectors: async (authTokens, page) => {
+  getSectors: async (authTokens, page, searchTerm) => {
     return sectorsAPI.get(`/sectors/`, {
       headers: createHeaders(authTokens),
       params: {
         page: page,
+        search: searchTerm,
       },
     });
   },
 
-  getActiveSectors: async (authTokens, page) => {
+  getActiveSectors: async (authTokens, page, searchTerm) => {
     return sectorsAPI.get(`/active-sectors/`, {
       headers: createHeaders(authTokens),
       params: {
         page: page,
+        search: searchTerm,
       },
     });
   },
 
-  getInactiveSectors: async (authTokens, page) => {
+  getInactiveSectors: async (authTokens, page, searchTerm) => {
     return sectorsAPI.get(`/inactive-sectors/`, {
       headers: createHeaders(authTokens),
       params: {
         page: page,
+        search: searchTerm,
       },
     });
   },

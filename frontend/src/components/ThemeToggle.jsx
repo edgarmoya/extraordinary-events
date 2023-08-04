@@ -7,7 +7,7 @@ const ThemeToggle = ({ onSwitchTheme, theme }) => {
   };
 
   return (
-    <div className="dropdown">
+    <div className="dropdown me-1">
       <button
         className="btn btn-link nav-link text-body-emphasis py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
         type="button"

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Paths from "../routes/Paths";
 import { Check2 } from "react-bootstrap-icons";
 
-function TopBar({ onAdd, onUpdate, onDelete, onActivate }) {
+function TopBar({ onAdd, onUpdate, onDelete, onActivate, onSearch }) {
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -22,6 +23,11 @@ function TopBar({ onAdd, onUpdate, onDelete, onActivate }) {
 
   const isCheck = (path) => {
     return currentURL === path ? "" : "d-none";
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    onSearch("");
   };
 
   return (
@@ -139,10 +145,16 @@ function TopBar({ onAdd, onUpdate, onDelete, onActivate }) {
         <input
           className="form-control me-2"
           type="search"
-          placeholder="Buscar sector"
+          placeholder="Buscar sector ..."
           aria-label="Search"
+          onClick={handleClearSearch}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className="btn btn-primary ms-auto" type="submit">
+        <button
+          className="btn btn-primary ms-auto"
+          type="submit"
+          onClick={() => onSearch(searchTerm)}
+        >
           Buscar
         </button>
       </div>

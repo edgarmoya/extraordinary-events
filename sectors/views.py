@@ -13,29 +13,43 @@ class SectorPagination(PageNumberPagination):
 class SectorView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,]
     serializer_class = SectorSerializer
-    pagination_class = PageNumberPagination
-    page_size = 25
+    pagination_class = SectorPagination
 
     def get_queryset(self):
-        return Sector.objects.all().order_by("-id")
+        search_term = self.request.query_params.get('search', '')
+        queryset = Sector.objects.all()
+        if search_term:
+            queryset = queryset.filter(
+                description__icontains=search_term
+            )
+        return queryset.order_by('-id')
 
 
 class ActiveSectorView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,]
     serializer_class = SectorSerializer
-    pagination_class = PageNumberPagination
-    page_size = 25
+    pagination_class = SectorPagination
 
     def get_queryset(self):
-        return Sector.objects.filter(is_active=True).order_by("-id")
+        search_term = self.request.query_params.get('search', '')
+        queryset = Sector.objects.filter(is_active=True)
+        if search_term:
+            queryset = queryset.filter(
+                description__icontains=search_term
+            )
+        return queryset.order_by('-id')
 
 
 class InactiveSectorView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,]
     serializer_class = SectorSerializer
-    pagination_class = PageNumberPagination
-    page_size = 25
+    pagination_class = SectorPagination
 
     def get_queryset(self):
-        return Sector.objects.filter(is_active=False).order_by("-id")
-
+        search_term = self.request.query_params.get('search', '')
+        queryset = Sector.objects.filter(is_active=False)
+        if search_term:
+            queryset = queryset.filter(
+                description__icontains=search_term
+            )
+        return queryset.order_by('-id')

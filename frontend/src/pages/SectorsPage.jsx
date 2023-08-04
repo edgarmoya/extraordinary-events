@@ -17,6 +17,7 @@ function SectorsPage() {
   const { authTokens } = useContext(AuthContext);
   const location = useLocation();
   const [sectors, setSectors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalSectors, setTotalSectors] = useState(1);
@@ -28,41 +29,47 @@ function SectorsPage() {
   //* Función para cargar todos los sectores
   const loadAllSectors = useCallback(async () => {
     try {
-      const response = await SectorService.getSectors(authTokens, currentPage);
+      const response = await SectorService.getSectors(
+        authTokens,
+        currentPage,
+        searchTerm
+      );
       setSectors(response.data.results);
       setTotalSectors(response.data.count);
     } catch (error) {
       console.error("Error fetching sectors for page: ", error);
     }
-  }, [authTokens, currentPage]);
+  }, [authTokens, currentPage, searchTerm]);
 
   //* Función para cargar los sectores activos
   const loadActiveSectors = useCallback(async () => {
     try {
       const response = await SectorService.getActiveSectors(
         authTokens,
-        currentPage
+        currentPage,
+        searchTerm
       );
       setSectors(response.data.results);
       setTotalSectors(response.data.count);
     } catch (error) {
       console.error("Error fetching sectors for page: ", error);
     }
-  }, [authTokens, currentPage]);
+  }, [authTokens, currentPage, searchTerm]);
 
   //* Función para cargar los sectores inactivos
   const loadInactiveSectors = useCallback(async () => {
     try {
       const response = await SectorService.getInactiveSectors(
         authTokens,
-        currentPage
+        currentPage,
+        searchTerm
       );
       setSectors(response.data.results);
       setTotalSectors(response.data.count);
     } catch (error) {
       console.error("Error fetching sectors for page: ", error);
     }
-  }, [authTokens, currentPage]);
+  }, [authTokens, currentPage, searchTerm]);
 
   //* Función para cargar los sectores según la ubicación actual
   const loadSectors = useCallback(() => {
@@ -156,6 +163,12 @@ function SectorsPage() {
                 "Seleccione el sector que desea activar o inactivar"
               );
             }
+          }}
+          onSearch={(term) => {
+            clearSelectedRow();
+            setCurrentPage(1);
+            setSearchTerm(term);
+            loadSectors();
           }}
         />
         {/* Grid */}
