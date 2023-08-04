@@ -82,6 +82,7 @@ function SectorsPage() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    clearSelectedRow();
   };
 
   //* Función para eliminar un sector
@@ -90,7 +91,7 @@ function SectorsPage() {
       .then((data) => {
         showSuccessToast("Sector eliminado");
         loadSectors();
-        setSelectedRow(null);
+        clearSelectedRow();
       })
       .catch((error) => {
         showErrorToast("Error al eliminar sector");
@@ -111,11 +112,16 @@ function SectorsPage() {
           showSuccessToast("Sector activado");
         }
         loadSectors();
-        setSelectedRow(null);
+        clearSelectedRow();
       })
       .catch((error) => {
         showErrorToast("Error al eliminar sector");
       });
+  };
+
+  //* Función para limpiar la fila seleccionada
+  const clearSelectedRow = () => {
+    setSelectedRow(null);
   };
 
   useEffect(() => {
@@ -147,7 +153,7 @@ function SectorsPage() {
               setModalActivateIsOpen(true);
             } else {
               showErrorToast(
-                "Seleccione el sector que desea activar/inactivar"
+                "Seleccione el sector que desea activar o inactivar"
               );
             }
           }}
@@ -176,7 +182,10 @@ function SectorsPage() {
         isOpen={modalAddIsOpen}
         onClose={() => setModalAddIsOpen(false)}
         title={"Añadir sector"}
-        onRefresh={loadSectors}
+        onRefresh={() => {
+          loadSectors();
+          clearSelectedRow();
+        }}
       />
 
       {/* Modal para modificar un sector */}
@@ -184,7 +193,10 @@ function SectorsPage() {
         isOpen={modalUpdateIsOpen}
         onClose={() => setModalUpdateIsOpen(false)}
         title={"Modificar sector"}
-        onRefresh={loadSectors}
+        onRefresh={() => {
+          loadSectors();
+          clearSelectedRow();
+        }}
         sectorData={selectedRow}
       />
 

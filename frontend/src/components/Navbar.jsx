@@ -4,6 +4,7 @@ import ModalConfirmLogout from "./ModalConfirmLogout";
 import ModalChangePassword from "./ModalChangePassword";
 import ModalProfile from "./ModalProfile";
 import ThemeToggle from "./ThemeToggle";
+import ic_profile from "../images/profile.png";
 
 function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   const { user, logoutUser } = useContext(AuthContext);
@@ -76,7 +77,14 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <strong>{user.username}</strong>
+                <img
+                  src={ic_profile}
+                  alt="profile"
+                  width="24"
+                  height="24"
+                  className="rounded-circle me-2"
+                ></img>
+                <strong className="d-none d-sm-inline">{user.username}</strong>
               </button>
               <ul className="dropdown-menu dropdown-menu-end text-small p-1 shadow">
                 <li>
