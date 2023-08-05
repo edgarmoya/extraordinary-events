@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'locations',
     'grades',
     'sectors',
+    'entities',
 ]
 
 MIDDLEWARE = [
