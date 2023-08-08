@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const sectorsAPI = axios.create({
+const entitiesAPI = axios.create({
   baseURL: "http://localhost:8000/api",
 });
 
@@ -9,9 +9,9 @@ const createHeaders = (authTokens) => ({
   Authorization: "Bearer " + String(authTokens.access),
 });
 
-const SectorService = {
-  getSectors: async (authTokens, page, searchTerm) => {
-    return sectorsAPI.get(`/sectors/`, {
+const EntityService = {
+  getEntities: async (authTokens, page, searchTerm) => {
+    return entitiesAPI.get(`/entities/`, {
       headers: createHeaders(authTokens),
       params: {
         page: page,
@@ -20,8 +20,8 @@ const SectorService = {
     });
   },
 
-  getActiveSectors: async (authTokens, page, searchTerm) => {
-    return sectorsAPI.get(`/active-sectors/`, {
+  getActiveEntities: async (authTokens, page, searchTerm) => {
+    return entitiesAPI.get(`/active-entities/`, {
       headers: createHeaders(authTokens),
       params: {
         page: page,
@@ -30,8 +30,8 @@ const SectorService = {
     });
   },
 
-  getInactiveSectors: async (authTokens, page, searchTerm) => {
-    return sectorsAPI.get(`/inactive-sectors/`, {
+  getInactiveEntities: async (authTokens, page, searchTerm) => {
+    return entitiesAPI.get(`/inactive-entities/`, {
       headers: createHeaders(authTokens),
       params: {
         page: page,
@@ -40,27 +40,27 @@ const SectorService = {
     });
   },
 
-  addSector: async (authTokens, sector) => {
-    return sectorsAPI.post(`/sectors/`, sector, {
+  addEntity: async (authTokens, entity) => {
+    return entitiesAPI.post(`/entities/`, entity, {
       headers: createHeaders(authTokens),
     });
   },
 
-  deleteSector: async (authTokens, id) => {
-    return sectorsAPI.delete(`/sectors/${id}/`, {
+  deleteEntity: async (authTokens, id) => {
+    return entitiesAPI.delete(`/entities/${id}/`, {
       headers: createHeaders(authTokens),
     });
   },
 
-  updateSector: async (authTokens, id, sector) => {
-    return sectorsAPI.put(`/sectors/${id}/`, sector, {
+  updateEntity: async (authTokens, id, entity) => {
+    return entitiesAPI.put(`/entities/${id}/`, entity, {
       headers: createHeaders(authTokens),
     });
   },
 
-  activateSector: async (authTokens, id, activated) => {
-    return sectorsAPI.patch(
-      `/sectors/${id}/`,
+  activateEntity: async (authTokens, id, activated) => {
+    return entitiesAPI.patch(
+      `/entities/${id}/`,
       { is_active: !activated },
       {
         headers: createHeaders(authTokens),
@@ -69,4 +69,4 @@ const SectorService = {
   },
 };
 
-export default SectorService;
+export default EntityService;

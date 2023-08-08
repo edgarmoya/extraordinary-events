@@ -10,7 +10,6 @@ import Paths from "../routes/Paths";
 import ModalSectors from "../components/ModalSectors";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
-import SectorsService from "../api/sectors.api";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 
 function SectorsPage() {
@@ -94,7 +93,7 @@ function SectorsPage() {
 
   //* Función para eliminar un sector
   const handleDeleteSector = async () => {
-    await SectorsService.deleteSector(authTokens, selectedRow.id)
+    await SectorService.deleteSector(authTokens, selectedRow.id)
       .then((data) => {
         showSuccessToast("Sector eliminado");
         loadSectors();
@@ -107,7 +106,7 @@ function SectorsPage() {
 
   //* Función para activar/inactivar un sector
   const handleActivateSector = async () => {
-    await SectorsService.activateSector(
+    await SectorService.activateSector(
       authTokens,
       selectedRow.id,
       selectedRow.is_active
@@ -122,7 +121,11 @@ function SectorsPage() {
         clearSelectedRow();
       })
       .catch((error) => {
-        showErrorToast("Error al eliminar sector");
+        if (selectedRow.is_active) {
+          showErrorToast("Error al inactivar sector");
+        } else {
+          showErrorToast("Error al activar sector");
+        }
       });
   };
 
@@ -140,6 +143,11 @@ function SectorsPage() {
       <div className="container-fluid">
         {/* Accions */}
         <TopBar
+          searchMessage={"Buscar sector ..."}
+          watchButton={false}
+          pathAll={Paths.SECTORS}
+          pathActive={Paths.ACTIVE_SECTORS}
+          pathInactive={Paths.INACTIVE_SECTORS}
           onAdd={() => setModalAddIsOpen(true)}
           onUpdate={() => {
             if (selectedRow) {
@@ -168,7 +176,6 @@ function SectorsPage() {
             clearSelectedRow();
             setCurrentPage(1);
             setSearchTerm(term);
-            loadSectors();
           }}
         />
         {/* Grid */}

@@ -91,7 +91,7 @@ function Sidebar({ isOpen }) {
           </li>
           <li className="nav-item pb-1">
             <a
-              href={Paths.ENTITIES}
+              href={Paths.ACTIVE_ENTITIES}
               className={`nav-link ${isActiveLink(Paths.ENTITIES)}`}
             >
               <svg
