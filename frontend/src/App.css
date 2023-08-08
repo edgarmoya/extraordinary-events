@@ -73,7 +73,7 @@
   min-height: 100vh;
 }
 
-@media only screen and (max-width: 920px) {
+@media only screen and (max-width: 965px) {
 
   .sidebar{
     display: none;
@@ -142,6 +142,7 @@
 /* Estilo para el scroll en navegadores WebKit*/
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 /* Estilo para el track del scroll */
@@ -160,3 +161,14 @@
   background-color: #555;
 }
 
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

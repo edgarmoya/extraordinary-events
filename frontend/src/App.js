@@ -27,12 +27,21 @@ function App() {
             <Route path={Paths.HOME} element={<HomePage />} />
             <Route path={Paths.EVENTS} element={<EventsPage />} />
             <Route path={Paths.TYPES} element={<TypesPage />} />
-            <Route path={Paths.ENTITIES} element={<EntitiesPage />} />
             <Route path={Paths.SECTORS} element={<SectorsPage />}>
               {/* Rutas secundarias de SECTORS */}
               <Route path={Paths.ACTIVE_SECTORS} element={<SectorsPage />} />
               <Route path={Paths.INACTIVE_SECTORS} element={<SectorsPage />} />
             </Route>
+
+            <Route path={Paths.ENTITIES} element={<EntitiesPage />}>
+              {/* Rutas secundarias de ENTITIES */}
+              <Route path={Paths.ACTIVE_ENTITIES} element={<EntitiesPage />} />
+              <Route
+                path={Paths.INACTIVE_ENTITIES}
+                element={<EntitiesPage />}
+              />
+            </Route>
+
             <Route
               path={Paths.CLASSIFICATIONS}
               element={<ClassificationsPage />}

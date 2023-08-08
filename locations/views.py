@@ -10,17 +10,20 @@ class IsGetRequest(BasePermission):
         return request.method in SAFE_METHODS
 
 class ProvinceView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,IsGetRequest]
+    permission_classes = [IsAuthenticated, IsGetRequest]
     serializer_class = ProvinceSerializer
 
     def get_queryset(self):
-        queryset = Province.objects.filter(is_active='True')
+        queryset = Province.objects.filter(is_active='True').order_by('description')
         return queryset
 
 class MunicipalityView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,IsGetRequest]
+    permission_classes = [IsAuthenticated, IsGetRequest]
     serializer_class = MunicipalitySerializer
 
     def get_queryset(self):
+        id_province = self.request.query_params.get('id_province', '')
         queryset = Municipality.objects.filter(is_active='True')
-        return queryset
+        if id_province:
+            queryset = queryset.filter(province=id_province)
+        return queryset.order_by('description')

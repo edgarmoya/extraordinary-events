@@ -77,7 +77,7 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
                 defaultValue={sectorData ? sectorData.description : ""}
                 {...register("description", { required: true })}
               ></input>
-              <label htmlFor="floatingInput">Descripción</label>
+              <label htmlFor="floatingInput">Descripción*</label>
               {errors.description && (
                 <div className="invalid-feedback">
                   Por favor, inserte la descripción del sector
