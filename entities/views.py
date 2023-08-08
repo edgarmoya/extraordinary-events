@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import EntitySerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Entity
+from django.db.models import F
+from locations.models import Municipality
 
 # Create your views here.
 class EntityPagination(PageNumberPagination):
@@ -21,7 +23,7 @@ class EntityView(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 description__icontains=search_term
             )
-        return queryset.order_by('-id_entity')
+        return queryset.order_by('id_entity')
 
 
 class ActiveEntityView(viewsets.ModelViewSet):
@@ -36,7 +38,7 @@ class ActiveEntityView(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 description__icontains=search_term
             )
-        return queryset.order_by('-id_entity')
+        return queryset.order_by('id_entity')
 
 
 class InactiveEntityView(viewsets.ModelViewSet):
@@ -51,4 +53,4 @@ class InactiveEntityView(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 description__icontains=search_term
             )
-        return queryset.order_by('-id_entity')
+        return queryset.order_by('id_entity')

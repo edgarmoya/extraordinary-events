@@ -12,7 +12,7 @@ function Layout({ children, pageTitle }) {
   useEffect(() => {
     const handleResize = () => {
       // Verificar el ancho de la pantalla y cambiar el estado de isOpen en consecuencia
-      if (window.innerWidth > 920) {
+      if (window.innerWidth > 965) {
         setSidebarOpen(true);
       } else {
         setSidebarOpen(false);
