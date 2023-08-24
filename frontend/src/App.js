@@ -26,7 +26,6 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path={Paths.HOME} element={<HomePage />} />
             <Route path={Paths.EVENTS} element={<EventsPage />} />
-            <Route path={Paths.TYPES} element={<TypesPage />} />
             <Route path={Paths.SECTORS} element={<SectorsPage />}>
               {/* Rutas secundarias de SECTORS */}
               <Route path={Paths.ACTIVE_SECTORS} element={<SectorsPage />} />
@@ -40,6 +39,12 @@ function App() {
                 path={Paths.INACTIVE_ENTITIES}
                 element={<EntitiesPage />}
               />
+            </Route>
+
+            <Route path={Paths.TYPES} element={<TypesPage />}>
+              {/* Rutas secundarias de TYPES */}
+              <Route path={Paths.ACTIVE_TYPES} element={<TypesPage />} />
+              <Route path={Paths.INACTIVE_TYPES} element={<TypesPage />} />
             </Route>
 
             <Route

@@ -6,7 +6,6 @@ export const LOGIN = "/login";
 export const LOGOUT = "/logout";
 export const EVENTS = "/events";
 export const CLASSIFICATIONS = "/classifications";
-export const TYPES = "/types";
 
 //* Sectores
 export const SECTORS = "/sectors";
@@ -18,6 +17,11 @@ export const ENTITIES = "/entities";
 export const ACTIVE_ENTITIES = "/entities/active";
 export const INACTIVE_ENTITIES = "/entities/inactive";
 
+//* Tipos de Hecho
+export const TYPES = "/types";
+export const ACTIVE_TYPES = "/types/active";
+export const INACTIVE_TYPES = "/types/inactive";
+
 const Paths = {
   EMPTY,
   ADMIN,
@@ -26,13 +30,15 @@ const Paths = {
   LOGOUT,
   EVENTS,
   CLASSIFICATIONS,
-  TYPES,
   SECTORS,
   ACTIVE_SECTORS,
   INACTIVE_SECTORS,
   ENTITIES,
   ACTIVE_ENTITIES,
   INACTIVE_ENTITIES,
+  TYPES,
+  ACTIVE_TYPES,
+  INACTIVE_TYPES,
 };
 
 export default Paths;
