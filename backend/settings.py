@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'sectors',
     'entities',
     'type_events',
+    'classifications'
 ]
 
 MIDDLEWARE = [

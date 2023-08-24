@@ -5,7 +5,6 @@ export const HOME = "/home";
 export const LOGIN = "/login";
 export const LOGOUT = "/logout";
 export const EVENTS = "/events";
-export const CLASSIFICATIONS = "/classifications";
 
 //* Sectores
 export const SECTORS = "/sectors";
@@ -17,10 +16,15 @@ export const ENTITIES = "/entities";
 export const ACTIVE_ENTITIES = "/entities/active";
 export const INACTIVE_ENTITIES = "/entities/inactive";
 
-//* Tipos de Hecho
+//* Tipos de hechos
 export const TYPES = "/types";
 export const ACTIVE_TYPES = "/types/active";
 export const INACTIVE_TYPES = "/types/inactive";
+
+//* Clasificaciones
+export const CLASSIFICATIONS = "/classifications";
+export const ACTIVE_CLASSIFICATIONS = "/classifications/active";
+export const INACTIVE_CLASSIFICATIONS = "/classifications/inactive";
 
 const Paths = {
   EMPTY,
@@ -29,13 +33,15 @@ const Paths = {
   LOGIN,
   LOGOUT,
   EVENTS,
-  CLASSIFICATIONS,
   SECTORS,
   ACTIVE_SECTORS,
   INACTIVE_SECTORS,
   ENTITIES,
   ACTIVE_ENTITIES,
   INACTIVE_ENTITIES,
+  CLASSIFICATIONS,
+  ACTIVE_CLASSIFICATIONS,
+  INACTIVE_CLASSIFICATIONS,
   TYPES,
   ACTIVE_TYPES,
   INACTIVE_TYPES,
