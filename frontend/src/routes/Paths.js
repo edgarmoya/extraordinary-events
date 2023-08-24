@@ -16,6 +16,11 @@ export const ENTITIES = "/entities";
 export const ACTIVE_ENTITIES = "/entities/active";
 export const INACTIVE_ENTITIES = "/entities/inactive";
 
+//* Tipos de hechos
+export const TYPES = "/types";
+export const ACTIVE_TYPES = "/types/active";
+export const INACTIVE_TYPES = "/types/inactive";
+
 //* Clasificaciones
 export const CLASSIFICATIONS = "/classifications";
 export const ACTIVE_CLASSIFICATIONS = "/classifications/active";
@@ -39,6 +44,9 @@ const Paths = {
   ENTITIES,
   ACTIVE_ENTITIES,
   INACTIVE_ENTITIES,
+  TYPES,
+  ACTIVE_TYPES,
+  INACTIVE_TYPES,
   CLASSIFICATIONS,
   ACTIVE_CLASSIFICATIONS,
   INACTIVE_CLASSIFICATIONS,
