@@ -10,7 +10,6 @@ urlpatterns = [
     path('api/', include('grades.urls')),
     path('api/', include('sectors.urls')),
     path('api/', include('entities.urls')),
-
     path('api/', include('classifications.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
