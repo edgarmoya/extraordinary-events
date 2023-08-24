@@ -50,7 +50,17 @@ function App() {
             <Route
               path={Paths.CLASSIFICATIONS}
               element={<ClassificationsPage />}
-            />
+            >
+              {/* Rutas secundarias de CLASSIFICATIONS */}
+              <Route
+                path={Paths.ACTIVE_CLASSIFICATIONS}
+                element={<ClassificationsPage />}
+              />
+              <Route
+                path={Paths.INACTIVE_CLASSIFICATIONS}
+                element={<ClassificationsPage />}
+              />
+            </Route>
           </Route>
         </Routes>
         <Toaster />

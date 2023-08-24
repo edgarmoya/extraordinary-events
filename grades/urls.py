@@ -3,6 +3,6 @@ from .views import GradeView
 
 
 router = routers.DefaultRouter()
-router.register('grade', GradeView, 'grade')
+router.register('grades', GradeView, 'grades')
 
 urlpatterns = router.urls
