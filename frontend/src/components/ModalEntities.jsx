@@ -32,7 +32,6 @@ function ModalEntities({
     formState: { errors },
     reset,
     setValue,
-    getValues,
   } = useForm();
 
   const handleCloseModal = () => {
@@ -40,6 +39,14 @@ function ModalEntities({
     setFormSubmitted(false);
     setDisabledMun(true);
     onClose();
+  };
+
+  const handleSelectChange = (selectedValue) => {
+    if (selectedValue) {
+      setDisabledMun(false);
+    } else {
+      setDisabledMun(true);
+    }
   };
 
   //* Función para cargar los sectores activos que se mostrarán para seleccionar
@@ -95,12 +102,7 @@ function ModalEntities({
 
   const handleProvinceChange = (selectedValue) => {
     setSelectedProvince(selectedValue);
-    if (selectedValue) {
-      setDisabledMun(false);
-    } else {
-      setDisabledMun(true);
-    }
-    loadMunicipalities();
+    handleSelectChange(selectedValue);
   };
 
   const handleAddEntity = async (data) => {
@@ -146,8 +148,17 @@ function ModalEntities({
   useEffect(() => {
     loadActiveSectors(1);
     loadProvinces();
+    if (entityData && entityData.province) {
+      handleSelectChange(selectedProvince);
+    }
     loadMunicipalities();
-  }, [loadActiveSectors, loadProvinces, loadMunicipalities]);
+  }, [
+    loadActiveSectors,
+    loadProvinces,
+    selectedProvince,
+    entityData,
+    loadMunicipalities,
+  ]);
 
   return (
     <div>
@@ -228,7 +239,6 @@ function ModalEntities({
               <div className="col-md">
                 <FormSelect
                   data={municipalities}
-                  disabled={disabledMun}
                   name={"Municipio*"}
                   message={"Seleccione un municipio"}
                   onChange={() => console.log("municipio cambiado")}
@@ -237,6 +247,7 @@ function ModalEntities({
                   setValue={setValue}
                   registerName={"municipality"}
                   defaultValue={entityData ? entityData.municipality : ""}
+                  disabled={disabledMun || readOnly}
                 />
               </div>
             </div>

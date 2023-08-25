@@ -40,7 +40,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
 
   return (
     <React.Fragment>
-      <nav className="navbar bg-body-secondary">
+      <header className="navbar bg-body-secondary">
         <div className="container-fluid">
           <div className="col-auto">
             {/* Toggle */}
@@ -119,7 +119,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
           </div>
           <ThemeToggle theme={theme} onSwitchTheme={onSwitchTheme} />
         </div>
-      </nav>
+      </header>
 
       {/* Modal para confirmar si desea cerrar sesión */}
       <ModalConfirmLogout

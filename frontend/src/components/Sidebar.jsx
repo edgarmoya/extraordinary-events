@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Paths from "../routes/Paths";
 import logo from "../images/logo_he_lg.png";
+import logo_datazucar from "../images/datazucar.png";
 
 function Sidebar({ isOpen }) {
   // Estado para almacenar la URL actual
@@ -27,8 +28,8 @@ function Sidebar({ isOpen }) {
   };
 
   return (
-    <aside className={`sidebar p-2 shadow-sm ${isOpen ? "is-open" : ""}`}>
-      <div className="sidebar-header">
+    <nav className={`sidebar p-2 shadow-sm ${isOpen ? "is-open" : ""}`}>
+      <div className="sidebar-body">
         <a
           href={Paths.HOME}
           className="d-flex justify-content-center mb-1 mb-md-0 me-md-auto"
@@ -142,7 +143,22 @@ function Sidebar({ isOpen }) {
           </li>
         </ul>
       </div>
-    </aside>
+      <div className="sidebar-footer text-center pt-0">
+        <hr className="text-body" />
+        <strong className="fs-small text-body">
+          <img
+            src={logo_datazucar}
+            className="mb-1 me-1"
+            alt="DATAZUCAR"
+            width="15"
+            height="15"
+          />
+          DATAZUCAR © 2023
+          <br />
+          <span className="fw-light">Todos los derechos reservados.</span>
+        </strong>
+      </div>
+    </nav>
   );
 }
 
