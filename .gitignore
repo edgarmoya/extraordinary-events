@@ -4,4 +4,8 @@ venv/
 # VisualStudioCode
 .vscode/
 
+__pycache__/
+media/
+node_modules/
+
 commands.txt
