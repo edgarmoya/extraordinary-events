@@ -14,10 +14,10 @@ function GridTypes({ data, onRowSelected }) {
         <thead className="sticky-top z-1">
           <tr>
             <th scope="col">Descripción</th>
-            <th className="d-flex justify-content-center" scope="col">
+            <th className="text-center" scope="col">
               Catastrófico
             </th>
-            <th scope="col">Activo</th>
+            <th scope="col">Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -38,7 +38,17 @@ function GridTypes({ data, onRowSelected }) {
                   />
                 </div>
               </td>
-              <td>{types.is_active ? "Sí" : "No"}</td>
+              <td>
+                {types.is_active ? (
+                  <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                    activo
+                  </div>
+                ) : (
+                  <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
+                    inactivo
+                  </div>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

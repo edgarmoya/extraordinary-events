@@ -137,6 +137,18 @@
   color: #dc3545;
 }
 
+/* ---------------------------------------------------
+    STATUS BUTTONS STYLE
+----------------------------------------------------- */
+.bg-primary-light{
+  background-color: #0d6dfd1e;
+  font-weight: 500;
+}
+.bg-danger-light{
+  background-color: #dc35461f;
+  font-weight: 500;
+}
+
 
 /* ---------------------------------------------------
     SCROLL STYLE

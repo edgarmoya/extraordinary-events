@@ -15,7 +15,7 @@ function GridClassifications({ data, onRowSelected }) {
           <tr>
             <th scope="col">Descripción</th>
             <th scope="col">Grado</th>
-            <th scope="col">Activo</th>
+            <th scope="col">Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -27,7 +27,17 @@ function GridClassifications({ data, onRowSelected }) {
             >
               <td>{classification.description}</td>
               <td>{classification.grade_description}</td>
-              <td>{classification.is_active ? "Sí" : "No"}</td>
+              <td>
+                {classification.is_active ? (
+                  <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                    activo
+                  </div>
+                ) : (
+                  <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
+                    inactivo
+                  </div>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
