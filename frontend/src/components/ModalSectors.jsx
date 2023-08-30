@@ -4,6 +4,7 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import AuthContext from "../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import SectorsService from "../api/sectors.api";
+import { HttpStatusCode } from "axios";
 
 function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
   const { authTokens } = useContext(AuthContext);
@@ -24,27 +25,55 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
   };
 
   const handleAddSector = async (data) => {
-    await SectorsService.addSector(authTokens, data)
-      .then((data) => {
+    try {
+      const response = await SectorsService.addSector(authTokens, data);
+      if (response.status === HttpStatusCode.Created) {
         showSuccessToast("Sector agregado");
         onRefresh();
-        handleCloseModal();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al agregar sector");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else {
+          showErrorToast("Error al actualizar sector");
+        }
+      }
+    } finally {
+      handleCloseModal();
+    }
   };
 
   const handleUpdateSector = async (sectorId, data) => {
-    await SectorsService.updateSector(authTokens, sectorId, data)
-      .then((data) => {
+    try {
+      const response = await SectorsService.updateSector(
+        authTokens,
+        sectorId,
+        data
+      );
+
+      if (response.status === HttpStatusCode.Ok) {
         showSuccessToast("Sector actualizado");
         onRefresh();
         handleCloseModal();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al actualizar sector");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else {
+          showErrorToast("Error al actualizar sector");
+        }
+      }
+    } finally {
+      handleCloseModal();
+    }
   };
 
   const handleSaveSector = async (data) => {

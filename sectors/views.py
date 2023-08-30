@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import SectorSerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Sector
+from .permissions import HasPermissionForAction
 
 
 # Create your views here.
@@ -11,7 +12,7 @@ class SectorPagination(PageNumberPagination):
 
 
 class SectorView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = SectorSerializer
     pagination_class = SectorPagination
 
@@ -26,7 +27,7 @@ class SectorView(viewsets.ModelViewSet):
 
 
 class ActiveSectorView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = SectorSerializer
     pagination_class = SectorPagination
 
@@ -41,7 +42,7 @@ class ActiveSectorView(viewsets.ModelViewSet):
 
 
 class InactiveSectorView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = SectorSerializer
     pagination_class = SectorPagination
 
