@@ -39,7 +39,7 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
         if (status === HttpStatusCode.Forbidden) {
           showErrorToast("No tiene permiso para realizar esta acción");
         } else {
-          showErrorToast("Error al actualizar sector");
+          showErrorToast("Error al agregar sector");
         }
       }
     } finally {

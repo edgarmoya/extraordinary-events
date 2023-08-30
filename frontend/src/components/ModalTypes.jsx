@@ -4,6 +4,7 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import AuthContext from "../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import TypeService from "../api/types.api";
+import { HttpStatusCode } from "axios";
 
 function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
   const { authTokens } = useContext(AuthContext);
@@ -24,27 +25,51 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
   };
 
   const handleAddType = async (data) => {
-    await TypeService.addType(authTokens, data)
-      .then((data) => {
+    try {
+      const response = await TypeService.addType(authTokens, data);
+      if (response.status === HttpStatusCode.Created) {
         showSuccessToast("Tipo de hecho agregado");
         onRefresh();
-        handleCloseModal();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al agregar tipo de hecho");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else {
+          showErrorToast("Error al agregar tipo de hecho");
+        }
+      }
+    } finally {
+      handleCloseModal();
+    }
   };
 
   const handleUpdateType = async (typeId, data) => {
-    await TypeService.updateType(authTokens, typeId, data)
-      .then((data) => {
+    try {
+      const response = await TypeService.updateType(authTokens, typeId, data);
+
+      if (response.status === HttpStatusCode.Ok) {
         showSuccessToast("Tipo de hecho actualizado");
         onRefresh();
         handleCloseModal();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al actualizar tipo de hecho");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else {
+          showErrorToast("Error al actualizar tipo de hecho");
+        }
+      }
+    } finally {
+      handleCloseModal();
+    }
   };
 
   const handleSaveType = async (data) => {
@@ -92,7 +117,10 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
                 id="flexCheckChecked"
                 {...register("is_catastrophic")}
               />
-              <label className="form-check-label" htmlFor="flexCheckChecked">
+              <label
+                className="form-check-label text-body "
+                htmlFor="flexCheckChecked"
+              >
                 Catastrófico
               </label>
             </div>

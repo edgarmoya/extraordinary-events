@@ -11,6 +11,7 @@ import ModalTypes from "../components/ModalTypes";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import { HttpStatusCode } from "axios";
 
 function TypesPage() {
   const { authTokens } = useContext(AuthContext);
@@ -88,25 +89,40 @@ function TypesPage() {
 
   //* Función para eliminar un tipo de hecho
   const handleDeleteType = async () => {
-    await TypeService.deleteType(authTokens, selectedRow.id)
-      .then((data) => {
+    try {
+      const response = await TypeService.deleteType(authTokens, selectedRow.id);
+      if (response.status === HttpStatusCode.NoContent) {
         showSuccessToast("Tipo de hecho eliminado");
         loadTypes();
         clearSelectedRow();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al eliminar tipo de hecho");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else if (status === HttpStatusCode.InternalServerError) {
+          showErrorToast(
+            "El elemento no puede ser eliminado, se encuentra en uso"
+          );
+        } else {
+          showErrorToast("Error al eliminar tipo de hecho");
+        }
+      }
+    }
   };
 
   //* Función para activar/inactivar un tipo de hecho
   const handleActivateType = async () => {
-    await TypeService.activateType(
-      authTokens,
-      selectedRow.id,
-      selectedRow.is_active
-    )
-      .then((data) => {
+    try {
+      const response = await TypeService.activateType(
+        authTokens,
+        selectedRow.id,
+        selectedRow.is_active
+      );
+      if (response.status === HttpStatusCode.Ok) {
         if (selectedRow.is_active) {
           showSuccessToast("Tipo de hecho inactivado");
         } else {
@@ -114,14 +130,23 @@ function TypesPage() {
         }
         loadTypes();
         clearSelectedRow();
-      })
-      .catch((error) => {
-        if (selectedRow.is_active) {
-          showErrorToast("Error al inactivar tipo de hecho");
+      } else {
+        showErrorToast("Error al activar o inactivar tipo de hecho");
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
         } else {
-          showErrorToast("Error al activar tipo de hecho");
+          if (selectedRow.is_active) {
+            showErrorToast("Error al inactivar tipo de hecho");
+          } else {
+            showErrorToast("Error al activar tipo de hecho");
+          }
         }
-      });
+      }
+    }
   };
 
   //* Función para limpiar la fila seleccionada

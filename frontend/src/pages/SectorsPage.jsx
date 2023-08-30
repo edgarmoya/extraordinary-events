@@ -113,7 +113,7 @@ function SectorsPage() {
           showErrorToast("No tiene permiso para realizar esta acción");
         } else if (status === HttpStatusCode.InternalServerError) {
           showErrorToast(
-            "El sector no puede ser eliminado, se encuentra en uso"
+            "El elemento no puede ser eliminado, se encuentra en uso"
           );
         } else {
           showErrorToast("Error al eliminar sector");

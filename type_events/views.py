@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import TypeSerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Type
+from .permissions import HasPermissionForAction
 
 
 # Create your views here.
@@ -11,7 +12,7 @@ class TypePagination(PageNumberPagination):
 
 
 class TypeView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = TypeSerializer
     pagination_class = TypePagination
 
@@ -26,7 +27,7 @@ class TypeView(viewsets.ModelViewSet):
 
 
 class ActiveTypeView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = TypeSerializer
     pagination_class = TypePagination
 
@@ -41,7 +42,7 @@ class ActiveTypeView(viewsets.ModelViewSet):
 
 
 class InactiveTypeView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = TypeSerializer
     pagination_class = TypePagination
 
