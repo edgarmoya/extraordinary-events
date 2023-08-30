@@ -7,6 +7,7 @@ import EntityService from "../api/entities.api";
 import SectorService from "../api/sectors.api";
 import LocationService from "../api/locations.api";
 import FormSelect from "./FormSelect";
+import { HttpStatusCode } from "axios";
 
 function ModalEntities({
   isOpen,
@@ -106,28 +107,58 @@ function ModalEntities({
   };
 
   const handleAddEntity = async (data) => {
-    await EntityService.addEntity(authTokens, data)
-      .then((data) => {
+    try {
+      const response = await EntityService.addEntity(authTokens, data);
+      if (response.status === HttpStatusCode.Created) {
         showSuccessToast("Entidad agregada");
         onRefresh();
         handleCloseModal();
-      })
-      .catch((error) => {
-        console.log(error);
+      } else {
         showErrorToast("Error al agregar, código existente");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+          handleCloseModal();
+        } else if (status === HttpStatusCode.BadRequest) {
+          showErrorToast("Error al agregar, código existente");
+        } else {
+          showErrorToast("Error al agregar entidad");
+        }
+      }
+    }
   };
 
   const handleUpdateEntity = async (entityId, data) => {
-    await EntityService.updateEntity(authTokens, entityId, data)
-      .then((data) => {
+    try {
+      const response = await EntityService.updateEntity(
+        authTokens,
+        entityId,
+        data
+      );
+
+      if (response.status === HttpStatusCode.Ok) {
         showSuccessToast("Entidad actualizada");
         onRefresh();
         handleCloseModal();
-      })
-      .catch((error) => {
-        showErrorToast("Error al actualizar, código existente");
-      });
+      } else {
+        showErrorToast("Error al actualizar entidad");
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+          handleCloseModal();
+        } else if (status === HttpStatusCode.BadRequest) {
+          showErrorToast("Error al actualizar, código existente");
+        } else {
+          showErrorToast("Error al actualizar entidad");
+        }
+      }
+    }
   };
 
   const handleSaveEntity = async (data) => {
@@ -174,7 +205,7 @@ function ModalEntities({
               <div className="col-md">
                 <div className="form-floating me-0 me-md-2">
                   <input
-                    type="text"
+                    type="number"
                     name="id_entity"
                     className={`form-control ${
                       formSubmitted && errors.id_entity ? "is-invalid" : ""
