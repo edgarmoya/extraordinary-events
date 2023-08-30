@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import ClassificationService from "../api/classifications.api";
 import GradeService from "../api/grades.api";
 import FormSelect from "./FormSelect";
+import { HttpStatusCode } from "axios";
 
 function ModalClassifications({
   isOpen,
@@ -49,32 +50,59 @@ function ModalClassifications({
 
   //* Función para agregar nueva clasificación
   const handleAddClasification = async (data) => {
-    await ClassificationService.addClassification(authTokens, data)
-      .then((data) => {
+    try {
+      const response = await ClassificationService.addClassification(
+        authTokens,
+        data
+      );
+      if (response.status === HttpStatusCode.Created) {
         showSuccessToast("Clasificación agregada");
         onRefresh();
-        handleCloseModal();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al agregar clasificación");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else {
+          showErrorToast("Error al agregar clasificación");
+        }
+      }
+    } finally {
+      handleCloseModal();
+    }
   };
 
   //* Función para actualizar clasificación
   const handleUpdateClassification = async (classificationId, data) => {
-    await ClassificationService.updateClassification(
-      authTokens,
-      classificationId,
-      data
-    )
-      .then((data) => {
+    try {
+      const response = await ClassificationService.updateClassification(
+        authTokens,
+        classificationId,
+        data
+      );
+
+      if (response.status === HttpStatusCode.Ok) {
         showSuccessToast("Clasificación actualizada");
         onRefresh();
         handleCloseModal();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al actualizar clasificación");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else {
+          showErrorToast("Error al actualizar clasificación");
+        }
+      }
+    } finally {
+      handleCloseModal();
+    }
   };
 
   const handleSaveClassification = async (data) => {

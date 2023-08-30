@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import ClassificationSerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Classification
+from .permissions import HasPermissionForAction
 
 # Create your views here.
 class ClassificationPagination(PageNumberPagination):
@@ -10,7 +11,7 @@ class ClassificationPagination(PageNumberPagination):
 
 
 class ClassificationView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = ClassificationSerializer
     pagination_class = ClassificationPagination
 
@@ -25,7 +26,7 @@ class ClassificationView(viewsets.ModelViewSet):
 
 
 class ActiveClassificationView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = ClassificationSerializer
     pagination_class = ClassificationPagination
 
@@ -40,7 +41,7 @@ class ActiveClassificationView(viewsets.ModelViewSet):
 
 
 class InactiveClassificationView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = ClassificationSerializer
     pagination_class = ClassificationPagination
 

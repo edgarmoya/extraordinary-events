@@ -11,6 +11,7 @@ import ModalClassifications from "../components/ModalClassifications";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import { HttpStatusCode } from "axios";
 
 function ClassificationsPage() {
   const { authTokens } = useContext(AuthContext);
@@ -93,25 +94,43 @@ function ClassificationsPage() {
 
   //* Función para eliminar una clasificación
   const handleDeleteClassification = async () => {
-    await ClassificationService.deleteClassification(authTokens, selectedRow.id)
-      .then((data) => {
+    try {
+      const response = await ClassificationService.deleteClassification(
+        authTokens,
+        selectedRow.id
+      );
+      if (response.status === HttpStatusCode.NoContent) {
         showSuccessToast("Clasificación eliminada");
         loadClassifications();
         clearSelectedRow();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al eliminar clasificación");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else if (status === HttpStatusCode.InternalServerError) {
+          showErrorToast(
+            "El elemento no puede ser eliminado, se encuentra en uso"
+          );
+        } else {
+          showErrorToast("Error al eliminar clasificación");
+        }
+      }
+    }
   };
 
   //* Función para activar/inactivar una clasificación
   const handleActivateClassification = async () => {
-    await ClassificationService.activateClassification(
-      authTokens,
-      selectedRow.id,
-      selectedRow.is_active
-    )
-      .then((data) => {
+    try {
+      const response = await ClassificationService.activateClassification(
+        authTokens,
+        selectedRow.id,
+        selectedRow.is_active
+      );
+      if (response.status === HttpStatusCode.Ok) {
         if (selectedRow.is_active) {
           showSuccessToast("Clasificación inactivada");
         } else {
@@ -119,14 +138,23 @@ function ClassificationsPage() {
         }
         loadClassifications();
         clearSelectedRow();
-      })
-      .catch((error) => {
-        if (selectedRow.is_active) {
-          showErrorToast("Error al inactivar clasificación");
+      } else {
+        showErrorToast("Error al activar o inactivar clasificación");
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
         } else {
-          showErrorToast("Error al activar clasificación");
+          if (selectedRow.is_active) {
+            showErrorToast("Error al inactivar clasificación");
+          } else {
+            showErrorToast("Error al activar clasificación");
+          }
         }
-      });
+      }
+    }
   };
 
   //* Función para limpiar la fila seleccionada
