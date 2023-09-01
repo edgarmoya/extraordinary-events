@@ -101,6 +101,7 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
                 }`}
                 defaultValue={typeData ? typeData.description : ""}
                 {...register("description", { required: true })}
+                autoFocus={true}
               ></input>
               <label htmlFor="floatingInput">Descripción*</label>
               {errors.description && (

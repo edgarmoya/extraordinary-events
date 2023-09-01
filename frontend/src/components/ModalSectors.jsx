@@ -105,6 +105,7 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
                 }`}
                 defaultValue={sectorData ? sectorData.description : ""}
                 {...register("description", { required: true })}
+                autoFocus={true}
               ></input>
               <label htmlFor="floatingInput">Descripción*</label>
               {errors.description && (

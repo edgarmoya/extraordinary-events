@@ -205,7 +205,7 @@ function ModalEntities({
               <div className="col-md">
                 <div className="form-floating me-0 me-md-2">
                   <input
-                    type="number"
+                    type="text"
                     name="id_entity"
                     className={`form-control ${
                       formSubmitted && errors.id_entity ? "is-invalid" : ""
@@ -220,6 +220,8 @@ function ModalEntities({
                       },
                     })}
                     disabled={readOnly}
+                    autoFocus={true}
+                    maxLength={6}
                   />
                   <label htmlFor="floatingInput">Código*</label>
                   {errors.id_entity && (

@@ -137,6 +137,7 @@ function ModalClassifications({
                   classificationData ? classificationData.description : ""
                 }
                 {...register("description", { required: true })}
+                autoFocus={true}
               ></textarea>
               <label htmlFor="floatingInput">Descripción*</label>
               {errors.description && (
