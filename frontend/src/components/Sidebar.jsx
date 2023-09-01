@@ -145,7 +145,11 @@ function Sidebar({ isOpen }) {
       </div>
       <div className="sidebar-footer text-center pt-0">
         <hr className="text-body" />
-        <strong className="fs-small text-body">
+        <a
+          className="fs-small text-body text-decoration-none fw-bold"
+          href="https://www.datazucar.cu/"
+          target="_blank"
+        >
           <img
             src={logo_datazucar}
             className="mb-1 me-1"
@@ -156,7 +160,7 @@ function Sidebar({ isOpen }) {
           DATAZUCAR © 2023
           <br />
           <span className="fw-light">Todos los derechos reservados.</span>
-        </strong>
+        </a>
       </div>
     </nav>
   );
