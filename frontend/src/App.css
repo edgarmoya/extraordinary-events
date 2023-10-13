@@ -148,6 +148,10 @@
   background-color: #dc35461f;
   font-weight: 500;
 }
+.bg-success-light{
+  background-color: #35dc4b1f;
+  font-weight: 500;
+}
 
 
 /* ---------------------------------------------------
@@ -185,4 +189,45 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.date-picker-container {
+  position: absolute;
+  z-index: 10;
+  left: 70px;
+  top: 130px;
+}
+
+.card-measure:hover {
+  background-color: var(--bs-secondary-bg);
+}
+
+.input-group-text:hover {
+  background-color: var(--bs-secondary-bg);
+}
+
+.btn-close-bg {
+  height: 1.2rem;
+  width: 1.2rem;
+  background-color: var(--bs-secondary-bg);
+  border-radius: 5px;
+}
+
+.full-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-screen img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
 }

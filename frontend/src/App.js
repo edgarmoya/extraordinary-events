@@ -25,7 +25,13 @@ function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path={Paths.HOME} element={<HomePage />} />
-            <Route path={Paths.EVENTS} element={<EventsPage />} />
+
+            <Route path={Paths.EVENTS} element={<EventsPage />}>
+              {/* Rutas secundarias de EVENTS */}
+              <Route path={Paths.OPEN_EVENTS} element={<EventsPage />} />
+              <Route path={Paths.CLOSE_EVENTS} element={<EventsPage />} />
+            </Route>
+
             <Route path={Paths.SECTORS} element={<SectorsPage />}>
               {/* Rutas secundarias de SECTORS */}
               <Route path={Paths.ACTIVE_SECTORS} element={<SectorsPage />} />

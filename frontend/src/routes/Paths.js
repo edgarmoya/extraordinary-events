@@ -4,7 +4,11 @@ export const ADMIN = "/admin";
 export const HOME = "/home";
 export const LOGIN = "/login";
 export const LOGOUT = "/logout";
+
+//* Hechos
 export const EVENTS = "/events";
+export const OPEN_EVENTS = "/events/open";
+export const CLOSE_EVENTS = "/events/close";
 
 //* Sectores
 export const SECTORS = "/sectors";
@@ -33,6 +37,8 @@ const Paths = {
   LOGIN,
   LOGOUT,
   EVENTS,
+  OPEN_EVENTS,
+  CLOSE_EVENTS,
   SECTORS,
   ACTIVE_SECTORS,
   INACTIVE_SECTORS,
