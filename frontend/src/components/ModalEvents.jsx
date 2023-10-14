@@ -1,15 +1,14 @@
-import { React, useContext, useState, useEffect, useCallback } from "react";
+import { React, useContext, useState } from "react";
 import Modal from "./Modal";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import AuthContext from "../contexts/AuthContext";
 import { useForm } from "react-hook-form";
-import EntityService from "../api/entities.api";
-import SectorService from "../api/sectors.api";
-import LocationService from "../api/locations.api";
-import ModalEvents_General from "./ModalEvents_General";
-import ModalEvents_Measure from "./ModalEvents_Measure";
-import ModalEvents_Attachment from "./ModalEvents_Attachment";
+import EventService from "../api/event.api";
+import ModalEventsGeneral from "./ModalEventsGeneral";
+import ModalEventsMeasure from "./ModalEventsMeasure";
+import ModalEventsAttachment from "./ModalEventsAttachment";
 import { HttpStatusCode } from "axios";
+import { format } from "date-fns";
 
 function ModalEvents({
   isOpen,
@@ -17,106 +16,41 @@ function ModalEvents({
   onRefresh,
   title,
   size,
-  entityData,
+  eventData,
   readOnly,
 }) {
-  const { authTokens } = useContext(AuthContext);
+  const { authTokens, user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [sectors, setSectors] = useState([]);
-  const [provinces, setProvinces] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [municipalities, setMunicipalities] = useState([]);
-  const [disabledMun, setDisabledMun] = useState(true);
+  const [occurrenceDate, setOccurrenceDate] = useState(new Date());
+  const [scope, setScope] = useState("");
+  const [entity, setEntity] = useState("");
+  const [type, setType] = useState("");
+  const [classification, setClassification] = useState("");
+  const [synthesis, setSynthesis] = useState("");
+  const [cause, setCause] = useState("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     setValue,
+    reset,
   } = useForm();
 
   const handleCloseModal = () => {
     reset();
-    setFormSubmitted(false);
-    setDisabledMun(true);
     onClose();
   };
 
-  const handleSelectChange = (selectedValue) => {
-    if (selectedValue) {
-      setDisabledMun(false);
-    } else {
-      setDisabledMun(true);
-    }
-  };
-
-  //* Función para cargar los sectores activos que se mostrarán para seleccionar
-  const loadActiveSectors = useCallback(
-    async (currentPage) => {
-      try {
-        let allSectors = [];
-        let nextPage = currentPage;
-        while (true) {
-          const response = await SectorService.getActiveSectors(
-            authTokens,
-            nextPage
-          );
-          const newSectors = response.data.results;
-          allSectors = [...allSectors, ...newSectors];
-
-          if (response.data.next) {
-            nextPage += 1;
-          } else {
-            break;
-          }
-        }
-        setSectors(allSectors);
-      } catch (error) {
-        console.error("Error fetching sectors: ", error);
-      }
-    },
-    [authTokens]
-  );
-
-  //* Función para cargar las provincias
-  const loadProvinces = useCallback(async () => {
+  const handleAddEvent = async (data) => {
     try {
-      const response = await LocationService.getProvinces(authTokens);
-      setProvinces(response.data.results);
-    } catch (error) {
-      console.error("Error fetching provinces: ", error);
-    }
-  }, [authTokens]);
-
-  //* Función para cargar los municipios
-  const loadMunicipalities = useCallback(async () => {
-    try {
-      const response = await LocationService.getMunicipalities(
-        authTokens,
-        selectedProvince
-      );
-      setMunicipalities(response.data.results);
-    } catch (error) {
-      console.error("Error fetching municipalities: ", error);
-    }
-  }, [authTokens, selectedProvince]);
-
-  const handleProvinceChange = (selectedValue) => {
-    setSelectedProvince(selectedValue);
-    handleSelectChange(selectedValue);
-  };
-
-  const handleAddEntity = async (data) => {
-    try {
-      const response = await EntityService.addEntity(authTokens, data);
+      const response = await EventService.addEvent(authTokens, data);
       if (response.status === HttpStatusCode.Created) {
-        showSuccessToast("Entidad agregada");
+        showSuccessToast("Hecho extraordinario agregado");
         onRefresh();
         handleCloseModal();
       } else {
-        showErrorToast("Error al agregar, código existente");
+        showErrorToast("Error al agregar, compruebe los campos");
       }
     } catch (error) {
       if (error.response) {
@@ -125,15 +59,15 @@ function ModalEvents({
           showErrorToast("No tiene permiso para realizar esta acción");
           handleCloseModal();
         } else if (status === HttpStatusCode.BadRequest) {
-          showErrorToast("Error al agregar, código existente");
+          showErrorToast("Error al agregar, compruebe los campos");
         } else {
-          showErrorToast("Error al agregar entidad");
+          showErrorToast("Error al agregar hecho");
         }
       }
     }
   };
 
-  const handleUpdateEntity = async (entityId, data) => {
+  /*const handleUpdateEntity = async (entityId, data) => {
     try {
       const response = await EntityService.updateEntity(
         authTokens,
@@ -161,37 +95,26 @@ function ModalEvents({
         }
       }
     }
-  };
+  };*/
 
-  const handleSaveEntity = async (data) => {
+  const handleSaveEvent = async (data) => {
     setIsLoading(true);
-    if (entityData && entityData.id_entity) {
-      await handleUpdateEntity(entityData.id_entity, data);
+    if (eventData && eventData.id) {
+      // await handleUpdateEvent(eventData.id, data);
     } else {
-      await handleAddEntity(data);
+      await handleAddEvent(data);
     }
     setIsLoading(false);
   };
 
   const handleFormSubmit = (data) => {
-    setFormSubmitted(true);
-    handleSubmit(handleSaveEntity)(data);
+    const modifiedData = {
+      ...data,
+      created_by: user.user_id,
+      occurrence_date: format(occurrenceDate, "yyyy-MM-dd"),
+    };
+    handleSaveEvent(modifiedData);
   };
-
-  useEffect(() => {
-    loadActiveSectors(1);
-    loadProvinces();
-    if (entityData && entityData.province) {
-      handleSelectChange(selectedProvince);
-    }
-    loadMunicipalities();
-  }, [
-    loadActiveSectors,
-    loadProvinces,
-    selectedProvince,
-    entityData,
-    loadMunicipalities,
-  ]);
 
   return (
     <div>
@@ -255,7 +178,25 @@ function ModalEvents({
                 aria-labelledby="general-tab"
                 tabIndex="0"
               >
-                <ModalEvents_General />
+                <ModalEventsGeneral
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  occurrenceDate={occurrenceDate}
+                  setOccurrenceDate={setOccurrenceDate}
+                  scope={scope}
+                  setScope={setScope}
+                  entity={entity}
+                  setEntity={setEntity}
+                  type={type}
+                  setType={setType}
+                  classification={classification}
+                  setClassification={setClassification}
+                  synthesis={synthesis}
+                  setSynthesis={setSynthesis}
+                  cause={cause}
+                  setCause={setCause}
+                />
               </div>
               <div
                 className="tab-pane fade"
@@ -264,7 +205,7 @@ function ModalEvents({
                 aria-labelledby="measure-tab"
                 tabIndex="0"
               >
-                <ModalEvents_Measure />
+                <ModalEventsMeasure />
               </div>
               <div
                 className="tab-pane fade"
@@ -273,7 +214,7 @@ function ModalEvents({
                 aria-labelledby="attachment-tab"
                 tabIndex="0"
               >
-                <ModalEvents_Attachment />
+                <ModalEventsAttachment />
               </div>
             </div>
           </div>
@@ -289,11 +230,11 @@ function ModalEvents({
           {!readOnly && (
             <button
               type="button"
-              onClick={handleFormSubmit}
+              onClick={handleSubmit(handleFormSubmit)}
               className="btn btn-primary"
               disabled={isLoading}
             >
-              {isLoading ? "Guardando..." : entityData ? "Modificar" : "Añadir"}
+              {isLoading ? "Guardando..." : eventData ? "Modificar" : "Añadir"}
             </button>
           )}
         </div>

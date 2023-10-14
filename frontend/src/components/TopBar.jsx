@@ -13,6 +13,9 @@ function TopBar({
   pathAll,
   pathActive,
   pathInactive,
+  textPathAll,
+  textPathActive,
+  textPathInactive,
 }) {
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
   const [searchTerm, setSearchTerm] = useState("");
@@ -148,7 +151,7 @@ function TopBar({
               className={`dropdown-item rounded-1 ${isActive(pathAll)}`}
               href={pathAll}
             >
-              Mostrar todos
+              {textPathAll ? textPathAll : "Mostrar todos"}
               <Check2 className={`ms-3 ${isCheck(pathAll)}`} />
             </a>
           </li>
@@ -157,7 +160,7 @@ function TopBar({
               className={`dropdown-item rounded-1 mt-1 ${isActive(pathActive)}`}
               href={pathActive}
             >
-              Mostrar activos
+              {textPathActive ? textPathActive : "Mostrar activos"}
               <Check2 className={`ms-3 ${isCheck(pathActive)}`} />
             </a>
           </li>
@@ -168,7 +171,7 @@ function TopBar({
               )}`}
               href={pathInactive}
             >
-              Mostrar inactivos
+              {textPathInactive ? textPathInactive : "Mostrar inactivos"}
               <Check2 className={`ms-3 ${isCheck(pathInactive)}`} />
             </a>
           </li>

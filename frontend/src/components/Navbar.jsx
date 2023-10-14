@@ -75,7 +75,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
 
           {/* Vertical Separator */}
           <div className="d-none d-sm-flex justify-content-center align-items-center mx-2">
-            <div class="vr text-body"></div>
+            <div className="vr text-body"></div>
           </div>
 
           {/* User */}

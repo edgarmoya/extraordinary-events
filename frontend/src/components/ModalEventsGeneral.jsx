@@ -1,47 +1,41 @@
-import {
-  React,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import { React, useContext, useState, useEffect, useCallback } from "react";
 import AuthContext from "../contexts/AuthContext";
-import { useForm } from "react-hook-form";
 import EntityService from "../api/entities.api";
 import TypeService from "../api/types.api";
 import ClassificationService from "../api/classifications.api";
-import LocationService from "../api/locations.api";
 import FormSelect from "./FormSelect";
-import { HttpStatusCode } from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import { format } from "date-fns";
 
-function ModalEvents_General({ eventData, readOnly }) {
+function ModalEventsGeneral({
+  register,
+  errors,
+  setValue,
+  occurrenceDate,
+  setOccurrenceDate,
+  scope,
+  setScope,
+  entity,
+  setEntity,
+  type,
+  setType,
+  classification,
+  setClassification,
+  synthesis,
+  setSynthesis,
+  cause,
+  setCause,
+  eventData,
+  readOnly,
+}) {
   const { authTokens } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
   const [classifications, setClassifications] = useState([]);
   const [entities, setEntities] = useState([]);
   const [types, setTypes] = useState([]);
-  const [occurrenceDate, setOccurrenceDate] = useState(new Date());
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState(false);
-
-  registerLocale("es", es);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    setValue,
-  } = useForm();
-
-  const scope_choices = [
+  const [scopeChoices, setScopeChoices] = useState([
     {
       id: "relevant",
       description: "Relevante",
@@ -50,7 +44,10 @@ function ModalEvents_General({ eventData, readOnly }) {
       id: "corruption",
       description: "Corrupción",
     },
-  ];
+  ]);
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState(false);
+
+  registerLocale("es", es);
 
   const handleDatePicker = (e) => {
     e.preventDefault();
@@ -96,7 +93,10 @@ function ModalEvents_General({ eventData, readOnly }) {
             authTokens,
             nextPage
           );
-          const newEntities = response.data.results;
+          const newEntities = response.data.results.map((entity) => ({
+            id: entity.id_entity,
+            description: entity.description,
+          }));
           allEntities = [...allEntities, ...newEntities];
 
           if (response.data.next) {
@@ -141,86 +141,11 @@ function ModalEvents_General({ eventData, readOnly }) {
     [authTokens]
   );
 
-  /*const handleAddEntity = async (data) => {
-    try {
-      const response = await EntityService.addEntity(authTokens, data);
-      if (response.status === HttpStatusCode.Created) {
-        showSuccessToast("Entidad agregada");
-        onRefresh();
-        handleCloseModal();
-      } else {
-        showErrorToast("Error al agregar, código existente");
-      }
-    } catch (error) {
-      if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-          handleCloseModal();
-        } else if (status === HttpStatusCode.BadRequest) {
-          showErrorToast("Error al agregar, código existente");
-        } else {
-          showErrorToast("Error al agregar entidad");
-        }
-      }
-    }
-  };*/
-
-  /*const handleUpdateEntity = async (entityId, data) => {
-    try {
-      const response = await EntityService.updateEntity(
-        authTokens,
-        entityId,
-        data
-      );
-
-      if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Entidad actualizada");
-        onRefresh();
-        handleCloseModal();
-      } else {
-        showErrorToast("Error al actualizar entidad");
-      }
-    } catch (error) {
-      if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-          handleCloseModal();
-        } else if (status === HttpStatusCode.BadRequest) {
-          showErrorToast("Error al actualizar, código existente");
-        } else {
-          showErrorToast("Error al actualizar entidad");
-        }
-      }
-    }
-  };*/
-
-  /*const handleSaveEntity = async (data) => {
-    setIsLoading(true);
-    if (eventData && eventData.id_entity) {
-      await handleUpdateEntity(eventData.id_entity, data);
-    } else {
-      await handleAddEntity(data);
-    }
-    setIsLoading(false);
-  };*/
-
-  /*const handleFormSubmit = (data) => {
-    setFormSubmitted(true);
-    handleSubmit(handleSaveEntity)(data);
-  };*/
-
   useEffect(() => {
     loadActiveClassifications(1);
     loadActiveEntities(1);
     loadActiveTypes(1);
-  }, [
-    loadActiveClassifications,
-    loadActiveEntities,
-    loadActiveTypes,
-    eventData,
-  ]);
+  }, [loadActiveClassifications, loadActiveEntities, loadActiveTypes]);
 
   return (
     <div>
@@ -231,9 +156,11 @@ function ModalEvents_General({ eventData, readOnly }) {
               <div className="form-floating me-0 me-md-2">
                 <input
                   type="text"
+                  name="occurrence_date"
                   className="form-control"
+                  {...register("occurrence_date", { required: true })}
                   id="floatingInput"
-                  value={format(occurrenceDate, "dd-MM-yyyy")}
+                  value={format(occurrenceDate, "yyyy-MM-dd")}
                   onClick={handleDatePicker}
                 />
                 <label htmlFor="floatingInput">Fecha de ocurrencia*</label>
@@ -242,10 +169,10 @@ function ModalEvents_General({ eventData, readOnly }) {
 
             <div className="col-md">
               <FormSelect
-                data={scope_choices}
+                data={scopeChoices}
                 name={"Alcance*"}
                 message={"Seleccione un alcance"}
-                onChange={() => console.log("alcance cambiado")}
+                onChange={(value) => setScope(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
@@ -278,12 +205,12 @@ function ModalEvents_General({ eventData, readOnly }) {
                 data={entities}
                 name={"Entidad*"}
                 message={"Seleccione una entidad"}
-                onChange={() => console.log("entidad cambiada")}
+                onChange={(value) => setEntity(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
-                registerName={"entities"}
-                defaultValue={eventData ? eventData.entities : ""}
+                registerName={"entity"}
+                defaultValue={eventData ? eventData.entity : ""}
                 disabled={readOnly}
               />
             </div>
@@ -292,12 +219,12 @@ function ModalEvents_General({ eventData, readOnly }) {
                 data={types}
                 name={"Tipo de hecho*"}
                 message={"Seleccione un tipo de hecho"}
-                onChange={() => console.log("tipo cambiado")}
+                onChange={(value) => setType(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
-                registerName={"types"}
-                defaultValue={eventData ? eventData.types : ""}
+                registerName={"event_type"}
+                defaultValue={eventData ? eventData.event_type : ""}
                 disabled={readOnly}
               />
             </div>
@@ -309,12 +236,12 @@ function ModalEvents_General({ eventData, readOnly }) {
                 data={classifications}
                 name={"Clasificación*"}
                 message={"Seleccione una clasificación"}
-                onChange={() => console.log("clasificación cambiada")}
+                onChange={(value) => setClassification(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
-                registerName={"classifications"}
-                defaultValue={eventData ? eventData.classifications : ""}
+                registerName={"classification"}
+                defaultValue={eventData ? eventData.classification : ""}
                 disabled={readOnly}
               />
             </div>
@@ -325,9 +252,12 @@ function ModalEvents_General({ eventData, readOnly }) {
               <textarea
                 type="text"
                 name="synthesis"
-                className="form-control"
+                className={`form-control ${
+                  errors.synthesis ? "is-invalid" : ""
+                }`}
                 defaultValue={eventData ? eventData.synthesis : ""}
-                {...register("synthesis", { required: false })}
+                {...register("synthesis", { required: true })}
+                onChange={(e) => setSynthesis(e.target.value)}
                 disabled={readOnly}
               />
               <label htmlFor="floatingInput">Síntesis*</label>
@@ -339,9 +269,10 @@ function ModalEvents_General({ eventData, readOnly }) {
               <textarea
                 type="text"
                 name="cause"
-                className="form-control"
+                className={`form-control ${errors.cause ? "is-invalid" : ""}`}
                 defaultValue={eventData ? eventData.cause : ""}
                 {...register("cause", { required: false })}
+                onChange={(e) => setCause(e.target.value)}
                 disabled={readOnly}
               />
               <label htmlFor="floatingInput">Causa</label>
@@ -353,4 +284,4 @@ function ModalEvents_General({ eventData, readOnly }) {
   );
 }
 
-export default ModalEvents_General;
+export default ModalEventsGeneral;

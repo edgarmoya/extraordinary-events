@@ -7,7 +7,7 @@ function CardAttachment({ id, imageUrl, onDelete }) {
     <article>
       <div
         className="card overflow-hidden position-relative mt-2"
-        style={{ maxHeight: 120 }}
+        style={{ maxHeight: 130 }}
         onClick={() => setIsFullScreen(!isFullScreen)}
       >
         {/* Image */}

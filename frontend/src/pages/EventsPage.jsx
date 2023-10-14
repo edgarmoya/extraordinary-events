@@ -165,13 +165,16 @@ function EventsPage() {
   return (
     <Layout pageTitle="Hechos extraordinarios">
       <div className="container-fluid">
-        {/* Accions */}
+        {/* Actions */}
         <TopBar
           searchMessage={"Buscar hecho ..."}
           watchButton={true}
           pathAll={Paths.EVENTS}
+          textPathAll={"Mostrar todos"}
           pathActive={Paths.OPEN_EVENTS}
+          textPathActive={"Mostrar abiertos"}
           pathInactive={Paths.CLOSE_EVENTS}
+          textPathInactive={"Mostrar cerrados"}
           onAdd={() => setModalAddIsOpen(true)}
           onUpdate={() => {
             if (selectedRow) {

@@ -45,13 +45,11 @@ function ModalEvents_Measure() {
                 errors.measure ? "is-invalid" : ""
               }`}
               {...register("measure", { required: true })}
-              aria-describedby="button-addon2"
               autoFocus={true}
             />
             <button
               className="input-group-text"
               type="button"
-              id="button-addon2"
               onClick={handleSubmit(handleFormSubmit)}
             >
               Agregar

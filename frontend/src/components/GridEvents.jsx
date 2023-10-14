@@ -19,6 +19,7 @@ function GridEvents({ data, onRowSelected }) {
             <th scope="col">Tipo de hecho</th>
             <th scope="col">Estado</th>
             <th scope="col">Creado por</th>
+            <th scope="col">Cerrado por</th>
           </tr>
         </thead>
         <tbody>
@@ -44,6 +45,13 @@ function GridEvents({ data, onRowSelected }) {
                 )}
               </td>
               <td>{event.created_by_username}</td>
+              <td>
+                {event.closed_by === null ? (
+                  <div className="d-flex justify-content-center">-</div>
+                ) : (
+                  event.closed_by
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
