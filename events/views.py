@@ -1,9 +1,10 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import EventSerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Event
 from .permissions import HasPermissionForAction
+from rest_framework.response import Response
 
 
 class EventPagination(PageNumberPagination):
@@ -26,6 +27,14 @@ class EventView(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+    
+    def destroy(self, request, *args, **kwargs):
+        event = self.get_object()
+        if event.status == 'closed':
+            return Response({'error': 'No se puede eliminar un hecho con estado "cerrado".'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        event.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class OpenEventView(viewsets.ModelViewSet):
@@ -45,6 +54,14 @@ class OpenEventView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
+    def destroy(self, request, *args, **kwargs):
+        event = self.get_object()
+        if event.status == 'closed':
+            return Response({'error': 'No se puede eliminar un hecho con estado "cerrado".'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        event.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class ClosedEventView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, HasPermissionForAction]
@@ -62,3 +79,11 @@ class ClosedEventView(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        event = self.get_object()
+        if event.status == 'closed':
+            return Response({'error': 'No se puede eliminar un hecho con estado "cerrado".'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        event.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

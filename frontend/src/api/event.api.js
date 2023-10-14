@@ -31,7 +31,7 @@ const EventService = {
   },
 
   getCloseEvents: async (authTokens, page, searchTerm) => {
-    return eventsAPI.get(`/close-events/`, {
+    return eventsAPI.get(`/closed-events/`, {
       headers: createHeaders(authTokens),
       params: {
         page: page,
@@ -58,15 +58,15 @@ const EventService = {
     });
   },
 
-  /*activateEvent: async (authTokens, id, activated) => {
+  closeEvent: async (authTokens, id, user, date) => {
     return eventsAPI.patch(
       `/events/${id}/`,
-      { is_active: !activated },
+      { closed_by: user, closed_date: date, status: "closed" },
       {
         headers: createHeaders(authTokens),
       }
     );
-  },*/
+  },
 };
 
 export default EventService;

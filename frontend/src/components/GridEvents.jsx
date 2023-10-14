@@ -47,9 +47,9 @@ function GridEvents({ data, onRowSelected }) {
               <td>{event.created_by_username}</td>
               <td>
                 {event.closed_by === null ? (
-                  <div className="d-flex justify-content-center">-</div>
+                  <div className="d-flex justify-content-center"> -</div>
                 ) : (
-                  event.closed_by
+                  event.closed_by_username
                 )}
               </td>
             </tr>

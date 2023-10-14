@@ -6,7 +6,7 @@ import Paths from "../routes/Paths";
 import EventService from "../api/event.api";
 import Pagination from "../components/Pagination";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
-import ModalConfirmActivate from "../components/ModalConfirmActivate";
+import ModalConfirmClose from "../components/ModalConfirmClose";
 import GridEvents from "../components/GridEvents";
 import TopBar from "../components/TopBar";
 import ModalEvents from "../components/ModalEvents";
@@ -14,7 +14,7 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 
 function EventsPage() {
-  const { authTokens } = useContext(AuthContext);
+  const { authTokens, user } = useContext(AuthContext);
   const location = useLocation();
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +24,7 @@ function EventsPage() {
   const [modalAddIsOpen, setModalAddIsOpen] = useState(false);
   const [modalUpdateIsOpen, setModalUpdateIsOpen] = useState(false);
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
-  const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
+  const [modalCloseIsOpen, setModalCloseIsOpen] = useState(false);
   const [modalWatchIsOpen, setModalWatchIsOpen] = useState(false);
 
   //* Función para cargar todos los hechos
@@ -89,7 +89,7 @@ function EventsPage() {
   };
 
   //* Función para eliminar un hecho
-  const handleDeleteEntity = async () => {
+  const handleDeleteEvent = async () => {
     try {
       const response = await EventService.deleteEvent(
         authTokens,
@@ -109,7 +109,7 @@ function EventsPage() {
           showErrorToast("No tiene permiso para realizar esta acción");
         } else if (status === HttpStatusCode.InternalServerError) {
           showErrorToast(
-            "El elemento no puede ser eliminado, se encuentra en uso"
+            "No se puede eliminar un hecho cerrado anteriormente."
           );
         } else {
           showErrorToast("Error al eliminar hecho");
@@ -117,25 +117,22 @@ function EventsPage() {
       }
     }
   };
-  /*
-  //* Función para activar/inactivar una entidad
-  const handleActivateEntity = async () => {
+
+  //* Función para cerrar un hecho
+  const handleCloseEvent = async () => {
     try {
-      const response = await EventService.activateEntity(
+      const response = await EventService.closeEvent(
         authTokens,
-        selectedRow.id_entity,
-        selectedRow.is_active
+        selectedRow.id,
+        user.user_id,
+        new Date()
       );
       if (response.status === HttpStatusCode.Ok) {
-        if (selectedRow.is_active) {
-          showSuccessToast("Entidad inactivada");
-        } else {
-          showSuccessToast("Entidad activada");
-        }
+        showSuccessToast("Hecho cerrado");
         loadEvents();
         clearSelectedRow();
       } else {
-        showErrorToast("Error al activar o inactivar entidad");
+        showErrorToast("Error al cerrar el hecho seleccionado");
       }
     } catch (error) {
       if (error.response) {
@@ -143,15 +140,11 @@ function EventsPage() {
         if (status === HttpStatusCode.Forbidden) {
           showErrorToast("No tiene permiso para realizar esta acción");
         } else {
-          if (selectedRow.is_active) {
-            showErrorToast("Error al inactivar entidad");
-          } else {
-            showErrorToast("Error al activar entidad");
-          }
+          showErrorToast("Error al cerrar el hecho seleccionado");
         }
       }
     }
-  };*/
+  };
 
   //* Función para limpiar la fila seleccionada
   const clearSelectedRow = () => {
@@ -192,11 +185,9 @@ function EventsPage() {
           }}
           onActivate={() => {
             if (selectedRow) {
-              setModalActivateIsOpen(true);
+              setModalCloseIsOpen(true);
             } else {
-              showErrorToast(
-                "Seleccione el hecho que desea activar o inactivar"
-              );
+              showErrorToast("Seleccione el hecho que desea cerrar");
             }
           }}
           onWatch={() => {
@@ -273,9 +264,25 @@ function EventsPage() {
         onClose={() => {
           setModalDeleteIsOpen(false);
         }}
-        onDelete={handleDeleteEntity}
-        message={`Está a punto de eliminar la entidad "${
-          selectedRow && selectedRow.description
+        onDelete={handleDeleteEvent}
+        message={`Está a punto de eliminar el hecho extraordinario con fecha "${
+          selectedRow && selectedRow.occurrence_date
+        }" perteneciente a la entidad "${
+          selectedRow && selectedRow.entity_description
+        }".`}
+      />
+
+      {/* Modal para cerrar un hecho */}
+      <ModalConfirmClose
+        isOpen={modalCloseIsOpen}
+        onClose={() => {
+          setModalCloseIsOpen(false);
+        }}
+        onAction={handleCloseEvent}
+        message={`Está a punto de cerrar el hecho extraordinario con fecha "${
+          selectedRow && selectedRow.occurrence_date
+        }" perteneciente a la entidad "${
+          selectedRow && selectedRow.entity_description
         }".`}
       />
     </Layout>
