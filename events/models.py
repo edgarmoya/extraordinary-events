@@ -41,8 +41,8 @@ class Event(models.Model):
 
 
 class Measure(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name='Hecho')
     description = models.TextField(blank=False, verbose_name='Medida')
-    event = models.ForeignKey(Event, on_delete=models.PROTECT, verbose_name='Hecho')
 
     class Meta:
         verbose_name = 'Medida'
@@ -53,7 +53,7 @@ class Measure(models.Model):
 
 
 class Attachment(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.PROTECT, verbose_name='Hecho')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name='Hecho')
     image = models.ImageField(upload_to='attachments/', verbose_name='Imagen')
 
     class Meta:

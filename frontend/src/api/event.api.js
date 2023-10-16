@@ -67,6 +67,44 @@ const EventService = {
       }
     );
   },
+
+  getMeasures: async (authTokens, id) => {
+    return eventsAPI.get(`/measures/`, {
+      headers: createHeaders(authTokens),
+      params: {
+        event_id: id,
+      },
+    });
+  },
+
+  addMeasure: async (authTokens, measure) => {
+    return eventsAPI.post(`/measures/`, measure, {
+      headers: createHeaders(authTokens),
+    });
+  },
+
+  getAttachments: async (authTokens, id) => {
+    return eventsAPI.get(`/attachments/`, {
+      headers: createHeaders(authTokens),
+      params: {
+        event_id: id,
+      },
+    });
+  },
+
+  addAttachment: async (authTokens, attachment) => {
+    try {
+      const response = await eventsAPI.post("/attachments/", attachment, {
+        headers: {
+          ...createHeaders(authTokens),
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default EventService;

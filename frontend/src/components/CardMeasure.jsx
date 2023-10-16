@@ -1,6 +1,6 @@
 import React from "react";
 
-function CardMeasure({ id, number, description, onDelete }) {
+function CardMeasure({ id, number, description, onDelete, readOnly }) {
   return (
     <article>
       <div className="card card-measure mt-2">
@@ -12,7 +12,7 @@ function CardMeasure({ id, number, description, onDelete }) {
               <span>{number}.</span>
             </div>
             {/* Vertical Separator */}
-            <span class="vr mx-1 text-body"></span>
+            <span className="vr mx-1 text-body"></span>
             {/* Description */}
             <div className="d-flex align-items-center p-1">
               <span>{description}</span>
@@ -25,7 +25,7 @@ function CardMeasure({ id, number, description, onDelete }) {
               name="deleteBtn"
               type="button"
               onClick={() => onDelete(id)}
-              className="btn btn-close p-2"
+              className={`btn btn-close p-2 ${readOnly ? "disabled" : ""}`}
             ></button>
           </div>
         </div>

@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import CardAttachment from "./CardAttachment";
+import AuthContext from "../contexts/AuthContext";
+import EventService from "../api/event.api";
 import { useForm } from "react-hook-form";
 
-function ModalEvents_Attachment() {
-  const [attachments, setAttachments] = useState([]);
+function ModalEventsAttachment({
+  attachments,
+  setAttachments,
+  eventData,
+  readOnly,
+}) {
+  const { authTokens } = useContext(AuthContext);
   const [lastId, setLastId] = useState(0);
   const {
     register,
@@ -18,12 +25,25 @@ function ModalEvents_Attachment() {
     const newAttachment = {
       id: lastId + 1,
       url: url,
+      image: file,
     };
     setAttachments([...attachments, newAttachment]);
-    console.log(attachments);
     setLastId(lastId + 1);
     reset();
   };
+
+  //* Función para cargar los anexos
+  const loadAttachments = useCallback(async () => {
+    try {
+      const response = await EventService.getAttachments(
+        authTokens,
+        eventData && eventData.id
+      );
+      setAttachments(response.data.results);
+    } catch (error) {
+      console.error("Error fetching attachments: ", error);
+    }
+  }, [authTokens, eventData, setAttachments]);
 
   const handleFormSubmit = (data) => {
     handleSaveAttachment(data);
@@ -35,6 +55,12 @@ function ModalEvents_Attachment() {
     );
     setAttachments(updatedAttachments);
   };
+
+  useEffect(() => {
+    if (eventData && eventData.id) {
+      loadAttachments();
+    }
+  }, [eventData, loadAttachments]);
 
   return (
     <section>
@@ -51,12 +77,14 @@ function ModalEvents_Attachment() {
             {...register("attachment", { required: true })}
             autoFocus={true}
             accept="image/*"
+            disabled={readOnly}
           />
           <button
             type="button"
             className="input-group-text"
             htmlFor="inputGroupFile"
             onClick={handleSubmit(handleFormSubmit)}
+            disabled={readOnly}
           >
             Agregar
           </button>
@@ -73,16 +101,23 @@ function ModalEvents_Attachment() {
             </div>
           ) : (
             <div className="row d-flex align-content-center">
-              {attachments.map((attachment) => (
-                <div
-                  key={attachment.id}
-                  className="d-flex col-lg-4 col-md-6 col-sm-12"
-                >
-                  <CardAttachment
-                    id={attachment.id}
-                    imageUrl={attachment.url}
-                    onDelete={handleDeleteAttachment}
-                  />
+              {attachments.map((attachment, index) => (
+                <div key={index} className="d-flex col-lg-4 col-md-6 col-sm-12">
+                  {attachment.url ? (
+                    <CardAttachment
+                      id={attachment.id}
+                      imageUrl={attachment.url}
+                      onDelete={handleDeleteAttachment}
+                      readOnly={readOnly}
+                    />
+                  ) : (
+                    <CardAttachment
+                      id={attachment.id}
+                      imageUrl={attachment.image}
+                      onDelete={handleDeleteAttachment}
+                      readOnly={readOnly}
+                    />
+                  )}
                 </div>
               ))}
             </div>
@@ -93,4 +128,4 @@ function ModalEvents_Attachment() {
   );
 }
 
-export default ModalEvents_Attachment;
+export default ModalEventsAttachment;

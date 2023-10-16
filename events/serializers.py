@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Event
+from .models import Event, Measure, Attachment
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -12,4 +12,16 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = fields = '__all__'
+        fields = '__all__'
+
+
+class MeasureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Measure
+        fields = '__all__'
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attachment
+        fields = '__all__'

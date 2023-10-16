@@ -108,9 +108,7 @@ function EventsPage() {
         if (status === HttpStatusCode.Forbidden) {
           showErrorToast("No tiene permiso para realizar esta acción");
         } else if (status === HttpStatusCode.InternalServerError) {
-          showErrorToast(
-            "No se puede eliminar un hecho cerrado anteriormente."
-          );
+          showErrorToast("No se puede eliminar un hecho cerrado anteriormente");
         } else {
           showErrorToast("Error al eliminar hecho");
         }
@@ -171,7 +169,13 @@ function EventsPage() {
           onAdd={() => setModalAddIsOpen(true)}
           onUpdate={() => {
             if (selectedRow) {
-              setModalUpdateIsOpen(true);
+              if (selectedRow.status === "closed") {
+                showErrorToast(
+                  "No puede ser modificado un hecho cerrado anteriormente"
+                );
+              } else {
+                setModalUpdateIsOpen(true);
+              }
             } else {
               showErrorToast("Seleccione el hecho que desea modificar");
             }
@@ -238,24 +242,24 @@ function EventsPage() {
       <ModalEvents
         isOpen={modalUpdateIsOpen}
         onClose={() => setModalUpdateIsOpen(false)}
-        title={"Modificar hecho"}
+        title={"Modificar hecho extraordinario"}
         size={"modal-lg"}
         onRefresh={() => {
           loadEvents();
           clearSelectedRow();
         }}
-        entityData={selectedRow}
+        eventData={selectedRow}
       />
 
       {/* Modal para visualizar un hecho */}
       <ModalEvents
         isOpen={modalWatchIsOpen}
         onClose={() => setModalWatchIsOpen(false)}
-        title={"Ver entidad"}
+        title={"Ver hecho extraordinario"}
         size={"modal-lg"}
         onRefresh={() => clearSelectedRow()}
         readOnly={true}
-        entityData={selectedRow}
+        eventData={selectedRow}
       />
 
       {/* Modal para eliminar un hecho */}

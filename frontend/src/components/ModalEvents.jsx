@@ -1,4 +1,4 @@
-import { React, useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Modal from "./Modal";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import AuthContext from "../contexts/AuthContext";
@@ -22,12 +22,9 @@ function ModalEvents({
   const { authTokens, user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [occurrenceDate, setOccurrenceDate] = useState(new Date());
-  const [scope, setScope] = useState("");
-  const [entity, setEntity] = useState("");
-  const [type, setType] = useState("");
-  const [classification, setClassification] = useState("");
-  const [synthesis, setSynthesis] = useState("");
-  const [cause, setCause] = useState("");
+
+  const [measures, setMeasures] = useState([]);
+  const [attachments, setAttachments] = useState([]);
 
   const {
     register,
@@ -37,8 +34,23 @@ function ModalEvents({
     reset,
   } = useForm();
 
+  const handleEventDateChange = () => {
+    const eventDataValue = eventData
+      ? new Date(eventData.occurrence_date)
+      : new Date();
+
+    const timezoneOffset = eventDataValue.getTimezoneOffset();
+    eventDataValue.setMinutes(eventDataValue.getMinutes() + timezoneOffset);
+
+    if (eventDataValue.getTime() !== occurrenceDate.getTime()) {
+      setOccurrenceDate(eventDataValue);
+    }
+  };
+
   const handleCloseModal = () => {
     reset();
+    setMeasures([]);
+    setAttachments([]);
     onClose();
   };
 
@@ -46,6 +58,24 @@ function ModalEvents({
     try {
       const response = await EventService.addEvent(authTokens, data);
       if (response.status === HttpStatusCode.Created) {
+        // Agregar medidas
+        for (const measure of measures) {
+          const measureData = {
+            event: response.data.id,
+            description: measure.description,
+          };
+          await handleAddMeasure(measureData);
+        }
+
+        // Agregar anexos
+        for (const attachment of attachments) {
+          const attachmentData = {
+            event: response.data.id,
+            image: attachment.image,
+          };
+          await handleAddAttachment(attachmentData);
+        }
+
         showSuccessToast("Hecho extraordinario agregado");
         onRefresh();
         handleCloseModal();
@@ -62,6 +92,42 @@ function ModalEvents({
           showErrorToast("Error al agregar, compruebe los campos");
         } else {
           showErrorToast("Error al agregar hecho");
+        }
+      }
+    }
+  };
+
+  const handleAddMeasure = async (data) => {
+    try {
+      const response = await EventService.addMeasure(authTokens, data);
+      return response.status;
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          throw Error("No tiene permiso para realizar esta acción");
+        } else if (status === HttpStatusCode.BadRequest) {
+          throw Error("Error al agregar, compruebe los campos");
+        } else {
+          throw Error("Error al agregar medidas");
+        }
+      }
+    }
+  };
+
+  const handleAddAttachment = async (data) => {
+    try {
+      const response = await EventService.addAttachment(authTokens, data);
+      return response.status;
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          throw Error("No tiene permiso para realizar esta acción");
+        } else if (status === HttpStatusCode.BadRequest) {
+          throw Error("Error al agregar, compruebe los campos");
+        } else {
+          throw Error("Error al agregar medidas");
         }
       }
     }
@@ -116,6 +182,10 @@ function ModalEvents({
     handleSaveEvent(modifiedData);
   };
 
+  useEffect(() => {
+    handleEventDateChange();
+  }, [isOpen, eventData]);
+
   return (
     <div>
       <Modal
@@ -129,7 +199,7 @@ function ModalEvents({
             <ul className="nav nav-tabs nav-fill justify-content-center">
               <li className="nav-item">
                 <button
-                  class="nav-link active"
+                  className="nav-link active"
                   id="general-tab"
                   data-bs-toggle="tab"
                   data-bs-target="#general-tab-pane"
@@ -143,7 +213,7 @@ function ModalEvents({
               </li>
               <li className="nav-item">
                 <button
-                  class="nav-link"
+                  className="nav-link"
                   id="measure-tab"
                   data-bs-toggle="tab"
                   data-bs-target="#measure-tab-pane"
@@ -157,7 +227,7 @@ function ModalEvents({
               </li>
               <li className="nav-item">
                 <button
-                  class="nav-link"
+                  className="nav-link"
                   id="attachment-tab"
                   data-bs-toggle="tab"
                   data-bs-target="#attachment-tab-pane"
@@ -179,23 +249,13 @@ function ModalEvents({
                 tabIndex="0"
               >
                 <ModalEventsGeneral
+                  eventData={eventData}
                   register={register}
                   errors={errors}
                   setValue={setValue}
                   occurrenceDate={occurrenceDate}
                   setOccurrenceDate={setOccurrenceDate}
-                  scope={scope}
-                  setScope={setScope}
-                  entity={entity}
-                  setEntity={setEntity}
-                  type={type}
-                  setType={setType}
-                  classification={classification}
-                  setClassification={setClassification}
-                  synthesis={synthesis}
-                  setSynthesis={setSynthesis}
-                  cause={cause}
-                  setCause={setCause}
+                  readOnly={readOnly}
                 />
               </div>
               <div
@@ -205,7 +265,12 @@ function ModalEvents({
                 aria-labelledby="measure-tab"
                 tabIndex="0"
               >
-                <ModalEventsMeasure />
+                <ModalEventsMeasure
+                  measures={measures}
+                  setMeasures={setMeasures}
+                  eventData={eventData}
+                  readOnly={readOnly}
+                />
               </div>
               <div
                 className="tab-pane fade"
@@ -214,7 +279,12 @@ function ModalEvents({
                 aria-labelledby="attachment-tab"
                 tabIndex="0"
               >
-                <ModalEventsAttachment />
+                <ModalEventsAttachment
+                  attachments={attachments}
+                  setAttachments={setAttachments}
+                  eventData={eventData}
+                  readOnly={readOnly}
+                />
               </div>
             </div>
           </div>

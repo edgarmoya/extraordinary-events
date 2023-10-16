@@ -16,18 +16,6 @@ function ModalEventsGeneral({
   setValue,
   occurrenceDate,
   setOccurrenceDate,
-  scope,
-  setScope,
-  entity,
-  setEntity,
-  type,
-  setType,
-  classification,
-  setClassification,
-  synthesis,
-  setSynthesis,
-  cause,
-  setCause,
   eventData,
   readOnly,
 }) {
@@ -35,7 +23,7 @@ function ModalEventsGeneral({
   const [classifications, setClassifications] = useState([]);
   const [entities, setEntities] = useState([]);
   const [types, setTypes] = useState([]);
-  const [scopeChoices, setScopeChoices] = useState([
+  const [scopeChoices] = useState([
     {
       id: "relevant",
       description: "Relevante",
@@ -162,6 +150,7 @@ function ModalEventsGeneral({
                   id="floatingInput"
                   value={format(occurrenceDate, "yyyy-MM-dd")}
                   onClick={handleDatePicker}
+                  disabled={readOnly}
                 />
                 <label htmlFor="floatingInput">Fecha de ocurrencia*</label>
               </div>
@@ -172,7 +161,7 @@ function ModalEventsGeneral({
                 data={scopeChoices}
                 name={"Alcance*"}
                 message={"Seleccione un alcance"}
-                onChange={(value) => setScope(value)}
+                onChange={(value) => console.log(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
@@ -205,7 +194,7 @@ function ModalEventsGeneral({
                 data={entities}
                 name={"Entidad*"}
                 message={"Seleccione una entidad"}
-                onChange={(value) => setEntity(value)}
+                onChange={(value) => console.log(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
@@ -219,7 +208,7 @@ function ModalEventsGeneral({
                 data={types}
                 name={"Tipo de hecho*"}
                 message={"Seleccione un tipo de hecho"}
-                onChange={(value) => setType(value)}
+                onChange={(value) => console.log(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
@@ -236,7 +225,7 @@ function ModalEventsGeneral({
                 data={classifications}
                 name={"Clasificación*"}
                 message={"Seleccione una clasificación"}
-                onChange={(value) => setClassification(value)}
+                onChange={(value) => console.log(value)}
                 errors={errors}
                 register={register}
                 setValue={setValue}
@@ -257,7 +246,6 @@ function ModalEventsGeneral({
                 }`}
                 defaultValue={eventData ? eventData.synthesis : ""}
                 {...register("synthesis", { required: true })}
-                onChange={(e) => setSynthesis(e.target.value)}
                 disabled={readOnly}
               />
               <label htmlFor="floatingInput">Síntesis*</label>
@@ -272,7 +260,6 @@ function ModalEventsGeneral({
                 className={`form-control ${errors.cause ? "is-invalid" : ""}`}
                 defaultValue={eventData ? eventData.cause : ""}
                 {...register("cause", { required: false })}
-                onChange={(e) => setCause(e.target.value)}
                 disabled={readOnly}
               />
               <label htmlFor="floatingInput">Causa</label>

@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
-from .serializers import EventSerializer
+from .serializers import EventSerializer, MeasureSerializer, AttachmentSerializer
 from rest_framework.pagination import PageNumberPagination
-from .models import Event
+from .models import Event, Measure, Attachment
 from .permissions import HasPermissionForAction
 from rest_framework.response import Response
 
@@ -23,7 +23,7 @@ class EventView(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 synthesis__icontains=search_term
             )
-        return queryset.order_by('-occurrence_date')
+        return queryset.order_by('-occurrence_date', '-created_date')
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -49,7 +49,7 @@ class OpenEventView(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 synthesis__icontains=search_term
             )
-        return queryset.order_by('-occurrence_date')
+        return queryset.order_by('-occurrence_date', '-created_date')
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -75,7 +75,7 @@ class ClosedEventView(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 synthesis__icontains=search_term
             )
-        return queryset.order_by('-occurrence_date')
+        return queryset.order_by('-occurrence_date', '-created_date')
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -87,3 +87,23 @@ class ClosedEventView(viewsets.ModelViewSet):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class MeasureView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = MeasureSerializer
+
+    def get_queryset(self):
+        event_id = self.request.query_params.get('event_id', '')
+        queryset = Measure.objects.filter(event=event_id)
+        return queryset
+
+
+class AttachmentView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = AttachmentSerializer
+
+    def get_queryset(self):
+        event_id = self.request.query_params.get('event_id', '')
+        queryset = Attachment.objects.filter(event=event_id)
+        return queryset
