@@ -54,6 +54,7 @@ function ModalEvents({
     onClose();
   };
 
+  //* Función para agregar hechos extraordinarios
   const handleAddEvent = async (data) => {
     try {
       const response = await EventService.addEvent(authTokens, data);
@@ -97,6 +98,7 @@ function ModalEvents({
     }
   };
 
+  //* Función para agregar medida
   const handleAddMeasure = async (data) => {
     try {
       const response = await EventService.addMeasure(authTokens, data);
@@ -115,6 +117,71 @@ function ModalEvents({
     }
   };
 
+  //* Función para eliminar medida
+  const handleDeleteMeasure = async (measureId) => {
+    try {
+      const response = await EventService.deleteMeasure(authTokens, measureId);
+
+      if (response.status === HttpStatusCode.NoContent) {
+        return response.status;
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          throw Error("No tiene permiso para realizar esta acción");
+        } else if (status === HttpStatusCode.BadRequest) {
+          throw Error("Error al eliminar, compruebe los campos");
+        } else {
+          throw Error("Error al eliminar medidas");
+        }
+      }
+    }
+  };
+
+  //* Función para modificar las medidas
+  const handleAddDeleteMeasures = async (eventId, measures) => {
+    // Obtener medidas existentes asociadas al evento
+    const existingMeasures = await EventService.getMeasures(
+      authTokens,
+      eventId
+    );
+
+    // Identificar medidas a agregar y eliminar
+    const measuresToAdd = [];
+    const measuresToDelete = [];
+
+    // Identificar medidas existentes a editar y eliminar
+    for (const existingMeasure of existingMeasures.data.results) {
+      const matchingMeasure = measures.find((m) => m.id === existingMeasure.id);
+
+      if (!matchingMeasure) {
+        // La medida no se encuentra en las medidas nuevas, entonces agregar a las medidas a eliminar
+        measuresToDelete.push(existingMeasure.id);
+      }
+    }
+
+    // Identificar medidas nuevas a agregar
+    for (const measure of measures) {
+      if (!existingMeasures.data.results.some((m) => m.id === measure.id)) {
+        // La medida no existe en las medidas existentes, entonces agregar a las medidas a agregar
+        measuresToAdd.push({
+          event: eventId,
+          description: measure.description,
+        });
+      }
+    }
+
+    for (const measureToAdd of measuresToAdd) {
+      await handleAddMeasure(measureToAdd);
+    }
+
+    for (const measureIdToDelete of measuresToDelete) {
+      await handleDeleteMeasure(measureIdToDelete);
+    }
+  };
+
+  //* Función para agregar anexo
   const handleAddAttachment = async (data) => {
     try {
       const response = await EventService.addAttachment(authTokens, data);
@@ -133,21 +200,97 @@ function ModalEvents({
     }
   };
 
-  /*const handleUpdateEntity = async (entityId, data) => {
+  //* Función para eliminar anexo
+  const handleDeleteAttachment = async (attachId) => {
     try {
-      const response = await EntityService.updateEntity(
+      const response = await EventService.deleteAttachment(
         authTokens,
-        entityId,
+        attachId
+      );
+
+      if (response.status === HttpStatusCode.NoContent) {
+        return response.status;
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          throw Error("No tiene permiso para realizar esta acción");
+        } else if (status === HttpStatusCode.BadRequest) {
+          throw Error("Error al eliminar, compruebe los campos");
+        } else {
+          throw Error("Error al eliminar anexo");
+        }
+      }
+    }
+  };
+
+  //* Función para modificar los anexos
+  const handleAddDeleteAttachment = async (eventId, attachments) => {
+    // Obtener anexos existentes asociadas al evento
+    const existingAttachs = await EventService.getAttachments(
+      authTokens,
+      eventId
+    );
+
+    // Identificar anexos a agregar y eliminar
+    const attachsToAdd = [];
+    const attachsToDelete = [];
+
+    // Identificar anexos existentes a eliminar
+    for (const existingAttach of existingAttachs.data.results) {
+      const matchingAttach = attachments.find(
+        (m) => m.id === existingAttach.id
+      );
+
+      if (!matchingAttach) {
+        // El anexo no se encuentra en los nuevos, entonces agregar a los anexos a eliminar
+        attachsToDelete.push(existingAttach.id);
+      }
+    }
+
+    // Identificar anexos nuevos a agregar
+    for (const attach of attachments) {
+      if (!existingAttachs.data.results.some((m) => m.id === attach.id)) {
+        // El anexo no existe en los existentes, entonces agregar a los anexos a agregar
+        attachsToAdd.push({
+          id: attach.id,
+          event: eventId,
+          url: attach.url,
+          image: attach.image,
+        });
+      }
+    }
+
+    for (const attachToAdd of attachsToAdd) {
+      await handleAddAttachment(attachToAdd);
+    }
+
+    for (const attachIdToDelete of attachsToDelete) {
+      await handleDeleteAttachment(attachIdToDelete);
+    }
+  };
+
+  //* Función para actualizar un hecho extraordinario
+  const handleUpdateEvent = async (eventId, data) => {
+    try {
+      const response = await EventService.updateEvent(
+        authTokens,
+        eventId,
         data
       );
 
-      if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Entidad actualizada");
-        onRefresh();
-        handleCloseModal();
-      } else {
-        showErrorToast("Error al actualizar entidad");
+      if (response.status !== HttpStatusCode.Ok) {
+        showErrorToast("Error al actualizar hecho");
+        return;
       }
+
+      await handleAddDeleteMeasures(eventId, measures);
+      await handleAddDeleteAttachment(eventId, attachments);
+
+      showSuccessToast("Hecho extraordinario actualizado");
+      onRefresh();
+      handleCloseModal();
     } catch (error) {
       if (error.response) {
         const status = error.response.status;
@@ -157,16 +300,16 @@ function ModalEvents({
         } else if (status === HttpStatusCode.BadRequest) {
           showErrorToast("Error al actualizar, código existente");
         } else {
-          showErrorToast("Error al actualizar entidad");
+          showErrorToast("Error al actualizar hecho");
         }
       }
     }
-  };*/
+  };
 
   const handleSaveEvent = async (data) => {
     setIsLoading(true);
     if (eventData && eventData.id) {
-      // await handleUpdateEvent(eventData.id, data);
+      await handleUpdateEvent(eventData.id, data);
     } else {
       await handleAddEvent(data);
     }

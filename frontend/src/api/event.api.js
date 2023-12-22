@@ -68,6 +68,7 @@ const EventService = {
     );
   },
 
+  /* MEASURES */
   getMeasures: async (authTokens, id) => {
     return eventsAPI.get(`/measures/`, {
       headers: createHeaders(authTokens),
@@ -83,6 +84,13 @@ const EventService = {
     });
   },
 
+  deleteMeasure: async (authTokens, id) => {
+    return eventsAPI.delete(`/measures/${id}/`, {
+      headers: createHeaders(authTokens),
+    });
+  },
+
+  /* ATTACHMENTS */
   getAttachments: async (authTokens, id) => {
     return eventsAPI.get(`/attachments/`, {
       headers: createHeaders(authTokens),
@@ -104,6 +112,15 @@ const EventService = {
     } catch (error) {
       throw error;
     }
+  },
+
+  deleteAttachment: async (authTokens, id) => {
+    return eventsAPI.delete(`/attachments/${id}/`, {
+      headers: {
+        ...createHeaders(authTokens),
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 };
 

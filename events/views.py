@@ -98,6 +98,21 @@ class MeasureView(viewsets.ModelViewSet):
         queryset = Measure.objects.filter(event=event_id)
         return queryset
 
+    def get_object(self):
+        # Use the 'id' field as the primary key for retrieval
+        measure_id = self.kwargs.get('pk')
+        return Measure.objects.get(id=measure_id)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Measure.DoesNotExist:
+            return Response({'error': 'Measure not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class AttachmentView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, ]
@@ -107,3 +122,18 @@ class AttachmentView(viewsets.ModelViewSet):
         event_id = self.request.query_params.get('event_id', '')
         queryset = Attachment.objects.filter(event=event_id)
         return queryset
+    
+    def get_object(self):
+        # Use the 'id' field as the primary key for retrieval
+        attach_id = self.kwargs.get('pk')
+        return Attachment.objects.get(id=attach_id)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Attachment.DoesNotExist:
+            return Response({'error': 'Attachment not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
