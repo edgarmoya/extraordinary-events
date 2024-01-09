@@ -4,7 +4,7 @@ from entities.models import Entity
 from type_events.models import Type
 from users.models import CustomUser
 
-# Create your models here.
+
 class Event(models.Model):
     OPEN = 'open'
     CLOSED = 'closed'
