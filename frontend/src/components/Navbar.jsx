@@ -40,10 +40,10 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
 
   return (
     <React.Fragment>
-      <nav className="navbar bg-body-secondary">
+      <header className="navbar bg-body-secondary">
         <div className="container-fluid">
           <div className="col-auto">
-            {/* Toggle */}
+            {/* Sidebar Toggle */}
             <button
               id="toggleSidebarBtn"
               type="button"
@@ -69,11 +69,20 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
               {pageTitle}
             </a>
           </div>
-          <div className="col-auto me-2">
-            {/* User */}
+
+          {/* Theme Toggle */}
+          <ThemeToggle theme={theme} onSwitchTheme={onSwitchTheme} />
+
+          {/* Vertical Separator */}
+          <div className="d-none d-sm-flex justify-content-center align-items-center mx-2">
+            <div className="vr text-body"></div>
+          </div>
+
+          {/* User */}
+          <div className="col-auto">
             <div className="dropdown">
               <button
-                className="dropdown-toggle border-0 bg-body-secondary m-2"
+                className="dropdown-toggle border-0 bg-body-secondary mx-1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
@@ -117,9 +126,8 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
               </ul>
             </div>
           </div>
-          <ThemeToggle theme={theme} onSwitchTheme={onSwitchTheme} />
         </div>
-      </nav>
+      </header>
 
       {/* Modal para confirmar si desea cerrar sesión */}
       <ModalConfirmLogout

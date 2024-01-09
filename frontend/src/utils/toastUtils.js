@@ -15,7 +15,7 @@ export const showErrorToast = (message) => {
   toast.error(message, {
     position: "center-top",
     style: {
-      maxWidth: "450px",
+      maxWidth: "500px",
     },
   });
 };

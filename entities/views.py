@@ -3,8 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import EntitySerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Entity
-from django.db.models import F
-from locations.models import Municipality
+from .permissions import HasPermissionForAction
 
 # Create your views here.
 class EntityPagination(PageNumberPagination):
@@ -12,7 +11,7 @@ class EntityPagination(PageNumberPagination):
 
 
 class EntityView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = EntitySerializer
     pagination_class = EntityPagination
 
@@ -27,7 +26,7 @@ class EntityView(viewsets.ModelViewSet):
 
 
 class ActiveEntityView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = EntitySerializer
     pagination_class = EntityPagination
 
@@ -42,7 +41,7 @@ class ActiveEntityView(viewsets.ModelViewSet):
 
 
 class InactiveEntityView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, HasPermissionForAction]
     serializer_class = EntitySerializer
     pagination_class = EntityPagination
 

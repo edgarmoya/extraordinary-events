@@ -22,7 +22,7 @@ function FormSelect({
   }, [data, setValue, registerName, defaultValue]);
 
   return (
-    <div className={`form-floating ${className}`}>
+    <div className={`form-floating z-0 ${className}`}>
       <select
         name={registerName}
         onChangeCapture={(event) => {

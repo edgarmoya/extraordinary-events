@@ -3,46 +3,36 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Paths from "../routes/Paths";
 import AuthContext from "../contexts/AuthContext";
+import { useForm } from "react-hook-form";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { loginUser } = useContext(AuthContext);
 
-  const [formState, setFormState] = useState({ username: "", password: "" });
-  const { username, password } = formState;
-  const [usernameError, setUsernameError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+  const { loginUser } = useContext(AuthContext);
   const [showPwd, setShowPwd] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const handleChange = ({ target }) => {
-    setFormState({
-      ...formState,
-      [target.name]: target.value,
-    });
-    setUsernameError(username.trim() === "");
-    setPasswordError(password.trim() === "");
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm();
 
-  const handleBlur = () => {
-    setUsernameError(username.trim() === "");
-    setPasswordError(password.trim() === "");
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-
-    loginUser(username, password)
+  const handleLogin = (data) => {
+    loginUser(data.username, data.password)
       .then((data) => {
         navigate(`${Paths.HOME}`);
-        toast.success(`Bienvenido, ${formState.username}`);
+        toast.success(`Bienvenido, ${getValues("username")}`);
       })
       .catch((error) => {
         toast.error(error.message);
-        setUsernameError(true);
-        setPasswordError(true);
       });
+  };
+
+  const handleFormSubmit = (data) => {
+    setFormSubmitted(true);
+    handleSubmit(handleLogin)(data);
   };
 
   return (
@@ -54,47 +44,41 @@ export const LoginForm = () => {
         <p className="w-100 text-center mb-4">
           Inserte los datos de autenticación
         </p>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="form-floating">
             <input
               type="text"
               name="username"
-              value={username}
               className={`form-control ${
-                formSubmitted && usernameError ? "is-invalid" : ""
+                formSubmitted && errors.username ? "is-invalid" : ""
               }`}
               placeholder="Username"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
+              {...register("username", {
+                required: "Por favor, ingrese su usuario",
+              })}
             ></input>
             <label htmlFor="floatingInput">Usuario</label>
-            {usernameError && (
-              <div className="invalid-feedback">
-                Por favor, inserte un usuario válido.
-              </div>
+            {errors.username && (
+              <div className="invalid-feedback">{errors.username.message}</div>
             )}
           </div>
           <div className="form-floating mt-3">
             <input
               type={showPwd ? "text" : "password"}
               name="password"
-              value={password}
               className={`form-control ${
-                formSubmitted && passwordError ? "is-invalid" : ""
+                formSubmitted && errors.password ? "is-invalid" : ""
               }`}
               placeholder="Password"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
+              {...register("password", {
+                required: "Por favor, ingrese su contraseña",
+              })}
             ></input>
             <label htmlFor="floatingInput">Contraseña</label>
-            {passwordError && (
-              <div className="invalid-feedback">
-                Por favor, inserte una contraseña válida.
-              </div>
+            {errors.password && (
+              <div className="invalid-feedback">{errors.password.message}</div>
             )}
-            {!passwordError && (
+            {!errors.password && (
               <div
                 className="position-absolute pointer pwd-icon"
                 onClick={() => setShowPwd(!showPwd)}
@@ -128,7 +112,12 @@ export const LoginForm = () => {
               </div>
             )}
           </div>
-          <button className="btn btn-primary w-100 mt-4">Iniciar sesión</button>
+          <button
+            className="btn btn-primary w-100 mt-4"
+            onClick={handleFormSubmit}
+          >
+            Iniciar sesión
+          </button>
         </form>
         <div className="container mt-4">
           <div className="d-flex justify-content-center align-items-center">
@@ -142,7 +131,7 @@ export const LoginForm = () => {
           </div>
         </div>
       </div>
-      <div className="container-fluid px-3">
+      <div className="container-fluid px-3 mb-2">
         <Link
           className="btn btn-admin w-100 border-dark-subtle"
           to={Paths.ADMIN}

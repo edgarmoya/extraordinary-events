@@ -11,6 +11,7 @@ import GridEntities from "../components/GridEntities";
 import TopBar from "../components/TopBar";
 import ModalEntities from "../components/ModalEntities";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import { HttpStatusCode } from "axios";
 
 function EntitiesPage() {
   const { authTokens } = useContext(AuthContext);
@@ -94,25 +95,43 @@ function EntitiesPage() {
 
   //* Función para eliminar una entidad
   const handleDeleteEntity = async () => {
-    await EntityService.deleteEntity(authTokens, selectedRow.id_entity)
-      .then((data) => {
+    try {
+      const response = await EntityService.deleteEntity(
+        authTokens,
+        selectedRow.id_entity
+      );
+      if (response.status === HttpStatusCode.NoContent) {
         showSuccessToast("Entidad eliminada");
         loadEntities();
         clearSelectedRow();
-      })
-      .catch((error) => {
+      } else {
         showErrorToast("Error al eliminar entidad");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+        } else if (status === HttpStatusCode.InternalServerError) {
+          showErrorToast(
+            "El elemento no puede ser eliminado, se encuentra en uso"
+          );
+        } else {
+          showErrorToast("Error al eliminar entidad");
+        }
+      }
+    }
   };
 
   //* Función para activar/inactivar una entidad
   const handleActivateEntity = async () => {
-    await EntityService.activateEntity(
-      authTokens,
-      selectedRow.id_entity,
-      selectedRow.is_active
-    )
-      .then((data) => {
+    try {
+      const response = await EntityService.activateEntity(
+        authTokens,
+        selectedRow.id_entity,
+        selectedRow.is_active
+      );
+      if (response.status === HttpStatusCode.Ok) {
         if (selectedRow.is_active) {
           showSuccessToast("Entidad inactivada");
         } else {
@@ -120,14 +139,23 @@ function EntitiesPage() {
         }
         loadEntities();
         clearSelectedRow();
-      })
-      .catch((error) => {
-        if (selectedRow.is_active) {
-          showErrorToast("Error al inactivar entidad");
+      } else {
+        showErrorToast("Error al activar o inactivar entidad");
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
         } else {
-          showErrorToast("Error al activar entidad");
+          if (selectedRow.is_active) {
+            showErrorToast("Error al inactivar entidad");
+          } else {
+            showErrorToast("Error al activar entidad");
+          }
         }
-      });
+      }
+    }
   };
 
   //* Función para limpiar la fila seleccionada

@@ -18,7 +18,7 @@ function GridEntities({ data, onRowSelected }) {
             <th scope="col">Sector</th>
             <th scope="col">Municipio</th>
             <th scope="col">Correo electrónico</th>
-            <th scope="col">Activo</th>
+            <th scope="col">Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +33,17 @@ function GridEntities({ data, onRowSelected }) {
               <td>{entity.sector_description}</td>
               <td>{entity.municipality_description}</td>
               <td>{entity.email}</td>
-              <td>{entity.is_active ? "Sí" : "No"}</td>
+              <td>
+                {entity.is_active ? (
+                  <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                    activo
+                  </div>
+                ) : (
+                  <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
+                    inactivo
+                  </div>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

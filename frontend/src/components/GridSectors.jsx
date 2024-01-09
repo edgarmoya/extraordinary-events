@@ -14,7 +14,7 @@ function GridSectors({ data, onRowSelected }) {
         <thead className="sticky-top z-1">
           <tr>
             <th scope="col">Descripción</th>
-            <th scope="col">Activo</th>
+            <th scope="col">Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -25,7 +25,17 @@ function GridSectors({ data, onRowSelected }) {
               onClick={() => handleRowClick(sector)}
             >
               <td>{sector.description}</td>
-              <td>{sector.is_active ? "Sí" : "No"}</td>
+              <td>
+                {sector.is_active ? (
+                  <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                    activo
+                  </div>
+                ) : (
+                  <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
+                    inactivo
+                  </div>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

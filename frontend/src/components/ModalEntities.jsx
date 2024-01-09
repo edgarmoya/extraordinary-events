@@ -7,6 +7,7 @@ import EntityService from "../api/entities.api";
 import SectorService from "../api/sectors.api";
 import LocationService from "../api/locations.api";
 import FormSelect from "./FormSelect";
+import { HttpStatusCode } from "axios";
 
 function ModalEntities({
   isOpen,
@@ -32,7 +33,6 @@ function ModalEntities({
     formState: { errors },
     reset,
     setValue,
-    getValues,
   } = useForm();
 
   const handleCloseModal = () => {
@@ -40,6 +40,14 @@ function ModalEntities({
     setFormSubmitted(false);
     setDisabledMun(true);
     onClose();
+  };
+
+  const handleSelectChange = (selectedValue) => {
+    if (selectedValue) {
+      setDisabledMun(false);
+    } else {
+      setDisabledMun(true);
+    }
   };
 
   //* Función para cargar los sectores activos que se mostrarán para seleccionar
@@ -95,37 +103,62 @@ function ModalEntities({
 
   const handleProvinceChange = (selectedValue) => {
     setSelectedProvince(selectedValue);
-    if (selectedValue) {
-      setDisabledMun(false);
-    } else {
-      setDisabledMun(true);
-    }
-    loadMunicipalities();
+    handleSelectChange(selectedValue);
   };
 
   const handleAddEntity = async (data) => {
-    await EntityService.addEntity(authTokens, data)
-      .then((data) => {
+    try {
+      const response = await EntityService.addEntity(authTokens, data);
+      if (response.status === HttpStatusCode.Created) {
         showSuccessToast("Entidad agregada");
         onRefresh();
         handleCloseModal();
-      })
-      .catch((error) => {
-        console.log(error);
+      } else {
         showErrorToast("Error al agregar, código existente");
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+          handleCloseModal();
+        } else if (status === HttpStatusCode.BadRequest) {
+          showErrorToast("Error al agregar, código existente");
+        } else {
+          showErrorToast("Error al agregar entidad");
+        }
+      }
+    }
   };
 
   const handleUpdateEntity = async (entityId, data) => {
-    await EntityService.updateEntity(authTokens, entityId, data)
-      .then((data) => {
+    try {
+      const response = await EntityService.updateEntity(
+        authTokens,
+        entityId,
+        data
+      );
+
+      if (response.status === HttpStatusCode.Ok) {
         showSuccessToast("Entidad actualizada");
         onRefresh();
         handleCloseModal();
-      })
-      .catch((error) => {
-        showErrorToast("Error al actualizar, código existente");
-      });
+      } else {
+        showErrorToast("Error al actualizar entidad");
+      }
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === HttpStatusCode.Forbidden) {
+          showErrorToast("No tiene permiso para realizar esta acción");
+          handleCloseModal();
+        } else if (status === HttpStatusCode.BadRequest) {
+          showErrorToast("Error al actualizar, código existente");
+        } else {
+          showErrorToast("Error al actualizar entidad");
+        }
+      }
+    }
   };
 
   const handleSaveEntity = async (data) => {
@@ -146,8 +179,17 @@ function ModalEntities({
   useEffect(() => {
     loadActiveSectors(1);
     loadProvinces();
+    if (entityData && entityData.province) {
+      handleSelectChange(selectedProvince);
+    }
     loadMunicipalities();
-  }, [loadActiveSectors, loadProvinces, loadMunicipalities]);
+  }, [
+    loadActiveSectors,
+    loadProvinces,
+    selectedProvince,
+    entityData,
+    loadMunicipalities,
+  ]);
 
   return (
     <div>
@@ -178,6 +220,8 @@ function ModalEntities({
                       },
                     })}
                     disabled={readOnly}
+                    autoFocus={true}
+                    maxLength={6}
                   />
                   <label htmlFor="floatingInput">Código*</label>
                   {errors.id_entity && (
@@ -228,7 +272,6 @@ function ModalEntities({
               <div className="col-md">
                 <FormSelect
                   data={municipalities}
-                  disabled={disabledMun}
                   name={"Municipio*"}
                   message={"Seleccione un municipio"}
                   onChange={() => console.log("municipio cambiado")}
@@ -237,6 +280,7 @@ function ModalEntities({
                   setValue={setValue}
                   registerName={"municipality"}
                   defaultValue={entityData ? entityData.municipality : ""}
+                  disabled={disabledMun || readOnly}
                 />
               </div>
             </div>
