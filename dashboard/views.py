@@ -24,7 +24,7 @@ def event_counts(request):
     
     # Obtener eventos abiertos que llevan más de 30 días sin cerrar
     thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
-    overdue_events = Event.objects.filter(status=Event.OPEN, closed_date__isnull=True, created_date__lt=thirty_days_ago).count()
+    overdue_events = Event.objects.filter(status=Event.OPEN, closed_date__isnull=True, occurrence_date__lt=thirty_days_ago).count()
 
     if overdue_events == 0:
         percentage_overdue = 0

@@ -18,12 +18,12 @@ const StackedBarChart = ({ scopes }) => {
       {
         label: "Relevante",
         data: scopes.map((data) => data.relevant_events_count),
-        backgroundColor: "rgb(5, 42, 99)",
+        backgroundColor: "rgb(13, 110, 253)",
       },
       {
         label: "Corrupción",
         data: scopes.map((data) => data.corruption_events_count),
-        backgroundColor: "rgb(49, 131, 252)",
+        backgroundColor: "rgb(5, 42, 99)",
       },
     ],
   };

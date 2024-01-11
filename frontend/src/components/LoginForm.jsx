@@ -26,7 +26,7 @@ export const LoginForm = () => {
         toast.success(`Bienvenido, ${getValues("username")}`);
       })
       .catch((error) => {
-        toast.error(error.message);
+        toast.error("Error de autenticación");
       });
   };
 

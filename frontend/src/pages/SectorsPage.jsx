@@ -173,6 +173,7 @@ function SectorsPage() {
         <TopBar
           searchMessage={"Buscar sector ..."}
           watchButton={false}
+          searchInput={true}
           pathAll={Paths.SECTORS}
           pathActive={Paths.ACTIVE_SECTORS}
           pathInactive={Paths.INACTIVE_SECTORS}

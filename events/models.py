@@ -62,17 +62,3 @@ class Attachment(models.Model):
 
     def __str__(self):
         return f"Adjunto del hecho {self.event.id}"
-
-
-class EventLog(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.PROTECT, verbose_name='Evento')
-    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name='Usuario')
-    timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Fecha')
-
-    class Meta:
-        verbose_name = 'Registro Hecho'
-        verbose_name_plural = 'Registro Hechos'
-        unique_together = (('event', 'user', 'timestamp'),)
-
-    def __str__(self):
-        return f"Modificación del hecho {self.event.id} por {self.user.user_name}"

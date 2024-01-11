@@ -9,6 +9,7 @@ class EventSerializer(serializers.ModelSerializer):
     closed_by_username = serializers.CharField(source='closed_by.user_name', read_only=True)
     occurrence_date_f = serializers.DateField(source='occurrence_date', format="%d-%m-%Y", read_only=True)
     created_date_f = serializers.DateTimeField(source='created_date', format="%d-%m-%Y (%I:%M %p)", read_only=True)
+    closed_date_f = serializers.DateTimeField(source='closed_date', format="%d-%m-%Y (%I:%M %p)", read_only=True)
 
     class Meta:
         model = Event

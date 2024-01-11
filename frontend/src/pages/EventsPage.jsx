@@ -35,6 +35,7 @@ function EventsPage() {
         currentPage,
         searchTerm
       );
+      console.log(response.data.results);
       setEvents(response.data.results);
       setTotalEvents(response.data.count);
     } catch (error) {
@@ -160,6 +161,7 @@ function EventsPage() {
         <TopBar
           searchMessage={"Buscar hecho ..."}
           watchButton={true}
+          searchInput={false}
           pathAll={Paths.EVENTS}
           textPathAll={"Mostrar todos"}
           pathActive={Paths.OPEN_EVENTS}

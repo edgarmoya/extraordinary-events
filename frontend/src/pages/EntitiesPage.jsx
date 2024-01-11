@@ -174,6 +174,7 @@ function EntitiesPage() {
         <TopBar
           searchMessage={"Buscar entidad ..."}
           watchButton={true}
+          searchInput={true}
           pathAll={Paths.ENTITIES}
           pathActive={Paths.ACTIVE_ENTITIES}
           pathInactive={Paths.INACTIVE_ENTITIES}

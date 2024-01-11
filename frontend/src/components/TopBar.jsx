@@ -9,6 +9,7 @@ function TopBar({
   onWatch,
   onSearch,
   watchButton,
+  searchInput,
   searchMessage,
   pathAll,
   pathActive,
@@ -177,28 +178,36 @@ function TopBar({
           </li>
         </ul>
       </div>
-      <div
-        className={`d-flex p-0 ms-sm-auto mt-2 mt-md-0 ${
-          watchButton ? "col-8" : "col-12"
-        }`}
-      >
-        <input
-          className="form-control me-2"
-          type="search"
-          placeholder={searchMessage}
-          aria-label="Search"
-          value={searchTerm}
-          onClick={handleClearSearch}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button
-          className="btn btn-primary ms-auto"
-          type="button"
-          onClick={() => onSearch(searchTerm)}
+      {searchInput ? (
+        <div
+          className={`d-flex p-0 ms-sm-auto mt-2 mt-md-0 ${
+            watchButton ? "col-8" : "col-12"
+          }`}
         >
-          Buscar
-        </button>
-      </div>
+          <input
+            className="form-control me-2"
+            type="search"
+            placeholder={searchMessage}
+            aria-label="Search"
+            value={searchTerm}
+            onClick={handleClearSearch}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            className="btn btn-primary ms-auto"
+            type="button"
+            onClick={() => onSearch(searchTerm)}
+          >
+            Buscar
+          </button>
+        </div>
+      ) : (
+        <div
+          className={`d-flex p-0 ms-sm-auto mt-2 mt-md-0 ${
+            watchButton ? "col-8" : "col-12"
+          }`}
+        ></div>
+      )}
     </div>
   );
 }

@@ -157,7 +157,7 @@ function Sidebar({ isOpen }) {
             width="15"
             height="15"
           />
-          DATAZUCAR © 2023
+          DATAZUCAR © 2024
           <br />
           <span className="fw-light">Todos los derechos reservados.</span>
         </a>

@@ -1,112 +1,118 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { createContext, useState, useEffect } from "react";
+import jwtDecode from "jwt-decode";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Paths from "../routes/Paths";
 
-const AUTH_TOKEN = "authTokens";
 export const AuthContext = createContext();
 
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  let [loading, setLoading] = useState(true);
 
-  const [authTokens, setAuthTokens] = useState(
-    () => JSON.parse(localStorage.getItem(AUTH_TOKEN)) || null
+  let [user, setUser] = useState(() =>
+    localStorage.getItem("authTokens")
+      ? jwtDecode(localStorage.getItem("authTokens"))
+      : null
+  );
+  let [authTokens, setAuthTokens] = useState(() =>
+    localStorage.getItem("authTokens")
+      ? JSON.parse(localStorage.getItem("authTokens"))
+      : null
   );
 
-  const [user, setUser] = useState(() =>
-    authTokens ? jwt_decode(authTokens.access) : null
-  );
+  let loginUser = async (username, password) => {
+    const response = await fetch("http://127.0.0.1:8000/api/token/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_name: username,
+        password: password,
+      }),
+    });
 
-  const loginUser = async (username, password) => {
-    try {
-      const response = await fetch("http://localhost:8000/api/token/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_name: username,
-          password: password,
-        }),
-      });
-      const data = await response.json();
+    let data = await response.json();
 
-      if (response.status === 200) {
-        setAuthTokens(data);
-        setUser(jwt_decode(data.access));
-        localStorage.setItem(AUTH_TOKEN, JSON.stringify(data));
-      } else {
-        throw new Error("Error de autenticación");
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-      throw new Error("Credenciales incorrectas");
+    if (data) {
+      localStorage.setItem("authTokens", JSON.stringify(data));
+      setAuthTokens(data);
+      setUser(jwtDecode(data.access));
+    } else {
+      throw new Error("Error de autenticación");
     }
   };
 
-  const logoutUser = useCallback(() => {
+  const updateToken = async () => {
+    const response = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refresh: authTokens?.refresh }),
+    });
+
+    const data = await response.json();
+    if (response.status === 200) {
+      setAuthTokens(data);
+      setUser(jwtDecode(data.access));
+      localStorage.setItem("authTokens", JSON.stringify(data));
+    } else {
+      logoutUser();
+    }
+
+    if (loading) {
+      setLoading(false);
+    }
+  };
+
+  let logoutUser = () => {
+    localStorage.removeItem("authTokens");
     setAuthTokens(null);
     setUser(null);
-    localStorage.removeItem(AUTH_TOKEN);
     navigate(Paths.LOGIN);
-  }, [navigate]);
+  };
 
-  const updateToken = useCallback(async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api/token/refresh/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refresh: authTokens?.refresh }),
-      });
-
-      if (response.status === 200) {
-        const data = await response.json();
-        setAuthTokens(data);
-        setUser(jwt_decode(data.access));
-        localStorage.setItem(AUTH_TOKEN, JSON.stringify(data));
-      } else {
-        logoutUser();
-      }
-
-      if (loading) {
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("Error updating token:", error);
-      throw new Error("Error updating token");
-    }
-  }, [authTokens?.refresh, loading, logoutUser]);
-
-  useEffect(() => {
-    if (loading) {
-      updateToken();
-    }
-
-    const fourMinutes = 1000 * 60 * 4;
-    const interval = setInterval(() => {
-      if (authTokens) {
-        updateToken();
-      }
-    }, fourMinutes);
-
-    return () => clearInterval(interval);
-  }, [authTokens, loading, updateToken]);
-
-  const contextData = {
+  let contextData = {
     user,
     authTokens,
     loginUser,
     logoutUser,
   };
 
+  const isAccessTokenExpired = (accessToken) => {
+    try {
+      const decodedToken = jwtDecode(accessToken);
+      return decodedToken.exp < Date.now() / 1000;
+    } catch (err) {
+      return true; // Token is invalid or expired
+    }
+  };
+
+  useEffect(() => {
+    const REFRESH_INTERVAL = 1000 * 60 * 55; // 55 minutes
+
+    const checkTokenExpirationAndRefresh = () => {
+      if (authTokens && isAccessTokenExpired(authTokens.access)) {
+        updateToken();
+      }
+    };
+
+    checkTokenExpirationAndRefresh();
+
+    // Configurar un intervalo para verificar y actualizar el token cada 4 minutos
+    const interval = setInterval(() => {
+      checkTokenExpirationAndRefresh();
+    }, REFRESH_INTERVAL);
+
+    // Limpiar el intervalo cuando el componente se desmonta o cuando authTokens cambia
+    return () => clearInterval(interval);
+  }, [authTokens, loading]);
+
   return (
-    <AuthContext.Provider value={contextData}>
-      {loading ? null : children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );
 };

@@ -12,11 +12,10 @@ const PieChart = ({ percentageBySector }) => {
         label: "Porcentaje",
         data: percentageBySector.map((data) => data.percentage_in_sector),
         backgroundColor: [
+          "rgb(13, 110, 253)",
           "rgb(5, 42, 99)",
-          "rgb(49, 131, 252)",
+          "rgb(142, 168, 219)",
           "rgb(9, 76, 176)",
-          "rgb(49, 131, 252)",
-          "rgb(93, 110, 143)",
         ],
       },
     ],
@@ -29,6 +28,9 @@ const PieChart = ({ percentageBySector }) => {
     plugins: {
       title: {
         text: "Resumen de sectores",
+      },
+      legend: {
+        display: false,
       },
     },
   };

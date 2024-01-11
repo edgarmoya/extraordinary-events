@@ -165,6 +165,7 @@ function TypesPage() {
         <TopBar
           searchMessage={"Buscar tipo ..."}
           watchButton={false}
+          searchInput={true}
           pathAll={Paths.TYPES}
           pathActive={Paths.ACTIVE_TYPES}
           pathInactive={Paths.INACTIVE_TYPES}

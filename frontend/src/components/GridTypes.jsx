@@ -33,8 +33,9 @@ function GridTypes({ data, onRowSelected }) {
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    value={types.is_catastrophic}
-                    checked={types.is_catastrophic}
+                    value={types.is_catastrophic || false}
+                    checked={types.is_catastrophic || false}
+                    onChange={() => console.log("")}
                   />
                 </div>
               </td>

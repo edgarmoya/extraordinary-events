@@ -173,6 +173,7 @@ function ClassificationsPage() {
         <TopBar
           searchMessage={"Buscar clasificación ..."}
           watchButton={false}
+          searchInput={true}
           pathAll={Paths.CLASSIFICATIONS}
           pathActive={Paths.ACTIVE_CLASSIFICATIONS}
           pathInactive={Paths.INACTIVE_CLASSIFICATIONS}

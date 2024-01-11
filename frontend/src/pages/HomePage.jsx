@@ -17,7 +17,7 @@ const Map = styled.div`
 
     // All layers are just path elements
     path {
-      fill: #0a57ca;
+      fill: #0d6efd;
       cursor: pointer;
       outline: none;
 
@@ -155,7 +155,7 @@ function HomePage() {
           {/* Cantidad de hechos sin cerrar */}
           <div className="col-lg-3 col-md-6 col-12 pt-2 px-1">
             <div className="card shadow-sm h-100 w-100">
-              <div className="row g-0 p-2">
+              <div className="row g-0 p-2 h-100">
                 <div className="col-md-3 bg-primary p-1 rounded-2 d-flex justify-content-center align-items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -185,7 +185,7 @@ function HomePage() {
           {/* Cantidad de hechos cerrados */}
           <div className="col-lg-3 col-md-6 col-12 pt-2 px-1">
             <div className="card shadow-sm h-100 w-100">
-              <div className="row g-0 p-2">
+              <div className="row g-0 p-2 h-100">
                 <div className="col-md-3 bg-primary p-1 rounded-2 d-flex justify-content-center align-items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +228,9 @@ function HomePage() {
                 </div>
                 <div className="col-md-9">
                   <div className="card-body p-2">
-                    <h6 className="card-title">Hechos con más de 30 días</h6>
+                    <h6 className="card-title">
+                      Hechos con más de 30 días sin cerrar
+                    </h6>
                     <p className="card-text">
                       {overdueEventsCount}
                       <small className="text-danger">
@@ -256,10 +258,10 @@ function HomePage() {
                   Provincia: <span className="fw-light">{clicked}</span>
                 </h6>
                 <h6 className="fw-light">
-                  <span className="fw-bold">{eventsByProvince}</span> hechos
+                  <span className="fw-medium">{eventsByProvince}</span> hechos
                   ocurridos y{" "}
-                  <span className="fw-bold">{measuresByProvince}</span> medidas
-                  tomadas
+                  <span className="fw-medium">{measuresByProvince}</span>{" "}
+                  medidas tomadas
                 </h6>
               </div>
             </div>

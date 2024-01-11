@@ -18,7 +18,7 @@ const HorizontalBarChart = ({ typesData }) => {
       {
         label: "Cantidad",
         data: typesData.map((data) => data.events_count),
-        backgroundColor: "rgb(49, 131, 252)",
+        backgroundColor: "rgb(13, 110, 253)",
       },
     ],
   };
@@ -31,6 +31,9 @@ const HorizontalBarChart = ({ typesData }) => {
     plugins: {
       title: {
         text: "Resumen de tipos",
+      },
+      legend: {
+        display: false,
       },
     },
   };
