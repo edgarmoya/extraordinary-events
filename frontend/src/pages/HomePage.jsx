@@ -57,52 +57,6 @@ function HomePage() {
     },
   };
 
-  //* Función para cargar resumen
-  const loadOverview = useCallback(async () => {
-    try {
-      const response = await DashboardService.getEventCounts();
-      setTotalEventsCount(response.data.total_events_count);
-      setClosedEventsCount(response.data.closed_events_count);
-      setOpenEventsCount(response.data.open_events_count);
-      setOverdueEventsCount(response.data.overdue_events_count);
-      setPercentageClosed(response.data.percentage_closed);
-      setPercentageOpen(response.data.percentage_open);
-      setPercentageOverdue(response.data.percentage_overdue);
-    } catch (error) {
-      console.error("Error fetching overview: ", error);
-    }
-  }, []);
-
-  //* Función para cargar sectores
-  const loadSectorOverview = useCallback(async () => {
-    try {
-      const response = await DashboardService.getPercentageBySector();
-      setPercentageBySector(response.data.results);
-    } catch (error) {
-      console.error("Error fetching overview: ", error);
-    }
-  }, []);
-
-  //* Función para cargar alcances
-  const loadScopesOverview = useCallback(async () => {
-    try {
-      const response = await DashboardService.getEventsCountScope();
-      setScopesByProvince(response.data.results);
-    } catch (error) {
-      console.error("Error fetching overview: ", error);
-    }
-  }, []);
-
-  //* Función para cargar tipos
-  const loadTypesOverview = useCallback(async () => {
-    try {
-      const response = await DashboardService.getEventsCountByType();
-      setEventsByType(response.data.results);
-    } catch (error) {
-      console.error("Error fetching overview: ", error);
-    }
-  }, []);
-
   //* Función para cargar resumen por provincia
   const loadEventsByProvince = useCallback(async (name) => {
     try {
@@ -114,12 +68,38 @@ function HomePage() {
     }
   }, []);
 
+  // Función para cargar todos los datos
+  const loadAllData = useCallback(async () => {
+    try {
+      // Ejecutar todas las llamadas en paralelo
+      const [overviewResponse, sectorResponse, scopesResponse, typesResponse] =
+        await Promise.all([
+          DashboardService.getEventCounts(),
+          DashboardService.getPercentageBySector(),
+          DashboardService.getEventsCountScope(),
+          DashboardService.getEventsCountByType(),
+        ]);
+
+      // Procesar la respuesta de cada llamada
+      setTotalEventsCount(overviewResponse.data.total_events_count);
+      setClosedEventsCount(overviewResponse.data.closed_events_count);
+      setOpenEventsCount(overviewResponse.data.open_events_count);
+      setOverdueEventsCount(overviewResponse.data.overdue_events_count);
+      setPercentageClosed(overviewResponse.data.percentage_closed);
+      setPercentageOpen(overviewResponse.data.percentage_open);
+      setPercentageOverdue(overviewResponse.data.percentage_overdue);
+
+      setPercentageBySector(sectorResponse.data.results);
+      setScopesByProvince(scopesResponse.data.results);
+      setEventsByType(typesResponse.data.results);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
   useEffect(() => {
-    loadOverview();
-    loadSectorOverview();
-    loadScopesOverview();
-    loadTypesOverview();
-  }, [loadOverview]);
+    loadAllData();
+  }, [loadAllData]);
 
   return (
     <Layout pageTitle="Resumen">

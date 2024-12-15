@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import Modal from "./Modal";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import AuthContext from "../contexts/AuthContext";
@@ -34,18 +34,18 @@ function ModalEvents({
     reset,
   } = useForm();
 
-  const handleEventDateChange = () => {
+  const handleEventDateChange = useCallback(() => {
     const eventDataValue = eventData
       ? new Date(eventData.occurrence_date)
       : new Date();
 
     const timezoneOffset = eventDataValue.getTimezoneOffset();
-    eventDataValue.setMinutes(eventDataValue.getMinutes() + timezoneOffset);
+    eventDataValue.setMinutes(eventDataValue.getMinutes() - timezoneOffset);
 
     if (eventDataValue.getTime() !== occurrenceDate.getTime()) {
       setOccurrenceDate(eventDataValue);
     }
-  };
+  }, [eventData, occurrenceDate]); // Dependencias de useCallback
 
   const handleCloseModal = () => {
     reset();
@@ -327,7 +327,7 @@ function ModalEvents({
 
   useEffect(() => {
     handleEventDateChange();
-  }, [isOpen, eventData]);
+  }, [isOpen, eventData, handleEventDateChange]);
 
   return (
     <div>

@@ -149,6 +149,7 @@ function Sidebar({ isOpen }) {
           className="fs-small text-body text-decoration-none fw-bold"
           href="https://www.datazucar.cu/"
           target="_blank"
+          rel="noreferrer"
         >
           <img
             src={logo_datazucar}
