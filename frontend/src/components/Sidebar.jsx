@@ -31,12 +31,12 @@ function Sidebar({ isOpen }) {
   return (
     <nav className={`sidebar p-2 shadow-sm ${isOpen ? "is-open" : ""}`}>
       <div className="sidebar-body">
-        <a
-          href={Paths.HOME}
+        <Link
+          to={Paths.HOME}
           className="d-flex justify-content-center mb-1 mb-md-0 me-md-auto"
         >
           <img className="" src={logo} alt="logo" height={36} width={126}></img>
-        </a>
+        </Link>
         <hr className="text-body" />
         <ul className="nav nav-pills flex-column mb-auto">
           <li className="nav-item pb-1">

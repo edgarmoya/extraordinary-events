@@ -191,7 +191,11 @@ function EventsPage() {
           }}
           onActivate={() => {
             if (selectedRow) {
-              setModalCloseIsOpen(true);
+              if (selectedRow.status === "closed") {
+                showErrorToast("El hecho seleccionado ya se encuentra cerrado");
+              } else {
+                setModalCloseIsOpen(true);
+              }
             } else {
               showErrorToast("Seleccione el hecho que desea cerrar");
             }
