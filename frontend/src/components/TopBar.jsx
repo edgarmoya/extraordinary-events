@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Check2 } from "react-bootstrap-icons";
+import { Link, useLocation } from "react-router-dom";
 
 function TopBar({
   onAdd,
@@ -18,26 +19,16 @@ function TopBar({
   textPathActive,
   textPathInactive,
 }) {
-  const [currentURL, setCurrentURL] = useState(window.location.pathname);
+  const location = useLocation(); // Obtiene la ubicación actual
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setCurrentURL(window.location.pathname);
-    };
-    window.addEventListener("popstate", handleRouteChange);
-    return () => {
-      window.removeEventListener("popstate", handleRouteChange);
-    };
-  }, []);
 
   // Función para verificar si el enlace debe estar activo
   const isActive = (path) => {
-    return currentURL === path ? "active" : "";
+    return location.pathname === path ? "active" : "";
   };
 
   const isCheck = (path) => {
-    return currentURL === path ? "" : "d-none";
+    return location.pathname === path ? "" : "d-none";
   };
 
   const handleClearSearch = () => {
@@ -148,33 +139,33 @@ function TopBar({
         </button>
         <ul className="dropdown-menu p-1 shadow">
           <li>
-            <a
+            <Link
               className={`dropdown-item rounded-1 ${isActive(pathAll)}`}
-              href={pathAll}
+              to={pathAll}
             >
               {textPathAll ? textPathAll : "Mostrar todos"}
               <Check2 className={`ms-3 ${isCheck(pathAll)}`} />
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               className={`dropdown-item rounded-1 mt-1 ${isActive(pathActive)}`}
-              href={pathActive}
+              to={pathActive}
             >
               {textPathActive ? textPathActive : "Mostrar activos"}
               <Check2 className={`ms-3 ${isCheck(pathActive)}`} />
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               className={`dropdown-item rounded-1 mt-1 ${isActive(
                 pathInactive
               )}`}
-              href={pathInactive}
+              to={pathInactive}
             >
               {textPathInactive ? textPathInactive : "Mostrar inactivos"}
               <Check2 className={`ms-3 ${isCheck(pathInactive)}`} />
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
