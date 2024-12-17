@@ -327,7 +327,7 @@ function ModalEvents({
 
   useEffect(() => {
     handleEventDateChange();
-  }, [isOpen, eventData, handleEventDateChange]);
+  }, [isOpen]);
 
   return (
     <div>
