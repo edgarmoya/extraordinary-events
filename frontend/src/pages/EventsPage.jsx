@@ -159,7 +159,8 @@ function EventsPage() {
       <div className="container-fluid">
         {/* Actions */}
         <TopBar
-          searchMessage={"Buscar hecho ..."}
+          searchMessage={"Buscar hecho..."}
+          closeBtn={true}
           watchButton={true}
           searchInput={false}
           pathAll={Paths.EVENTS}

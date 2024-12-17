@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@floating-ui/react": "^0.27.2",
     "@popperjs/core": "^2.11.8",
     "@south-paw/react-vector-maps": "^3.2.0",
     "@testing-library/jest-dom": "^5.17.0",
