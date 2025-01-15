@@ -1,115 +1,58 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { createContext, useState } from "react";
 import jwtDecode from "jwt-decode";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Paths from "../routes/Paths";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const ACCESS_TOKEN = "access_token";
+  const REFRESH_TOKEN = "refresh_token";
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? jwtDecode(localStorage.getItem("authTokens"))
+  const [user, setUser] = useState(
+    localStorage.getItem(ACCESS_TOKEN)
+      ? jwtDecode(localStorage.getItem(ACCESS_TOKEN))
       : null
   );
 
-  const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem(ACCESS_TOKEN)
+      ? localStorage.getItem(ACCESS_TOKEN)
       : null
   );
 
-  const loginUser = async (username, password) => {
-    const response = await fetch("http://127.0.0.1:8000/api/token/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_name: username,
-        password: password,
-      }),
-    });
+  const loginUser = async (credentials) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/token/",
+        credentials
+      );
+      const { access, refresh } = response.data;
 
-    if (!response.ok) {
+      setAccessToken(access);
+      localStorage.setItem(ACCESS_TOKEN, access);
+      localStorage.setItem(REFRESH_TOKEN, refresh);
+
+      setUser(jwtDecode(access));
+    } catch (error) {
       throw new Error("Error de autenticación");
     }
-
-    let data = await response.json();
-    localStorage.setItem("authTokens", JSON.stringify(data));
-    setAuthTokens(data);
-    setUser(jwtDecode(data.access));
   };
 
-  const logoutUser = useCallback(() => {
-    localStorage.removeItem("authTokens");
-    setAuthTokens(null);
+  const logoutUser = () => {
+    setAccessToken(null);
     setUser(null);
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
     navigate(Paths.LOGIN);
-  }, [navigate]);
-
-  const updateToken = useCallback(async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refresh: authTokens?.refresh }),
-      });
-
-      if (!response.ok) {
-        logoutUser();
-        return;
-      }
-
-      const data = await response.json();
-      setAuthTokens(data);
-      setUser(jwtDecode(data.access));
-      localStorage.setItem("authTokens", JSON.stringify(data));
-    } catch (error) {
-      console.error("Error updating token: ", error);
-      logoutUser();
-    }
-  }, [authTokens, logoutUser]);
-
-  let contextData = {
-    user,
-    authTokens,
-    loginUser,
-    logoutUser,
   };
-
-  const isAccessTokenExpired = (accessToken) => {
-    try {
-      const decodedToken = jwtDecode(accessToken);
-      return decodedToken.exp < Date.now() / 1000;
-    } catch (err) {
-      return true; // Token is invalid or expired
-    }
-  };
-
-  useEffect(() => {
-    const REFRESH_INTERVAL = 1000 * 60 * 4; // 60 minutes
-
-    const checkTokenExpirationAndRefresh = () => {
-      if (authTokens && isAccessTokenExpired(authTokens.access)) {
-        updateToken();
-      }
-    };
-
-    // Configurar un intervalo para verificar y actualizar el token cada 4 minutos
-    const interval = setInterval(() => {
-      checkTokenExpirationAndRefresh();
-    }, REFRESH_INTERVAL);
-
-    // Limpiar el intervalo cuando el componente se desmonta o cuando authTokens cambia
-    return () => clearInterval(interval);
-  }, [authTokens, updateToken]);
 
   return (
-    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, accessToken, loginUser, logoutUser }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

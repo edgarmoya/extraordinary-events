@@ -1,7 +1,6 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
-import AuthContext from "../contexts/AuthContext";
 import GridSectors from "../components/GridSectors";
 import SectorService from "../api/sectors.api";
 import Pagination from "../components/Pagination";
@@ -14,7 +13,6 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 
 function SectorsPage() {
-  const { authTokens } = useContext(AuthContext);
   const location = useLocation();
   const [sectors, setSectors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,23 +27,18 @@ function SectorsPage() {
   //* Función para cargar todos los sectores
   const loadAllSectors = useCallback(async () => {
     try {
-      const response = await SectorService.getSectors(
-        authTokens,
-        currentPage,
-        searchTerm
-      );
+      const response = await SectorService.getSectors(currentPage, searchTerm);
       setSectors(response.data.results);
       setTotalSectors(response.data.count);
     } catch (error) {
       console.error("Error fetching sectors for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar los sectores activos
   const loadActiveSectors = useCallback(async () => {
     try {
       const response = await SectorService.getActiveSectors(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -54,13 +47,12 @@ function SectorsPage() {
     } catch (error) {
       console.error("Error fetching sectors for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar los sectores inactivos
   const loadInactiveSectors = useCallback(async () => {
     try {
       const response = await SectorService.getInactiveSectors(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -69,7 +61,7 @@ function SectorsPage() {
     } catch (error) {
       console.error("Error fetching sectors for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar los sectores según la ubicación actual
   const loadSectors = useCallback(() => {
@@ -95,10 +87,7 @@ function SectorsPage() {
   //* Función para eliminar un sector
   const handleDeleteSector = async () => {
     try {
-      const response = await SectorService.deleteSector(
-        authTokens,
-        selectedRow.id
-      );
+      const response = await SectorService.deleteSector(selectedRow.id);
       if (response.status === HttpStatusCode.NoContent) {
         showSuccessToast("Sector eliminado");
         loadSectors();
@@ -126,7 +115,6 @@ function SectorsPage() {
   const handleActivateSector = async () => {
     try {
       const response = await SectorService.activateSector(
-        authTokens,
         selectedRow.id,
         selectedRow.is_active
       );

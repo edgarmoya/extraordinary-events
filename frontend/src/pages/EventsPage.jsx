@@ -14,10 +14,10 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 
 function EventsPage() {
-  const { authTokens, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const [events, setEvents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalEvents, setTotalEvents] = useState(1);
@@ -27,62 +27,32 @@ function EventsPage() {
   const [modalCloseIsOpen, setModalCloseIsOpen] = useState(false);
   const [modalWatchIsOpen, setModalWatchIsOpen] = useState(false);
 
-  //* Función para cargar todos los hechos
-  const loadAllEvents = useCallback(async () => {
-    try {
-      const response = await EventService.getEvents(
-        authTokens,
-        currentPage,
-        searchTerm
-      );
-
-      setEvents(response.data.results);
-      setTotalEvents(response.data.count);
-    } catch (error) {
-      console.error("Error fetching events for page: ", error);
-    }
-  }, [authTokens, currentPage, searchTerm]);
-
-  //* Función para cargar los hechos abiertos
-  const loadOpenEvents = useCallback(async () => {
-    try {
-      const response = await EventService.getOpenEvents(
-        authTokens,
-        currentPage,
-        searchTerm
-      );
-      setEvents(response.data.results);
-      setTotalEvents(response.data.count);
-    } catch (error) {
-      console.error("Error fetching events for page: ", error);
-    }
-  }, [authTokens, currentPage, searchTerm]);
-
-  //* Función para cargar los hechos cerrados
-  const loadCloseEvents = useCallback(async () => {
-    try {
-      const response = await EventService.getCloseEvents(
-        authTokens,
-        currentPage,
-        searchTerm
-      );
-      setEvents(response.data.results);
-      setTotalEvents(response.data.count);
-    } catch (error) {
-      console.error("Error fetching events for page: ", error);
-    }
-  }, [authTokens, currentPage, searchTerm]);
-
   //* Función para cargar los hechos según la ubicación actual
   const loadEvents = useCallback(async () => {
-    if (location.pathname === Paths.OPEN_EVENTS) {
-      await loadOpenEvents();
-    } else if (location.pathname === Paths.CLOSE_EVENTS) {
-      loadCloseEvents();
-    } else {
-      loadAllEvents();
+    try {
+      let response;
+      if (location.pathname === Paths.OPEN_EVENTS) {
+        response = await EventService.getEvents(
+          currentPage,
+          searchTerm,
+          "open"
+        );
+      } else if (location.pathname === Paths.CLOSE_EVENTS) {
+        response = await EventService.getEvents(
+          currentPage,
+          searchTerm,
+          "closed"
+        );
+      } else {
+        response = await EventService.getEvents(currentPage, searchTerm);
+      }
+
+      setEvents(response.data.results);
+      setTotalEvents(response.data.count);
+    } catch (error) {
+      console.error("Error obteniendo los hechos: ", error);
     }
-  }, [location.pathname, loadAllEvents, loadOpenEvents, loadCloseEvents]);
+  }, [location.pathname, currentPage, searchTerm]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -92,12 +62,9 @@ function EventsPage() {
   //* Función para eliminar un hecho
   const handleDeleteEvent = async () => {
     try {
-      const response = await EventService.deleteEvent(
-        authTokens,
-        selectedRow.id
-      );
+      const response = await EventService.deleteEvent(selectedRow.id);
       if (response.status === HttpStatusCode.NoContent) {
-        showSuccessToast("Hecho eliminado");
+        showSuccessToast("Hecho eliminado con éxito");
         loadEvents();
         clearSelectedRow();
       } else {
@@ -105,14 +72,10 @@ function EventsPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.InternalServerError) {
-          showErrorToast("No se puede eliminar un hecho cerrado anteriormente");
-        } else {
-          showErrorToast("Error al eliminar hecho");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -121,13 +84,12 @@ function EventsPage() {
   const handleCloseEvent = async () => {
     try {
       const response = await EventService.closeEvent(
-        authTokens,
         selectedRow.id,
         user.user_id,
         new Date()
       );
       if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Hecho cerrado");
+        showSuccessToast("Hecho cerrado con éxito");
         loadEvents();
         clearSelectedRow();
       } else {
@@ -135,12 +97,10 @@ function EventsPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          showErrorToast("Error al cerrar el hecho seleccionado");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -152,17 +112,17 @@ function EventsPage() {
 
   useEffect(() => {
     loadEvents();
-  }, [location.pathname, currentPage, loadEvents]);
+  }, [loadEvents]);
 
   return (
     <Layout pageTitle="Hechos extraordinarios">
       <div className="container-fluid">
         {/* Actions */}
         <TopBar
-          searchMessage={"Buscar hecho..."}
+          searchMessage={"Buscar hecho ..."}
           closeBtn={true}
           watchButton={true}
-          searchInput={false}
+          searchInput={true}
           pathAll={Paths.EVENTS}
           textPathAll={"Mostrar todos"}
           pathActive={Paths.OPEN_EVENTS}

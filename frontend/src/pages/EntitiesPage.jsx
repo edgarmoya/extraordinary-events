@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
-import AuthContext from "../contexts/AuthContext";
+
 import Layout from "./Layout";
 import Paths from "../routes/Paths";
 import EntityService from "../api/entities.api";
@@ -14,7 +14,6 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 
 function EntitiesPage() {
-  const { authTokens } = useContext(AuthContext);
   const location = useLocation();
   const [entities, setEntities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,23 +29,18 @@ function EntitiesPage() {
   //* Función para cargar todos las entidades
   const loadAllEntities = useCallback(async () => {
     try {
-      const response = await EntityService.getEntities(
-        authTokens,
-        currentPage,
-        searchTerm
-      );
+      const response = await EntityService.getEntities(currentPage, searchTerm);
       setEntities(response.data.results);
       setTotalEntities(response.data.count);
     } catch (error) {
       console.error("Error fetching entities for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar las entidades activas
   const loadActiveEntities = useCallback(async () => {
     try {
       const response = await EntityService.getActiveEntities(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -55,13 +49,12 @@ function EntitiesPage() {
     } catch (error) {
       console.error("Error fetching entities for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar las entidades inactivas
   const loadInactiveEntities = useCallback(async () => {
     try {
       const response = await EntityService.getInactiveEntities(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -70,7 +63,7 @@ function EntitiesPage() {
     } catch (error) {
       console.error("Error fetching entities for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar las entidades según la ubicación actual
   const loadEntities = useCallback(async () => {
@@ -96,10 +89,7 @@ function EntitiesPage() {
   //* Función para eliminar una entidad
   const handleDeleteEntity = async () => {
     try {
-      const response = await EntityService.deleteEntity(
-        authTokens,
-        selectedRow.id_entity
-      );
+      const response = await EntityService.deleteEntity(selectedRow.id_entity);
       if (response.status === HttpStatusCode.NoContent) {
         showSuccessToast("Entidad eliminada");
         loadEntities();
@@ -127,7 +117,6 @@ function EntitiesPage() {
   const handleActivateEntity = async () => {
     try {
       const response = await EntityService.activateEntity(
-        authTokens,
         selectedRow.id_entity,
         selectedRow.is_active
       );

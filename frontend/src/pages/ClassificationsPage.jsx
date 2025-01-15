@@ -1,7 +1,6 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
-import AuthContext from "../contexts/AuthContext";
 import GridClassifications from "../components/GridClassifications";
 import ClassificationService from "../api/classifications.api";
 import Pagination from "../components/Pagination";
@@ -14,7 +13,6 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 
 function ClassificationsPage() {
-  const { authTokens } = useContext(AuthContext);
   const location = useLocation();
   const [classifications, setClassifications] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,7 +28,6 @@ function ClassificationsPage() {
   const loadAllClassifications = useCallback(async () => {
     try {
       const response = await ClassificationService.getClassifications(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -39,13 +36,12 @@ function ClassificationsPage() {
     } catch (error) {
       console.error("Error fetching classifications for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar las clasificaciones activas
   const loadActiveClassifications = useCallback(async () => {
     try {
       const response = await ClassificationService.getActiveClassifications(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -54,13 +50,12 @@ function ClassificationsPage() {
     } catch (error) {
       console.error("Error fetching classifications for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar las clasificaciones inactivas
   const loadInactiveClassifications = useCallback(async () => {
     try {
       const response = await ClassificationService.getInactiveClassifications(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -69,7 +64,7 @@ function ClassificationsPage() {
     } catch (error) {
       console.error("Error fetching classifications for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar las clasificaciones según la ubicación actual
   const loadClassifications = useCallback(() => {
@@ -96,7 +91,6 @@ function ClassificationsPage() {
   const handleDeleteClassification = async () => {
     try {
       const response = await ClassificationService.deleteClassification(
-        authTokens,
         selectedRow.id
       );
       if (response.status === HttpStatusCode.NoContent) {
@@ -126,7 +120,6 @@ function ClassificationsPage() {
   const handleActivateClassification = async () => {
     try {
       const response = await ClassificationService.activateClassification(
-        authTokens,
         selectedRow.id,
         selectedRow.is_active
       );

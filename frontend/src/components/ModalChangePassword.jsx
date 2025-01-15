@@ -6,7 +6,7 @@ import UserService from "../api/users.api";
 import { useForm } from "react-hook-form";
 
 function ModalChangePassword({ isOpen, onClose }) {
-  const { user, authTokens } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -26,12 +26,7 @@ function ModalChangePassword({ isOpen, onClose }) {
 
   const handleChangePassword = (data) => {
     setIsLoading(true);
-    UserService.changePassword(
-      authTokens,
-      user.user_id,
-      data.oldPassword,
-      data.newPassword
-    )
+    UserService.changePassword(user.user_id, data.oldPassword, data.newPassword)
       .then((data) => {
         showSuccessToast("Contraseña cambiada correctamente.");
         handleCloseModal();

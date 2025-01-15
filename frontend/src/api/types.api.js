@@ -1,18 +1,8 @@
-import axios from "axios";
-
-const typesAPI = axios.create({
-  baseURL: "http://localhost:8000/api",
-});
-
-const createHeaders = (authTokens) => ({
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + String(authTokens.access),
-});
+import axiosInstance from "./axiosInstance";
 
 const TypeService = {
-  getTypes: async (authTokens, page, searchTerm) => {
-    return typesAPI.get(`/types/`, {
-      headers: createHeaders(authTokens),
+  getTypes: async (page, searchTerm) => {
+    return axiosInstance.get(`/types/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -20,9 +10,8 @@ const TypeService = {
     });
   },
 
-  getActiveTypes: async (authTokens, page, searchTerm) => {
-    return typesAPI.get(`/active-types/`, {
-      headers: createHeaders(authTokens),
+  getActiveTypes: async (page, searchTerm) => {
+    return axiosInstance.get(`/active-types/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -30,9 +19,8 @@ const TypeService = {
     });
   },
 
-  getInactiveTypes: async (authTokens, page, searchTerm) => {
-    return typesAPI.get(`/inactive-types/`, {
-      headers: createHeaders(authTokens),
+  getInactiveTypes: async (page, searchTerm) => {
+    return axiosInstance.get(`/inactive-types/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -40,32 +28,20 @@ const TypeService = {
     });
   },
 
-  addType: async (authTokens, type) => {
-    return typesAPI.post(`/types/`, type, {
-      headers: createHeaders(authTokens),
-    });
+  addType: async (type) => {
+    return axiosInstance.post(`/types/`, type);
   },
 
-  deleteType: async (authTokens, id) => {
-    return typesAPI.delete(`/types/${id}/`, {
-      headers: createHeaders(authTokens),
-    });
+  deleteType: async (id) => {
+    return axiosInstance.delete(`/types/${id}/`);
   },
 
-  updateType: async (authTokens, id, type) => {
-    return typesAPI.put(`/types/${id}/`, type, {
-      headers: createHeaders(authTokens),
-    });
+  updateType: async (id, type) => {
+    return axiosInstance.put(`/types/${id}/`, type);
   },
 
-  activateType: async (authTokens, id, activated) => {
-    return typesAPI.patch(
-      `/types/${id}/`,
-      { is_active: !activated },
-      {
-        headers: createHeaders(authTokens),
-      }
-    );
+  activateType: async (id, activated) => {
+    return axiosInstance.patch(`/types/${id}/`, { is_active: !activated });
   },
 };
 

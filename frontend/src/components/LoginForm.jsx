@@ -20,7 +20,7 @@ export const LoginForm = () => {
   } = useForm();
 
   const handleLogin = (data) => {
-    loginUser(data.username, data.password)
+    loginUser({ user_name: data.username, password: data.password })
       .then((data) => {
         navigate(`${Paths.HOME}`);
         toast.success(`Bienvenido, ${getValues("username")}`);

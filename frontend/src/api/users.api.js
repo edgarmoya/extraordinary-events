@@ -1,40 +1,24 @@
-import axios from "axios";
-
-const userAPI = axios.create({
-  baseURL: "http://localhost:8000/api/users",
-});
-
-const createHeaders = (authTokens) => ({
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + String(authTokens.access),
-});
+import axiosInstance from "./axiosInstance";
 
 const UserService = {
-  getUser: async (authTokens, id) => {
-    return userAPI.get(`/${id}/`, {
-      headers: createHeaders(authTokens),
-    });
+  getUser: async (id) => {
+    return axiosInstance.get(`/users/${id}/`);
   },
 
-  getUserGroups: async (authTokens, idUser) => {
-    return userAPI.get(`/${idUser}/groups/`, {
-      headers: createHeaders(authTokens),
-    });
+  getUserGroups: async (idUser) => {
+    return axiosInstance.get(`/users/${idUser}/groups/`);
   },
 
-  changePassword: async (authTokens, idUser, oldPassword, newPassword) => {
+  changePassword: async (idUser, oldPassword, newPassword) => {
     const requestData = {
       old_password: oldPassword,
       new_password: newPassword,
     };
 
     try {
-      const response = await userAPI.post(
-        `/${idUser}/change_password/`,
-        requestData,
-        {
-          headers: createHeaders(authTokens),
-        }
+      const response = await axiosInstance.post(
+        `/users/${idUser}/change_password/`,
+        requestData
       );
       return response.data;
     } catch (error) {

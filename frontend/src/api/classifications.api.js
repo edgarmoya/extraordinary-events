@@ -1,18 +1,8 @@
-import axios from "axios";
-
-const classificationsAPI = axios.create({
-  baseURL: "http://localhost:8000/api",
-});
-
-const createHeaders = (authTokens) => ({
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + String(authTokens.access),
-});
+import axiosInstance from "./axiosInstance";
 
 const ClassificationService = {
-  getClassifications: async (authTokens, page, searchTerm) => {
-    return classificationsAPI.get(`/classifications/`, {
-      headers: createHeaders(authTokens),
+  getClassifications: async (page, searchTerm) => {
+    return axiosInstance.get(`/classifications/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -20,9 +10,8 @@ const ClassificationService = {
     });
   },
 
-  getActiveClassifications: async (authTokens, page, searchTerm) => {
-    return classificationsAPI.get(`/active-classifications/`, {
-      headers: createHeaders(authTokens),
+  getActiveClassifications: async (page, searchTerm) => {
+    return axiosInstance.get(`/active-classifications/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -30,9 +19,8 @@ const ClassificationService = {
     });
   },
 
-  getInactiveClassifications: async (authTokens, page, searchTerm) => {
-    return classificationsAPI.get(`/inactive-classifications/`, {
-      headers: createHeaders(authTokens),
+  getInactiveClassifications: async (page, searchTerm) => {
+    return axiosInstance.get(`/inactive-classifications/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -40,32 +28,22 @@ const ClassificationService = {
     });
   },
 
-  addClassification: async (authTokens, classification) => {
-    return classificationsAPI.post(`/classifications/`, classification, {
-      headers: createHeaders(authTokens),
-    });
+  addClassification: async (classification) => {
+    return axiosInstance.post(`/classifications/`, classification);
   },
 
-  deleteClassification: async (authTokens, id) => {
-    return classificationsAPI.delete(`/classifications/${id}/`, {
-      headers: createHeaders(authTokens),
-    });
+  deleteClassification: async (id) => {
+    return axiosInstance.delete(`/classifications/${id}/`);
   },
 
-  updateClassification: async (authTokens, id, classification) => {
-    return classificationsAPI.put(`/classifications/${id}/`, classification, {
-      headers: createHeaders(authTokens),
-    });
+  updateClassification: async (id, classification) => {
+    return axiosInstance.put(`/classifications/${id}/`, classification);
   },
 
-  activateClassification: async (authTokens, id, activated) => {
-    return classificationsAPI.patch(
-      `/classifications/${id}/`,
-      { is_active: !activated },
-      {
-        headers: createHeaders(authTokens),
-      }
-    );
+  activateClassification: async (id, activated) => {
+    return axiosInstance.patch(`/classifications/${id}/`, {
+      is_active: !activated,
+    });
   },
 };
 

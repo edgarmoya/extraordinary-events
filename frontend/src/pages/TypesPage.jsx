@@ -1,7 +1,6 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
-import AuthContext from "../contexts/AuthContext";
 import GridTypes from "../components/GridTypes";
 import TypeService from "../api/types.api";
 import Pagination from "../components/Pagination";
@@ -14,7 +13,6 @@ import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 
 function TypesPage() {
-  const { authTokens } = useContext(AuthContext);
   const location = useLocation();
   const [types, setTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,23 +27,18 @@ function TypesPage() {
   //* Función para cargar todos los tipos de hecho
   const loadAllTypes = useCallback(async () => {
     try {
-      const response = await TypeService.getTypes(
-        authTokens,
-        currentPage,
-        searchTerm
-      );
+      const response = await TypeService.getTypes(currentPage, searchTerm);
       setTypes(response.data.results);
       setTotalTypes(response.data.count);
     } catch (error) {
       console.error("Error fetching types for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar los tipos de hecho activos
   const loadActiveTypes = useCallback(async () => {
     try {
       const response = await TypeService.getActiveTypes(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -54,13 +47,12 @@ function TypesPage() {
     } catch (error) {
       console.error("Error fetching types for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar los tipos de hecho inactivos
   const loadInactiveTypes = useCallback(async () => {
     try {
       const response = await TypeService.getInactiveTypes(
-        authTokens,
         currentPage,
         searchTerm
       );
@@ -69,7 +61,7 @@ function TypesPage() {
     } catch (error) {
       console.error("Error fetching types for page: ", error);
     }
-  }, [authTokens, currentPage, searchTerm]);
+  }, [currentPage, searchTerm]);
 
   //* Función para cargar los tipos de hecho según la ubicación actual
   const loadTypes = useCallback(() => {
@@ -90,7 +82,7 @@ function TypesPage() {
   //* Función para eliminar un tipo de hecho
   const handleDeleteType = async () => {
     try {
-      const response = await TypeService.deleteType(authTokens, selectedRow.id);
+      const response = await TypeService.deleteType(selectedRow.id);
       if (response.status === HttpStatusCode.NoContent) {
         showSuccessToast("Tipo de hecho eliminado");
         loadTypes();
@@ -118,7 +110,6 @@ function TypesPage() {
   const handleActivateType = async () => {
     try {
       const response = await TypeService.activateType(
-        authTokens,
         selectedRow.id,
         selectedRow.is_active
       );

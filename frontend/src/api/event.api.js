@@ -1,110 +1,66 @@
-import axios from "axios";
-
-const eventsAPI = axios.create({
-  baseURL: "http://localhost:8000/api",
-});
-
-const createHeaders = (authTokens) => ({
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + String(authTokens.access),
-});
+import axiosInstance from "./axiosInstance";
 
 const EventService = {
-  getEvents: async (authTokens, page, searchTerm) => {
-    return eventsAPI.get(`/events/`, {
-      headers: createHeaders(authTokens),
+  getEvents: async (page, searchTerm, status) => {
+    return axiosInstance.get(`/events/`, {
       params: {
         page: page,
         search: searchTerm,
+        status: status,
       },
     });
   },
 
-  getOpenEvents: async (authTokens, page, searchTerm) => {
-    return eventsAPI.get(`/open-events/`, {
-      headers: createHeaders(authTokens),
-      params: {
-        page: page,
-        search: searchTerm,
-      },
-    });
+  addEvent: async (event) => {
+    return axiosInstance.post(`/events/`, event);
   },
 
-  getCloseEvents: async (authTokens, page, searchTerm) => {
-    return eventsAPI.get(`/closed-events/`, {
-      headers: createHeaders(authTokens),
-      params: {
-        page: page,
-        search: searchTerm,
-      },
-    });
+  deleteEvent: async (id) => {
+    return axiosInstance.delete(`/events/${id}/`);
   },
 
-  addEvent: async (authTokens, event) => {
-    return eventsAPI.post(`/events/`, event, {
-      headers: createHeaders(authTokens),
-    });
+  updateEvent: async (id, event) => {
+    return axiosInstance.put(`/events/${id}/`, event);
   },
 
-  deleteEvent: async (authTokens, id) => {
-    return eventsAPI.delete(`/events/${id}/`, {
-      headers: createHeaders(authTokens),
+  closeEvent: async (id, user, date) => {
+    return axiosInstance.patch(`/events/${id}/`, {
+      closed_by: user,
+      closed_date: date,
+      status: "closed",
     });
-  },
-
-  updateEvent: async (authTokens, id, event) => {
-    return eventsAPI.put(`/events/${id}/`, event, {
-      headers: createHeaders(authTokens),
-    });
-  },
-
-  closeEvent: async (authTokens, id, user, date) => {
-    return eventsAPI.patch(
-      `/events/${id}/`,
-      { closed_by: user, closed_date: date, status: "closed" },
-      {
-        headers: createHeaders(authTokens),
-      }
-    );
   },
 
   /* MEASURES */
-  getMeasures: async (authTokens, id) => {
-    return eventsAPI.get(`/measures/`, {
-      headers: createHeaders(authTokens),
+  getMeasures: async (id) => {
+    return axiosInstance.get(`/measures/`, {
       params: {
         event_id: id,
       },
     });
   },
 
-  addMeasure: async (authTokens, measure) => {
-    return eventsAPI.post(`/measures/`, measure, {
-      headers: createHeaders(authTokens),
-    });
+  addMeasure: async (measure) => {
+    return axiosInstance.post(`/measures/`, measure);
   },
 
-  deleteMeasure: async (authTokens, id) => {
-    return eventsAPI.delete(`/measures/${id}/`, {
-      headers: createHeaders(authTokens),
-    });
+  deleteMeasure: async (id) => {
+    return axiosInstance.delete(`/measures/${id}/`);
   },
 
   /* ATTACHMENTS */
-  getAttachments: async (authTokens, id) => {
-    return eventsAPI.get(`/attachments/`, {
-      headers: createHeaders(authTokens),
+  getAttachments: async (id) => {
+    return axiosInstance.get(`/attachments/`, {
       params: {
         event_id: id,
       },
     });
   },
 
-  addAttachment: async (authTokens, attachment) => {
+  addAttachment: async (attachment) => {
     try {
-      const response = await eventsAPI.post("/attachments/", attachment, {
+      const response = await axiosInstance.post("/attachments/", attachment, {
         headers: {
-          ...createHeaders(authTokens),
           "Content-Type": "multipart/form-data",
         },
       });
@@ -114,10 +70,9 @@ const EventService = {
     }
   },
 
-  deleteAttachment: async (authTokens, id) => {
-    return eventsAPI.delete(`/attachments/${id}/`, {
+  deleteAttachment: async (id) => {
+    return axiosInstance.delete(`/attachments/${id}/`, {
       headers: {
-        ...createHeaders(authTokens),
         "Content-Type": "multipart/form-data",
       },
     });

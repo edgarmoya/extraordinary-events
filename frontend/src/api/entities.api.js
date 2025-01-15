@@ -1,18 +1,8 @@
-import axios from "axios";
-
-const entitiesAPI = axios.create({
-  baseURL: "http://localhost:8000/api",
-});
-
-const createHeaders = (authTokens) => ({
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + String(authTokens.access),
-});
+import axiosInstance from "./axiosInstance";
 
 const EntityService = {
-  getEntities: async (authTokens, page, searchTerm) => {
-    return entitiesAPI.get(`/entities/`, {
-      headers: createHeaders(authTokens),
+  getEntities: async (page, searchTerm) => {
+    return axiosInstance.get(`/entities/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -20,9 +10,8 @@ const EntityService = {
     });
   },
 
-  getActiveEntities: async (authTokens, page, searchTerm) => {
-    return entitiesAPI.get(`/active-entities/`, {
-      headers: createHeaders(authTokens),
+  getActiveEntities: async (page, searchTerm) => {
+    return axiosInstance.get(`/active-entities/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -30,9 +19,8 @@ const EntityService = {
     });
   },
 
-  getInactiveEntities: async (authTokens, page, searchTerm) => {
-    return entitiesAPI.get(`/inactive-entities/`, {
-      headers: createHeaders(authTokens),
+  getInactiveEntities: async (page, searchTerm) => {
+    return axiosInstance.get(`/inactive-entities/`, {
       params: {
         page: page,
         search: searchTerm,
@@ -40,32 +28,20 @@ const EntityService = {
     });
   },
 
-  addEntity: async (authTokens, entity) => {
-    return entitiesAPI.post(`/entities/`, entity, {
-      headers: createHeaders(authTokens),
-    });
+  addEntity: async (entity) => {
+    return axiosInstance.post(`/entities/`, entity);
   },
 
-  deleteEntity: async (authTokens, id) => {
-    return entitiesAPI.delete(`/entities/${id}/`, {
-      headers: createHeaders(authTokens),
-    });
+  deleteEntity: async (id) => {
+    return axiosInstance.delete(`/entities/${id}/`);
   },
 
-  updateEntity: async (authTokens, id, entity) => {
-    return entitiesAPI.put(`/entities/${id}/`, entity, {
-      headers: createHeaders(authTokens),
-    });
+  updateEntity: async (id, entity) => {
+    return axiosInstance.put(`/entities/${id}/`, entity);
   },
 
-  activateEntity: async (authTokens, id, activated) => {
-    return entitiesAPI.patch(
-      `/entities/${id}/`,
-      { is_active: !activated },
-      {
-        headers: createHeaders(authTokens),
-      }
-    );
+  activateEntity: async (id, activated) => {
+    return axiosInstance.patch(`/entities/${id}/`, { is_active: !activated });
   },
 };
 
