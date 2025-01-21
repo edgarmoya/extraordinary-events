@@ -1,5 +1,12 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  Suspense,
+} from "react";
 import { useLocation } from "react-router-dom";
+import TableLoader from "../components/skeletons/TableLoader";
 import AuthContext from "../contexts/AuthContext";
 import Layout from "./Layout";
 import Paths from "../routes/Paths";
@@ -16,6 +23,7 @@ import { HttpStatusCode } from "axios";
 function EventsPage() {
   const { user } = useContext(AuthContext);
   const location = useLocation();
+  const [loading, setLoading] = useState(true); // Estado para el loader
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -29,6 +37,7 @@ function EventsPage() {
 
   //* Función para cargar los hechos según la ubicación actual
   const loadEvents = useCallback(async () => {
+    setLoading(true); // Activa el loader
     try {
       let response;
       if (location.pathname === Paths.OPEN_EVENTS) {
@@ -51,6 +60,8 @@ function EventsPage() {
       setTotalEvents(response.data.count);
     } catch (error) {
       console.error("Error obteniendo los hechos: ", error);
+    } finally {
+      setLoading(false); // Desactiva el loader
     }
   }, [location.pathname, currentPage, searchTerm]);
 
@@ -179,10 +190,18 @@ function EventsPage() {
           className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
           style={{ maxHeight: "calc(100vh - 115px)" }}
         >
-          <GridEvents
-            data={events}
-            onRowSelected={(row) => setSelectedRow(row)}
-          />
+          {/* Renderizar el loader o el GridEvents */}
+          <Suspense fallback={<TableLoader />}>
+            {loading ? (
+              <TableLoader columns={7} />
+            ) : (
+              <GridEvents
+                data={events}
+                onRowSelected={(row) => setSelectedRow(row)}
+                onAdd={() => setModalAddIsOpen(true)}
+              />
+            )}
+          </Suspense>
           <div className="card card-footer bg-body border-0">
             <Pagination
               onPageChange={handlePageChange}
