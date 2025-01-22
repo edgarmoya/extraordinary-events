@@ -1,8 +1,8 @@
 import { React, useContext, useState } from "react";
-import Modal from "./Modal";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
-import AuthContext from "../contexts/AuthContext";
-import UserService from "../api/users.api";
+import Modal from "../Modal";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
+import AuthContext from "../../contexts/AuthContext";
+import UserService from "../../api/users.api";
 import { useForm } from "react-hook-form";
 
 function ModalChangePassword({ isOpen, onClose }) {

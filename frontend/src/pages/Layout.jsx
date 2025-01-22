@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar/Navbar";
 import useLocalStorage from "use-local-storage";
 
 function Layout({ children, pageTitle }) {

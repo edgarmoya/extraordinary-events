@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import Modal from "./Modal";
-import AuthContext from "../contexts/AuthContext";
-import UserService from "../api/users.api";
+import Modal from "../Modal";
+import AuthContext from "../../contexts/AuthContext";
+import UserService from "../../api/users.api";
 
 function ModalProfile({ isOpen, onClose }) {
   const { user } = useContext(AuthContext);

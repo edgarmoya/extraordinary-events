@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
-import AuthContext from "../contexts/AuthContext";
+import AuthContext from "../../contexts/AuthContext";
 import ModalConfirmLogout from "./ModalConfirmLogout";
 import ModalChangePassword from "./ModalChangePassword";
 import ModalProfile from "./ModalProfile";
-import ThemeToggle from "./ThemeToggle";
-import ic_profile from "../images/profile.png";
+import ThemeToggle from "../ThemeToggle";
+import ic_profile from "../../images/profile.png";
 
 function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   const { user, logoutUser } = useContext(AuthContext);
