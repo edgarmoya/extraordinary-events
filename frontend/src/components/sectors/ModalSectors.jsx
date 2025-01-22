@@ -1,13 +1,11 @@
-import { React, useContext, useState } from "react";
-import Modal from "./Modal";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
-import AuthContext from "../contexts/AuthContext";
+import { React, useState } from "react";
+import Modal from "../Modal";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { useForm } from "react-hook-form";
-import SectorsService from "../api/sectors.api";
+import SectorsService from "../../api/sectors.api";
 import { HttpStatusCode } from "axios";
 
 function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
-  const { authTokens } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -26,21 +24,19 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
 
   const handleAddSector = async (data) => {
     try {
-      const response = await SectorsService.addSector(authTokens, data);
+      const response = await SectorsService.addSector(data);
       if (response.status === HttpStatusCode.Created) {
-        showSuccessToast("Sector agregado");
+        showSuccessToast("Sector agregado con éxito");
         onRefresh();
       } else {
         showErrorToast("Error al agregar sector");
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          showErrorToast("Error al agregar sector");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     } finally {
       handleCloseModal();
@@ -49,14 +45,10 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
 
   const handleUpdateSector = async (sectorId, data) => {
     try {
-      const response = await SectorsService.updateSector(
-        authTokens,
-        sectorId,
-        data
-      );
+      const response = await SectorsService.updateSector(sectorId, data);
 
       if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Sector actualizado");
+        showSuccessToast("Sector actualizado con éxito");
         onRefresh();
         handleCloseModal();
       } else {
@@ -64,12 +56,10 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          showErrorToast("Error al actualizar sector");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     } finally {
       handleCloseModal();
@@ -78,7 +68,7 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
 
   const handleSaveSector = async (data) => {
     setIsLoading(true);
-    if (sectorData && sectorData.id) {
+    if (sectorData?.id) {
       await handleUpdateSector(sectorData.id, data);
     } else {
       await handleAddSector(data);
@@ -92,7 +82,7 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
   };
 
   return (
-    <div>
+    <>
       <Modal isOpen={isOpen} title={title} onClose={handleCloseModal}>
         <div className="modal-body">
           <form>
@@ -134,7 +124,7 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
           </button>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }
 

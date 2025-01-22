@@ -1,29 +1,12 @@
 import axiosInstance from "./axiosInstance";
 
 const SectorService = {
-  getSectors: async (page, searchTerm) => {
+  getSectors: async (page, searchTerm, is_active) => {
     return axiosInstance.get(`/sectors/`, {
       params: {
         page: page,
         search: searchTerm,
-      },
-    });
-  },
-
-  getActiveSectors: async (page, searchTerm) => {
-    return axiosInstance.get(`/active-sectors/`, {
-      params: {
-        page: page,
-        search: searchTerm,
-      },
-    });
-  },
-
-  getInactiveSectors: async (page, searchTerm) => {
-    return axiosInstance.get(`/inactive-sectors/`, {
-      params: {
-        page: page,
-        search: searchTerm,
+        is_active: is_active,
       },
     });
   },

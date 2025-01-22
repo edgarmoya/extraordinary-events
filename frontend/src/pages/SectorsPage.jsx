@@ -1,21 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
-import GridSectors from "../components/GridSectors";
+import GridSectors from "../components/sectors/GridSectors";
 import SectorService from "../api/sectors.api";
 import Pagination from "../components/Pagination";
 import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
-import ModalSectors from "../components/ModalSectors";
+import ModalSectors from "../components/sectors/ModalSectors";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
+import TableLoader from "../components/skeletons/TableLoader";
 
 function SectorsPage() {
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
   const [sectors, setSectors] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalSectors, setTotalSectors] = useState(1);
@@ -25,59 +27,34 @@ function SectorsPage() {
   const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
 
   //* Función para cargar todos los sectores
-  const loadAllSectors = useCallback(async () => {
+  const loadSectors = useCallback(async () => {
+    setLoading(true);
     try {
-      const response = await SectorService.getSectors(currentPage, searchTerm);
+      let response;
+      if (location.pathname === Paths.ACTIVE_SECTORS) {
+        response = await SectorService.getSectors(
+          currentPage,
+          searchTerm,
+          "True"
+        );
+      } else if (location.pathname === Paths.INACTIVE_SECTORS) {
+        response = await SectorService.getSectors(
+          currentPage,
+          searchTerm,
+          "False"
+        );
+      } else {
+        response = await SectorService.getSectors(currentPage, searchTerm);
+      }
+
       setSectors(response.data.results);
       setTotalSectors(response.data.count);
     } catch (error) {
-      console.error("Error fetching sectors for page: ", error);
+      console.error("Error obteniendo los sectores: ", error);
+    } finally {
+      setLoading(false);
     }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar los sectores activos
-  const loadActiveSectors = useCallback(async () => {
-    try {
-      const response = await SectorService.getActiveSectors(
-        currentPage,
-        searchTerm
-      );
-      setSectors(response.data.results);
-      setTotalSectors(response.data.count);
-    } catch (error) {
-      console.error("Error fetching sectors for page: ", error);
-    }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar los sectores inactivos
-  const loadInactiveSectors = useCallback(async () => {
-    try {
-      const response = await SectorService.getInactiveSectors(
-        currentPage,
-        searchTerm
-      );
-      setSectors(response.data.results);
-      setTotalSectors(response.data.count);
-    } catch (error) {
-      console.error("Error fetching sectors for page: ", error);
-    }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar los sectores según la ubicación actual
-  const loadSectors = useCallback(() => {
-    if (location.pathname === Paths.ACTIVE_SECTORS) {
-      loadActiveSectors();
-    } else if (location.pathname === Paths.INACTIVE_SECTORS) {
-      loadInactiveSectors();
-    } else {
-      loadAllSectors();
-    }
-  }, [
-    location.pathname,
-    loadAllSectors,
-    loadActiveSectors,
-    loadInactiveSectors,
-  ]);
+  }, [location.pathname, currentPage, searchTerm]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -89,7 +66,7 @@ function SectorsPage() {
     try {
       const response = await SectorService.deleteSector(selectedRow.id);
       if (response.status === HttpStatusCode.NoContent) {
-        showSuccessToast("Sector eliminado");
+        showSuccessToast("Sector eliminado con éxito");
         loadSectors();
         clearSelectedRow();
       } else {
@@ -97,16 +74,10 @@ function SectorsPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.InternalServerError) {
-          showErrorToast(
-            "El elemento no puede ser eliminado, se encuentra en uso"
-          );
-        } else {
-          showErrorToast("Error al eliminar sector");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -120,9 +91,9 @@ function SectorsPage() {
       );
       if (response.status === HttpStatusCode.Ok) {
         if (selectedRow.is_active) {
-          showSuccessToast("Sector inactivado");
+          showSuccessToast("Sector inactivado con éxito");
         } else {
-          showSuccessToast("Sector activado");
+          showSuccessToast("Sector activado con éxito");
         }
         loadSectors();
         clearSelectedRow();
@@ -131,16 +102,10 @@ function SectorsPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          if (selectedRow.is_active) {
-            showErrorToast("Error al inactivar sector");
-          } else {
-            showErrorToast("Error al activar sector");
-          }
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -152,7 +117,7 @@ function SectorsPage() {
 
   useEffect(() => {
     loadSectors();
-  }, [location.pathname, currentPage, loadSectors]);
+  }, [loadSectors]);
 
   return (
     <Layout pageTitle="Sectores">
@@ -200,10 +165,16 @@ function SectorsPage() {
           className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
           style={{ maxHeight: "calc(100vh - 115px)" }}
         >
-          <GridSectors
-            data={sectors}
-            onRowSelected={(row) => setSelectedRow(row)}
-          />
+          {loading ? (
+            <TableLoader columns={2} />
+          ) : (
+            <GridSectors
+              data={sectors}
+              onRowSelected={(row) => setSelectedRow(row)}
+              onAdd={() => setModalAddIsOpen(true)}
+            />
+          )}
+
           <div className="card card-footer bg-body border-0">
             <Pagination
               onPageChange={handlePageChange}
