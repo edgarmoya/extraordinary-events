@@ -38,11 +38,18 @@ export const LoginForm = () => {
   return (
     <div className="card shadow d-flex bg-body-tertiary justify-content-center p-4">
       <div className="card-body">
-        <h2 className="w-100 text-center text-body-emphasis mb-2">
-          Bienvenido
-        </h2>
+        <div className="d-flex flex-row justify-content-center align-items-center gap-2">
+          <img
+            src={"/images/logo_he.png"}
+            alt="logo_he"
+            height={35}
+            width={35}
+          ></img>
+          <h2 className="text-body-emphasis">Bienvenido</h2>
+        </div>
+
         <p className="w-100 text-center mb-4">
-          Inserte los datos de autenticación
+          Inserte sus datos de autenticación para continuar
         </p>
         <form>
           <div className="form-floating">

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, Suspense } from "react";
 import Layout from "./Layout";
 import { VectorMap } from "@south-paw/react-vector-maps";
 import styled from "styled-components";
-import cuba from "../images/cuba.json";
 import DashboardService from "../api/dashboard.api";
 import PieChart from "../utils/charts/PieChart";
 import StackedBarChart from "../utils/charts/StackedBarChart";
@@ -38,6 +37,7 @@ const Map = styled.div`
 
 function HomePage() {
   const [clicked, setClicked] = useState("Ninguna");
+  const [mapData, setMapData] = useState(null);
   const [totalEventsCount, setTotalEventsCount] = useState(null);
   const [closedEventsCount, setClosedEventsCount] = useState(null);
   const [openEventsCount, setOpenEventsCount] = useState(null);
@@ -58,6 +58,19 @@ function HomePage() {
       loadEventsByProvince(target.attributes.name.value);
     },
   };
+
+  useEffect(() => {
+    // Cargar el archivo JSON desde la carpeta public
+    fetch("/cuba.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("No se pudo cargar el archivo JSON");
+        }
+        return response.json();
+      })
+      .then((data) => setMapData(data))
+      .catch((error) => console.error(error));
+  }, []);
 
   //* Función para cargar resumen por provincia
   const loadEventsByProvince = useCallback(async (name) => {
@@ -263,7 +276,7 @@ function HomePage() {
                     Hechos por provincias
                   </h6>
                   <Map>
-                    <VectorMap {...cuba} layerProps={layerProps} />
+                    <VectorMap {...mapData} layerProps={layerProps} />
                   </Map>
                   <div className="d-flex flex-column w-100 text-center">
                     <h6>
@@ -271,9 +284,13 @@ function HomePage() {
                     </h6>
                     <h6 className="fw-light">
                       <span className="fw-medium">{eventsByProvince}</span>{" "}
-                      hechos ocurridos y{" "}
+                      {eventsByProvince === 1
+                        ? "hecho ocurrido y "
+                        : "hechos ocurridos y "}
                       <span className="fw-medium">{measuresByProvince}</span>{" "}
-                      medidas tomadas
+                      {measuresByProvince === 1
+                        ? "medida tomada"
+                        : "medidas tomadas"}
                     </h6>
                   </div>
                 </div>

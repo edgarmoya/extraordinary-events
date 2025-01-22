@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Paths from "../routes/Paths";
-import logo from "../images/logo_he_lg.png";
-import logo_datazucar from "../images/datazucar.png";
 import { Link } from "react-router-dom";
 
 function Sidebar({ isOpen }) {
@@ -35,7 +33,13 @@ function Sidebar({ isOpen }) {
           to={Paths.HOME}
           className="d-flex justify-content-center mb-1 mb-md-0 me-md-auto"
         >
-          <img className="" src={logo} alt="logo" height={36} width={126}></img>
+          <img
+            className=""
+            src={"/images/logo_he_lg.png"}
+            alt="logo"
+            height={36}
+            width={126}
+          ></img>
         </Link>
         <hr className="text-body" />
         <ul className="nav nav-pills flex-column mb-auto">
@@ -153,13 +157,13 @@ function Sidebar({ isOpen }) {
           rel="noreferrer"
         >
           <img
-            src={logo_datazucar}
+            src={"/images/datazucar.png"}
             className="mb-1 me-1"
             alt="DATAZUCAR"
             width="15"
             height="15"
           />
-          DATAZUCAR © 2024
+          DATAZUCAR © 2025
           <br />
           <span className="fw-light">Todos los derechos reservados.</span>
         </a>

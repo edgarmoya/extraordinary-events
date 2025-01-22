@@ -10,7 +10,7 @@ const LoginPage = () => {
       className="container-fluid bg-body vh-100 d-flex justify-content-center align-items-center"
       data-bs-theme={theme}
     >
-      <div className="m-5 col-lg-5 col-md-8 col-sm-10 mx-auto">
+      <div className="m-5 col-11 col-sm-10 col-md-8 col-lg-7 col-xl-5 col-xxl-4 mx-auto">
         <LoginForm />
       </div>
     </div>
