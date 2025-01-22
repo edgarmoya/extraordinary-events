@@ -1,13 +1,11 @@
-import { React, useContext, useState } from "react";
-import Modal from "./Modal";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
-import AuthContext from "../contexts/AuthContext";
+import { React, useState } from "react";
+import Modal from "../Modal";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { useForm } from "react-hook-form";
-import TypeService from "../api/types.api";
+import TypeService from "../../api/types.api";
 import { HttpStatusCode } from "axios";
 
 function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
-  const { authTokens } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -26,21 +24,19 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
 
   const handleAddType = async (data) => {
     try {
-      const response = await TypeService.addType(authTokens, data);
+      const response = await TypeService.addType(data);
       if (response.status === HttpStatusCode.Created) {
-        showSuccessToast("Tipo de hecho agregado");
+        showSuccessToast("Tipo de hecho agregado con éxito");
         onRefresh();
       } else {
         showErrorToast("Error al agregar tipo de hecho");
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          showErrorToast("Error al agregar tipo de hecho");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     } finally {
       handleCloseModal();
@@ -49,10 +45,10 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
 
   const handleUpdateType = async (typeId, data) => {
     try {
-      const response = await TypeService.updateType(authTokens, typeId, data);
+      const response = await TypeService.updateType(typeId, data);
 
       if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Tipo de hecho actualizado");
+        showSuccessToast("Tipo de hecho actualizado con éxito");
         onRefresh();
         handleCloseModal();
       } else {
@@ -60,12 +56,10 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          showErrorToast("Error al actualizar tipo de hecho");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     } finally {
       handleCloseModal();
@@ -74,7 +68,7 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
 
   const handleSaveType = async (data) => {
     setIsLoading(true);
-    if (typeData && typeData.id) {
+    if (typeData?.id) {
       await handleUpdateType(typeData.id, data);
     } else {
       await handleAddType(data);

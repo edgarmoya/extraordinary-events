@@ -1,29 +1,12 @@
 import axiosInstance from "./axiosInstance";
 
 const TypeService = {
-  getTypes: async (page, searchTerm) => {
+  getTypes: async (page, searchTerm, is_active) => {
     return axiosInstance.get(`/types/`, {
       params: {
         page: page,
         search: searchTerm,
-      },
-    });
-  },
-
-  getActiveTypes: async (page, searchTerm) => {
-    return axiosInstance.get(`/active-types/`, {
-      params: {
-        page: page,
-        search: searchTerm,
-      },
-    });
-  },
-
-  getInactiveTypes: async (page, searchTerm) => {
-    return axiosInstance.get(`/inactive-types/`, {
-      params: {
-        page: page,
-        search: searchTerm,
+        is_active: is_active,
       },
     });
   },
