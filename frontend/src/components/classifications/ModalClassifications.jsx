@@ -1,11 +1,10 @@
-import { React, useContext, useState, useEffect, useCallback } from "react";
-import Modal from "./Modal";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
-import AuthContext from "../contexts/AuthContext";
+import { React, useState, useEffect, useCallback } from "react";
+import Modal from "../Modal";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { useForm } from "react-hook-form";
-import ClassificationService from "../api/classifications.api";
-import GradeService from "../api/grades.api";
-import FormSelect from "./FormSelect";
+import ClassificationService from "../../api/classifications.api";
+import GradeService from "../../api/grades.api";
+import FormSelect from "../FormSelect";
 import { HttpStatusCode } from "axios";
 
 function ModalClassifications({
@@ -15,7 +14,6 @@ function ModalClassifications({
   title,
   classificationData,
 }) {
-  const { authTokens } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [grades, setGrades] = useState([]);
@@ -37,38 +35,35 @@ function ModalClassifications({
   //* Función para cargar los grados
   const loadGrades = useCallback(async () => {
     try {
-      const response = await GradeService.getGrades(authTokens);
+      const response = await GradeService.getGrades();
       setGrades(response.data.results);
     } catch (error) {
-      console.error("Error fetching grades: ", error);
+      console.error("Error obteniendo los grados: ", error);
     }
-  }, [authTokens]);
+  }, []);
 
   useEffect(() => {
-    loadGrades();
-  }, [loadGrades]);
+    if (isOpen) {
+      loadGrades();
+    }
+  }, [isOpen, loadGrades]);
 
   //* Función para agregar nueva clasificación
   const handleAddClasification = async (data) => {
     try {
-      const response = await ClassificationService.addClassification(
-        authTokens,
-        data
-      );
+      const response = await ClassificationService.addClassification(data);
       if (response.status === HttpStatusCode.Created) {
-        showSuccessToast("Clasificación agregada");
+        showSuccessToast("Clasificación agregada con éxito");
         onRefresh();
       } else {
         showErrorToast("Error al agregar clasificación");
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          showErrorToast("Error al agregar clasificación");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     } finally {
       handleCloseModal();
@@ -79,13 +74,12 @@ function ModalClassifications({
   const handleUpdateClassification = async (classificationId, data) => {
     try {
       const response = await ClassificationService.updateClassification(
-        authTokens,
         classificationId,
         data
       );
 
       if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Clasificación actualizada");
+        showSuccessToast("Clasificación actualizada con éxito");
         onRefresh();
         handleCloseModal();
       } else {
@@ -93,12 +87,10 @@ function ModalClassifications({
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          showErrorToast("Error al actualizar clasificación");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     } finally {
       handleCloseModal();
@@ -107,7 +99,7 @@ function ModalClassifications({
 
   const handleSaveClassification = async (data) => {
     setIsLoading(true);
-    if (classificationData && classificationData.id) {
+    if (classificationData?.id) {
       await handleUpdateClassification(classificationData.id, data);
     } else {
       await handleAddClasification(data);
@@ -134,7 +126,7 @@ function ModalClassifications({
                 }`}
                 style={{ height: "100px" }}
                 defaultValue={
-                  classificationData ? classificationData.description : ""
+                  classificationData ? classificationData?.description : ""
                 }
                 {...register("description", { required: true })}
                 autoFocus={true}

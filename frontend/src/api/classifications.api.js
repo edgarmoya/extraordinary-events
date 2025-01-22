@@ -1,29 +1,12 @@
 import axiosInstance from "./axiosInstance";
 
 const ClassificationService = {
-  getClassifications: async (page, searchTerm) => {
+  getClassifications: async (page, searchTerm, is_active) => {
     return axiosInstance.get(`/classifications/`, {
       params: {
         page: page,
         search: searchTerm,
-      },
-    });
-  },
-
-  getActiveClassifications: async (page, searchTerm) => {
-    return axiosInstance.get(`/active-classifications/`, {
-      params: {
-        page: page,
-        search: searchTerm,
-      },
-    });
-  },
-
-  getInactiveClassifications: async (page, searchTerm) => {
-    return axiosInstance.get(`/inactive-classifications/`, {
-      params: {
-        page: page,
-        search: searchTerm,
+        is_active: is_active,
       },
     });
   },

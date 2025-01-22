@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
-import GridClassifications from "../components/GridClassifications";
+import GridClassifications from "../components/classifications/GridClassifications";
+import TableLoader from "../components/skeletons/TableLoader";
 import ClassificationService from "../api/classifications.api";
 import Pagination from "../components/Pagination";
 import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
-import ModalClassifications from "../components/ModalClassifications";
+import ModalClassifications from "../components/classifications/ModalClassifications";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
@@ -14,8 +15,9 @@ import { HttpStatusCode } from "axios";
 
 function ClassificationsPage() {
   const location = useLocation();
+  const [loading, setLoading] = useState(true); // Estado para el loader
   const [classifications, setClassifications] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalClassifications, setTotalClassifications] = useState(1);
@@ -25,62 +27,37 @@ function ClassificationsPage() {
   const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
 
   //* Función para cargar todos las clasificaciones
-  const loadAllClassifications = useCallback(async () => {
+  const loadClassifications = useCallback(async () => {
+    setLoading(true); // Activa el loader
     try {
-      const response = await ClassificationService.getClassifications(
-        currentPage,
-        searchTerm
-      );
+      let response;
+      if (location.pathname === Paths.ACTIVE_CLASSIFICATIONS) {
+        response = await ClassificationService.getClassifications(
+          currentPage,
+          searchTerm,
+          "True"
+        );
+      } else if (location.pathname === Paths.INACTIVE_CLASSIFICATIONS) {
+        response = await ClassificationService.getClassifications(
+          currentPage,
+          searchTerm,
+          "False"
+        );
+      } else {
+        response = await ClassificationService.getClassifications(
+          currentPage,
+          searchTerm
+        );
+      }
+
       setClassifications(response.data.results);
       setTotalClassifications(response.data.count);
     } catch (error) {
-      console.error("Error fetching classifications for page: ", error);
+      console.error("Error obteniendo las clasificaciones: ", error);
+    } finally {
+      setLoading(false); // Desactiva el loader
     }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar las clasificaciones activas
-  const loadActiveClassifications = useCallback(async () => {
-    try {
-      const response = await ClassificationService.getActiveClassifications(
-        currentPage,
-        searchTerm
-      );
-      setClassifications(response.data.results);
-      setTotalClassifications(response.data.count);
-    } catch (error) {
-      console.error("Error fetching classifications for page: ", error);
-    }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar las clasificaciones inactivas
-  const loadInactiveClassifications = useCallback(async () => {
-    try {
-      const response = await ClassificationService.getInactiveClassifications(
-        currentPage,
-        searchTerm
-      );
-      setClassifications(response.data.results);
-      setTotalClassifications(response.data.count);
-    } catch (error) {
-      console.error("Error fetching classifications for page: ", error);
-    }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar las clasificaciones según la ubicación actual
-  const loadClassifications = useCallback(() => {
-    if (location.pathname === Paths.ACTIVE_CLASSIFICATIONS) {
-      loadActiveClassifications();
-    } else if (location.pathname === Paths.INACTIVE_CLASSIFICATIONS) {
-      loadInactiveClassifications();
-    } else {
-      loadAllClassifications();
-    }
-  }, [
-    location.pathname,
-    loadAllClassifications,
-    loadActiveClassifications,
-    loadInactiveClassifications,
-  ]);
+  }, [location.pathname, currentPage, searchTerm]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -94,7 +71,7 @@ function ClassificationsPage() {
         selectedRow.id
       );
       if (response.status === HttpStatusCode.NoContent) {
-        showSuccessToast("Clasificación eliminada");
+        showSuccessToast("Clasificación eliminada con éxito");
         loadClassifications();
         clearSelectedRow();
       } else {
@@ -102,16 +79,10 @@ function ClassificationsPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.InternalServerError) {
-          showErrorToast(
-            "El elemento no puede ser eliminado, se encuentra en uso"
-          );
-        } else {
-          showErrorToast("Error al eliminar clasificación");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -125,9 +96,9 @@ function ClassificationsPage() {
       );
       if (response.status === HttpStatusCode.Ok) {
         if (selectedRow.is_active) {
-          showSuccessToast("Clasificación inactivada");
+          showSuccessToast("Clasificación inactivada con éxito");
         } else {
-          showSuccessToast("Clasificación activada");
+          showSuccessToast("Clasificación activada con éxito");
         }
         loadClassifications();
         clearSelectedRow();
@@ -136,16 +107,10 @@ function ClassificationsPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          if (selectedRow.is_active) {
-            showErrorToast("Error al inactivar clasificación");
-          } else {
-            showErrorToast("Error al activar clasificación");
-          }
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -157,7 +122,7 @@ function ClassificationsPage() {
 
   useEffect(() => {
     loadClassifications();
-  }, [location.pathname, currentPage, loadClassifications]);
+  }, [loadClassifications]);
 
   return (
     <Layout pageTitle="Clasificaciones">
@@ -205,10 +170,16 @@ function ClassificationsPage() {
           className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
           style={{ maxHeight: "calc(100vh - 115px)" }}
         >
-          <GridClassifications
-            data={classifications}
-            onRowSelected={(row) => setSelectedRow(row)}
-          />
+          {loading ? (
+            <TableLoader columns={3} />
+          ) : (
+            <GridClassifications
+              data={classifications}
+              onRowSelected={(row) => setSelectedRow(row)}
+              onAdd={() => setModalAddIsOpen(true)}
+            />
+          )}
+
           <div className="card card-footer bg-body border-0">
             <Pagination
               onPageChange={handlePageChange}

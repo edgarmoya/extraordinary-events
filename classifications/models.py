@@ -1,7 +1,7 @@
 from django.db import models
 from grades.models import Grade 
 
-# Create your models here.
+
 class Classification(models.Model):
     description = models.TextField(max_length=255, verbose_name='Descripción')
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT, verbose_name='Grado')
