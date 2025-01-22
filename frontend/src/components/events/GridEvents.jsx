@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import TableEmptyMessage from "./TableEmptyMessage";
+import TableEmptyMessage from "../TableEmptyMessage";
 
 function GridEvents({ data, onRowSelected, onAdd }) {
   const [selectedRow, setSelectedRow] = useState(null);

@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect, useContext } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import CardAttachment from "./CardAttachment";
-import AuthContext from "../contexts/AuthContext";
-import EventService from "../api/event.api";
+import EventService from "../../api/event.api";
 import { useForm } from "react-hook-form";
 
 function ModalEventsAttachment({
@@ -10,7 +9,6 @@ function ModalEventsAttachment({
   eventData,
   readOnly,
 }) {
-  const { authTokens } = useContext(AuthContext);
   const [lastId, setLastId] = useState(0);
   const {
     register,
@@ -35,15 +33,12 @@ function ModalEventsAttachment({
   //* Función para cargar los anexos
   const loadAttachments = useCallback(async () => {
     try {
-      const response = await EventService.getAttachments(
-        authTokens,
-        eventData && eventData.id
-      );
-      setAttachments(response.data.results);
+      const response = await EventService.getAttachments(eventData?.id);
+      setAttachments(response.data);
     } catch (error) {
-      console.error("Error fetching attachments: ", error);
+      console.error("Error obteniendo anexos: ", error);
     }
-  }, [authTokens, eventData, setAttachments]);
+  }, [eventData, setAttachments]);
 
   const handleFormSubmit = (data) => {
     handleSaveAttachment(data);
@@ -57,7 +52,7 @@ function ModalEventsAttachment({
   };
 
   useEffect(() => {
-    if (eventData && eventData.id) {
+    if (eventData?.id) {
       loadAttachments();
     }
   }, [eventData, loadAttachments]);

@@ -1,11 +1,9 @@
-import React, { useState, useCallback, useEffect, useContext } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import CardMeasure from "./CardMeasure";
-import AuthContext from "../contexts/AuthContext";
-import EventService from "../api/event.api";
+import EventService from "../../api/event.api";
 import { useForm } from "react-hook-form";
 
 function ModalEventsMeasure({ measures, setMeasures, eventData, readOnly }) {
-  const { authTokens } = useContext(AuthContext);
   const [lastId, setLastId] = useState(0);
   const {
     register,
@@ -27,15 +25,12 @@ function ModalEventsMeasure({ measures, setMeasures, eventData, readOnly }) {
   //* Función para cargar las medidas
   const loadMeasures = useCallback(async () => {
     try {
-      const response = await EventService.getMeasures(
-        authTokens,
-        eventData && eventData.id
-      );
-      setMeasures(response.data.results);
+      const response = await EventService.getMeasures(eventData?.id);
+      setMeasures(response.data);
     } catch (error) {
-      console.error("Error fetching measures: ", error);
+      console.error("Error obteniendo medidas: ", error);
     }
-  }, [authTokens, eventData, setMeasures]);
+  }, [eventData, setMeasures]);
 
   const handleFormSubmit = (data) => {
     handleSaveMeasure(data);
@@ -47,7 +42,7 @@ function ModalEventsMeasure({ measures, setMeasures, eventData, readOnly }) {
   };
 
   useEffect(() => {
-    if (eventData && eventData.id) {
+    if (eventData?.id) {
       loadMeasures();
     }
   }, [eventData, loadMeasures]);

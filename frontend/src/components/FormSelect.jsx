@@ -21,6 +21,13 @@ function FormSelect({
     setValue(registerName, defaultValue);
   }, [data, setValue, registerName, defaultValue]);
 
+  function truncateText(text, maxLength = 100) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  }
+
   return (
     <div className={`form-floating z-0 ${className}`}>
       <select
@@ -39,7 +46,7 @@ function FormSelect({
         <option value="">{message}</option>
         {options.map((element) => (
           <option key={element.id} value={element.id}>
-            {element.description}
+            {truncateText(element.description)}
           </option>
         ))}
       </select>

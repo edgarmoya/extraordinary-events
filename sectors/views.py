@@ -76,10 +76,10 @@ class SectorView(viewsets.ModelViewSet):
         """
         Sobrescribe el método de eliminación para evitar borrar sectores en uso
         """
-        # Obtiene la clasificación que se desea eliminar
+        # Obtiene el sector que se desea eliminar
         instance = self.get_object()
 
-        # Verifica si la clasificación está siendo utilizada en otros registros
+        # Verifica si el sector está siendo utilizado en otros registros
         if Entity.objects.filter(sector=instance).exists():
             return Response(
                 {"detail": "No se puede eliminar este sector porque está siendo utilizado"},

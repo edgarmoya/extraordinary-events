@@ -141,25 +141,47 @@ class MeasureView(viewsets.ModelViewSet):
 
 
 class AttachmentView(viewsets.ModelViewSet):
+    # Define las clases de permisos requeridas
     permission_classes = [IsAuthenticated, ]
     serializer_class = AttachmentSerializer
 
+    # Deshabilitar paginación en esta vista
+    pagination_class = None
+
     def get_queryset(self):
+        """
+        Retorna el conjunto de anexos filtrado por el 'event_id' proporcionado 
+        en los parámetros de la solicitud
+        """
+        # Obtiene el parámetro 'event_id' de la consulta
         event_id = self.request.query_params.get('event_id', '')
-        queryset = Attachment.objects.filter(event=event_id)
-        return queryset
-    
+
+        # Valida que el 'event_id' sea proporcionado
+        if not event_id:
+            raise ValidationError({'detail': 'El parámetro event_id es obligatorio'})
+
+        # Filtra los anexos relacionadas con el hecho especificado
+        return Attachment.objects.filter(event=event_id)
+
     def get_object(self):
-        # Use the 'id' field as the primary key for retrieval
-        attach_id = self.kwargs.get('pk')
-        return Attachment.objects.get(id=attach_id)
+        """
+        Obtiene un anexo específico utilizando su ID como clave primaria
+        """
+        attach_id = self.kwargs.get('pk')  # Obtiene el parámetro 'pk' de la URL
+        try:
+            return Attachment.objects.get(id=attach_id)
+        except Attachment.DoesNotExist:
+            raise NotFound(f'No se encontró el anexo con el identificador {attach_id}')
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Elimina un anexo específico
+        """
         try:
             instance = self.get_object()
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Attachment.DoesNotExist:
-            return Response({'error': 'Attachment not found'}, status=status.HTTP_404_NOT_FOUND)
+            return NotFound(f'Anexo no encontrado')
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

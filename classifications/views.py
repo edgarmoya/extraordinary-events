@@ -27,13 +27,13 @@ class ClassificationView(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Devuelve el conjunto de datos que será procesado por las operaciones de la vista.
-        Aplica filtros opcionales según los parámetros 'search' y 'status' proporcionados en la solicitud.
+        Aplica filtros opcionales según los parámetros 'search' y 'is_active' proporcionados en la solicitud.
         """
         # Obtiene los parámetros de búsqueda y estado de la solicitud
         search_term = self.request.query_params.get('search', '')
         is_active = self.request.query_params.get('is_active', '')
 
-        # Obtiene todos los eventos disponibles inicialmente
+        # Obtiene todos las clasificaciones disponibles inicialmente
         queryset = Classification.objects.all()
 
         # Aplica el filtro por término de búsqueda si está presente
@@ -49,7 +49,7 @@ class ClassificationView(viewsets.ModelViewSet):
             else:
                 queryset = queryset.none()  # Maneja el caso donde el valor no es válido
 
-        # Ordena los resultados por fecha de ocurrencia y creación de forma descendente
+        # Ordena los resultados por orden alfabético de la descripción
         return queryset.order_by('description')
 
     def list(self, request, *args, **kwargs):

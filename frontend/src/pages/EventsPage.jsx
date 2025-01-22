@@ -14,9 +14,9 @@ import EventService from "../api/event.api";
 import Pagination from "../components/Pagination";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmClose from "../components/ModalConfirmClose";
-import GridEvents from "../components/GridEvents";
+import GridEvents from "../components/events/GridEvents";
 import TopBar from "../components/TopBar";
-import ModalEvents from "../components/ModalEvents";
+import ModalEvents from "../components/events/ModalEvents";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 

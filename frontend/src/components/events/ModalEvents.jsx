@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
-import Modal from "./Modal";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
-import AuthContext from "../contexts/AuthContext";
+import Modal from "../Modal";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
+import AuthContext from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
-import EventService from "../api/event.api";
+import EventService from "../../api/event.api";
 import ModalEventsGeneral from "./ModalEventsGeneral";
 import ModalEventsMeasure from "./ModalEventsMeasure";
 import ModalEventsAttachment from "./ModalEventsAttachment";
@@ -19,7 +19,7 @@ function ModalEvents({
   eventData,
   readOnly,
 }) {
-  const { authTokens, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [occurrenceDate, setOccurrenceDate] = useState(new Date());
 
@@ -45,7 +45,7 @@ function ModalEvents({
     if (eventDataValue.getTime() !== occurrenceDate.getTime()) {
       setOccurrenceDate(eventDataValue);
     }
-  }, [eventData, occurrenceDate]); // Dependencias de useCallback
+  }, [eventData, occurrenceDate]);
 
   const handleCloseModal = () => {
     reset();
@@ -57,7 +57,7 @@ function ModalEvents({
   //* Función para agregar hechos extraordinarios
   const handleAddEvent = async (data) => {
     try {
-      const response = await EventService.addEvent(authTokens, data);
+      const response = await EventService.addEvent(data);
       if (response.status === HttpStatusCode.Created) {
         // Agregar medidas
         for (const measure of measures) {
@@ -77,7 +77,7 @@ function ModalEvents({
           await handleAddAttachment(attachmentData);
         }
 
-        showSuccessToast("Hecho extraordinario agregado");
+        showSuccessToast("Hecho extraordinario agregado con éxito");
         onRefresh();
         handleCloseModal();
       } else {
@@ -85,15 +85,10 @@ function ModalEvents({
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-          handleCloseModal();
-        } else if (status === HttpStatusCode.BadRequest) {
-          showErrorToast("Error al agregar, compruebe los campos");
-        } else {
-          showErrorToast("Error al agregar hecho");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -101,18 +96,14 @@ function ModalEvents({
   //* Función para agregar medida
   const handleAddMeasure = async (data) => {
     try {
-      const response = await EventService.addMeasure(authTokens, data);
+      const response = await EventService.addMeasure(data);
       return response.status;
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          throw Error("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.BadRequest) {
-          throw Error("Error al agregar, compruebe los campos");
-        } else {
-          throw Error("Error al agregar medidas");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -120,21 +111,17 @@ function ModalEvents({
   //* Función para eliminar medida
   const handleDeleteMeasure = async (measureId) => {
     try {
-      const response = await EventService.deleteMeasure(authTokens, measureId);
+      const response = await EventService.deleteMeasure(measureId);
 
       if (response.status === HttpStatusCode.NoContent) {
         return response.status;
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          throw Error("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.BadRequest) {
-          throw Error("Error al eliminar, compruebe los campos");
-        } else {
-          throw Error("Error al eliminar medidas");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -142,17 +129,14 @@ function ModalEvents({
   //* Función para modificar las medidas
   const handleAddDeleteMeasures = async (eventId, measures) => {
     // Obtener medidas existentes asociadas al evento
-    const existingMeasures = await EventService.getMeasures(
-      authTokens,
-      eventId
-    );
+    const existingMeasures = await EventService.getMeasures(eventId);
 
     // Identificar medidas a agregar y eliminar
     const measuresToAdd = [];
     const measuresToDelete = [];
 
     // Identificar medidas existentes a editar y eliminar
-    for (const existingMeasure of existingMeasures.data.results) {
+    for (const existingMeasure of existingMeasures.data) {
       const matchingMeasure = measures.find((m) => m.id === existingMeasure.id);
 
       if (!matchingMeasure) {
@@ -163,7 +147,7 @@ function ModalEvents({
 
     // Identificar medidas nuevas a agregar
     for (const measure of measures) {
-      if (!existingMeasures.data.results.some((m) => m.id === measure.id)) {
+      if (!existingMeasures.data.some((m) => m.id === measure.id)) {
         // La medida no existe en las medidas existentes, entonces agregar a las medidas a agregar
         measuresToAdd.push({
           event: eventId,
@@ -184,18 +168,14 @@ function ModalEvents({
   //* Función para agregar anexo
   const handleAddAttachment = async (data) => {
     try {
-      const response = await EventService.addAttachment(authTokens, data);
+      const response = await EventService.addAttachment(data);
       return response.status;
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          throw Error("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.BadRequest) {
-          throw Error("Error al agregar, compruebe los campos");
-        } else {
-          throw Error("Error al agregar medidas");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -203,24 +183,17 @@ function ModalEvents({
   //* Función para eliminar anexo
   const handleDeleteAttachment = async (attachId) => {
     try {
-      const response = await EventService.deleteAttachment(
-        authTokens,
-        attachId
-      );
+      const response = await EventService.deleteAttachment(attachId);
 
       if (response.status === HttpStatusCode.NoContent) {
         return response.status;
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          throw Error("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.BadRequest) {
-          throw Error("Error al eliminar, compruebe los campos");
-        } else {
-          throw Error("Error al eliminar anexo");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -228,17 +201,14 @@ function ModalEvents({
   //* Función para modificar los anexos
   const handleAddDeleteAttachment = async (eventId, attachments) => {
     // Obtener anexos existentes asociadas al evento
-    const existingAttachs = await EventService.getAttachments(
-      authTokens,
-      eventId
-    );
+    const existingAttachs = await EventService.getAttachments(eventId);
 
     // Identificar anexos a agregar y eliminar
     const attachsToAdd = [];
     const attachsToDelete = [];
 
     // Identificar anexos existentes a eliminar
-    for (const existingAttach of existingAttachs.data.results) {
+    for (const existingAttach of existingAttachs.data) {
       const matchingAttach = attachments.find(
         (m) => m.id === existingAttach.id
       );
@@ -251,7 +221,7 @@ function ModalEvents({
 
     // Identificar anexos nuevos a agregar
     for (const attach of attachments) {
-      if (!existingAttachs.data.results.some((m) => m.id === attach.id)) {
+      if (!existingAttachs.data.some((m) => m.id === attach.id)) {
         // El anexo no existe en los existentes, entonces agregar a los anexos a agregar
         attachsToAdd.push({
           id: attach.id,
@@ -274,11 +244,7 @@ function ModalEvents({
   //* Función para actualizar un hecho extraordinario
   const handleUpdateEvent = async (eventId, data) => {
     try {
-      const response = await EventService.updateEvent(
-        authTokens,
-        eventId,
-        data
-      );
+      const response = await EventService.updateEvent(eventId, data);
 
       if (response.status !== HttpStatusCode.Ok) {
         showErrorToast("Error al actualizar hecho");
@@ -288,27 +254,22 @@ function ModalEvents({
       await handleAddDeleteMeasures(eventId, measures);
       await handleAddDeleteAttachment(eventId, attachments);
 
-      showSuccessToast("Hecho extraordinario actualizado");
+      showSuccessToast("Hecho extraordinario actualizado con éxito");
       onRefresh();
       handleCloseModal();
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-          handleCloseModal();
-        } else if (status === HttpStatusCode.BadRequest) {
-          showErrorToast("Error al actualizar, código existente");
-        } else {
-          showErrorToast("Error al actualizar hecho");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
 
   const handleSaveEvent = async (data) => {
     setIsLoading(true);
-    if (eventData && eventData.id) {
+    if (eventData?.id) {
       await handleUpdateEvent(eventData.id, data);
     } else {
       await handleAddEvent(data);

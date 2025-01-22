@@ -1,9 +1,8 @@
-import { React, useContext, useState, useEffect, useCallback } from "react";
-import AuthContext from "../contexts/AuthContext";
-import EntityService from "../api/entities.api";
-import TypeService from "../api/types.api";
-import ClassificationService from "../api/classifications.api";
-import FormSelect from "./FormSelect";
+import { React, useState, useEffect } from "react";
+import EntityService from "../../api/entities.api";
+import TypeService from "../../api/types.api";
+import ClassificationService from "../../api/classifications.api";
+import FormSelect from "../FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { registerLocale } from "react-datepicker";
@@ -19,7 +18,6 @@ function ModalEventsGeneral({
   eventData,
   readOnly,
 }) {
-  const { authTokens } = useContext(AuthContext);
   const [classifications, setClassifications] = useState([]);
   const [entities, setEntities] = useState([]);
   const [types, setTypes] = useState([]);
@@ -43,97 +41,56 @@ function ModalEventsGeneral({
   };
 
   //* Función para cargar las clasificaciones activas que se mostrarán para seleccionar
-  const loadActiveClassifications = useCallback(
-    async (currentPage) => {
-      try {
-        let allClassifications = [];
-        let nextPage = currentPage;
-        while (true) {
-          const response = await ClassificationService.getActiveClassifications(
-            authTokens,
-            nextPage
-          );
-          const newClassifications = response.data.results;
-          allClassifications = [...allClassifications, ...newClassifications];
+  const loadActiveClassifications = async () => {
+    try {
+      const response = await ClassificationService.getClassifications(
+        undefined,
+        undefined,
+        "True"
+      );
 
-          if (response.data.next) {
-            nextPage += 1;
-          } else {
-            break;
-          }
-        }
-        setClassifications(allClassifications);
-      } catch (error) {
-        console.error("Error fetching classifications: ", error);
-      }
-    },
-    [authTokens]
-  );
+      setClassifications(response.data);
+    } catch (error) {
+      console.error("Error obteniendo clasificaciones: ", error);
+    }
+  };
 
   //* Función para cargar las entidades activas que se mostrarán para seleccionar
-  const loadActiveEntities = useCallback(
-    async (currentPage) => {
-      try {
-        let allEntities = [];
-        let nextPage = currentPage;
-        while (true) {
-          const response = await EntityService.getActiveEntities(
-            authTokens,
-            nextPage
-          );
-          const newEntities = response.data.results.map((entity) => ({
-            id: entity.id_entity,
-            description: entity.description,
-          }));
-          allEntities = [...allEntities, ...newEntities];
+  const loadActiveEntities = async () => {
+    try {
+      const response = await EntityService.getEntities(
+        undefined,
+        undefined,
+        "True"
+      );
 
-          if (response.data.next) {
-            nextPage += 1;
-          } else {
-            break;
-          }
-        }
-        setEntities(allEntities);
-      } catch (error) {
-        console.error("Error fetching entities: ", error);
-      }
-    },
-    [authTokens]
-  );
+      const transform = response.data.map((entity) => ({
+        id: entity.id_entity,
+        description: entity.description,
+      }));
+
+      setEntities(transform);
+    } catch (error) {
+      console.error("Error obteniendo entidades: ", error);
+    }
+  };
 
   //* Función para cargar los tipos de hechos activos que se mostrarán para seleccionar
-  const loadActiveTypes = useCallback(
-    async (currentPage) => {
-      try {
-        let allTypes = [];
-        let nextPage = currentPage;
-        while (true) {
-          const response = await TypeService.getActiveTypes(
-            authTokens,
-            nextPage
-          );
-          const newTypes = response.data.results;
-          allTypes = [...allTypes, ...newTypes];
+  const loadActiveTypes = async () => {
+    try {
+      const response = await TypeService.getTypes(undefined, undefined, "True");
 
-          if (response.data.next) {
-            nextPage += 1;
-          } else {
-            break;
-          }
-        }
-        setTypes(allTypes);
-      } catch (error) {
-        console.error("Error fetching types: ", error);
-      }
-    },
-    [authTokens]
-  );
+      setTypes(response.data);
+    } catch (error) {
+      console.error("Error obteniendo tipos: ", error);
+    }
+  };
 
   useEffect(() => {
-    loadActiveClassifications(1);
-    loadActiveEntities(1);
-    loadActiveTypes(1);
-  }, [loadActiveClassifications, loadActiveEntities, loadActiveTypes]);
+    loadActiveClassifications();
+    loadActiveEntities();
+    loadActiveTypes();
+  }, []);
 
   return (
     <div>
