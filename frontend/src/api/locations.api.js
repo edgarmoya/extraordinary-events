@@ -1,24 +1,12 @@
-import axios from "axios";
-
-const locationsAPI = axios.create({
-  baseURL: "http://localhost:8000/api",
-});
-
-const createHeaders = (authTokens) => ({
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + String(authTokens.access),
-});
+import axiosInstance from "./axiosInstance";
 
 const LocationService = {
-  getProvinces: async (authTokens) => {
-    return locationsAPI.get(`/province/`, {
-      headers: createHeaders(authTokens),
-    });
+  getProvinces: async () => {
+    return axiosInstance.get(`/province/`, {});
   },
 
-  getMunicipalities: async (authTokens, province) => {
-    return locationsAPI.get(`/municipality/`, {
-      headers: createHeaders(authTokens),
+  getMunicipalities: async (province) => {
+    return axiosInstance.get(`/municipality/`, {
       params: {
         id_province: province,
       },

@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
-
 import Layout from "./Layout";
 import Paths from "../routes/Paths";
 import EntityService from "../api/entities.api";
 import Pagination from "../components/Pagination";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
-import GridEntities from "../components/GridEntities";
+import GridEntities from "../components/entities/GridEntities";
 import TopBar from "../components/TopBar";
-import ModalEntities from "../components/ModalEntities";
+import ModalEntities from "../components/entities/ModalEntities";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { HttpStatusCode } from "axios";
+import TableLoader from "../components/skeletons/TableLoader";
 
 function EntitiesPage() {
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
   const [entities, setEntities] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalEntities, setTotalEntities] = useState(1);
@@ -27,59 +28,34 @@ function EntitiesPage() {
   const [modalWatchIsOpen, setModalWatchIsOpen] = useState(false);
 
   //* Función para cargar todos las entidades
-  const loadAllEntities = useCallback(async () => {
-    try {
-      const response = await EntityService.getEntities(currentPage, searchTerm);
-      setEntities(response.data.results);
-      setTotalEntities(response.data.count);
-    } catch (error) {
-      console.error("Error fetching entities for page: ", error);
-    }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar las entidades activas
-  const loadActiveEntities = useCallback(async () => {
-    try {
-      const response = await EntityService.getActiveEntities(
-        currentPage,
-        searchTerm
-      );
-      setEntities(response.data.results);
-      setTotalEntities(response.data.count);
-    } catch (error) {
-      console.error("Error fetching entities for page: ", error);
-    }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar las entidades inactivas
-  const loadInactiveEntities = useCallback(async () => {
-    try {
-      const response = await EntityService.getInactiveEntities(
-        currentPage,
-        searchTerm
-      );
-      setEntities(response.data.results);
-      setTotalEntities(response.data.count);
-    } catch (error) {
-      console.error("Error fetching entities for page: ", error);
-    }
-  }, [currentPage, searchTerm]);
-
-  //* Función para cargar las entidades según la ubicación actual
   const loadEntities = useCallback(async () => {
-    if (location.pathname === Paths.ACTIVE_ENTITIES) {
-      await loadActiveEntities();
-    } else if (location.pathname === Paths.INACTIVE_ENTITIES) {
-      loadInactiveEntities();
-    } else {
-      loadAllEntities();
+    setLoading(true);
+    try {
+      let response;
+      if (location.pathname === Paths.ACTIVE_ENTITIES) {
+        response = await EntityService.getEntities(
+          currentPage,
+          searchTerm,
+          "True"
+        );
+      } else if (location.pathname === Paths.INACTIVE_ENTITIES) {
+        response = await EntityService.getEntities(
+          currentPage,
+          searchTerm,
+          "False"
+        );
+      } else {
+        response = await EntityService.getEntities(currentPage, searchTerm);
+      }
+
+      setEntities(response.data.results);
+      setTotalEntities(response.data.count);
+    } catch (error) {
+      console.error("Error obteniendo las entidades: ", error);
+    } finally {
+      setLoading(false);
     }
-  }, [
-    location.pathname,
-    loadAllEntities,
-    loadActiveEntities,
-    loadInactiveEntities,
-  ]);
+  }, [location.pathname, currentPage, searchTerm]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -91,7 +67,7 @@ function EntitiesPage() {
     try {
       const response = await EntityService.deleteEntity(selectedRow.id_entity);
       if (response.status === HttpStatusCode.NoContent) {
-        showSuccessToast("Entidad eliminada");
+        showSuccessToast("Entidad eliminada con éxito");
         loadEntities();
         clearSelectedRow();
       } else {
@@ -99,16 +75,10 @@ function EntitiesPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else if (status === HttpStatusCode.InternalServerError) {
-          showErrorToast(
-            "El elemento no puede ser eliminado, se encuentra en uso"
-          );
-        } else {
-          showErrorToast("Error al eliminar entidad");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -122,9 +92,9 @@ function EntitiesPage() {
       );
       if (response.status === HttpStatusCode.Ok) {
         if (selectedRow.is_active) {
-          showSuccessToast("Entidad inactivada");
+          showSuccessToast("Entidad inactivada con éxito");
         } else {
-          showSuccessToast("Entidad activada");
+          showSuccessToast("Entidad activada con éxito");
         }
         loadEntities();
         clearSelectedRow();
@@ -133,16 +103,10 @@ function EntitiesPage() {
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-        } else {
-          if (selectedRow.is_active) {
-            showErrorToast("Error al inactivar entidad");
-          } else {
-            showErrorToast("Error al activar entidad");
-          }
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
@@ -154,7 +118,7 @@ function EntitiesPage() {
 
   useEffect(() => {
     loadEntities();
-  }, [location.pathname, currentPage, loadEntities]);
+  }, [loadEntities]);
 
   return (
     <Layout pageTitle="Entidades">
@@ -209,10 +173,16 @@ function EntitiesPage() {
           className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
           style={{ maxHeight: "calc(100vh - 115px)" }}
         >
-          <GridEntities
-            data={entities}
-            onRowSelected={(row) => setSelectedRow(row)}
-          />
+          {loading ? (
+            <TableLoader columns={6} />
+          ) : (
+            <GridEntities
+              data={entities}
+              onRowSelected={(row) => setSelectedRow(row)}
+              onAdd={() => setModalAddIsOpen(true)}
+            />
+          )}
+
           <div className="card card-footer bg-body border-0">
             <Pagination
               onPageChange={handlePageChange}

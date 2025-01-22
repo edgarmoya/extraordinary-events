@@ -1,29 +1,12 @@
 import axiosInstance from "./axiosInstance";
 
 const EntityService = {
-  getEntities: async (page, searchTerm) => {
+  getEntities: async (page, searchTerm, is_active) => {
     return axiosInstance.get(`/entities/`, {
       params: {
         page: page,
         search: searchTerm,
-      },
-    });
-  },
-
-  getActiveEntities: async (page, searchTerm) => {
-    return axiosInstance.get(`/active-entities/`, {
-      params: {
-        page: page,
-        search: searchTerm,
-      },
-    });
-  },
-
-  getInactiveEntities: async (page, searchTerm) => {
-    return axiosInstance.get(`/inactive-entities/`, {
-      params: {
-        page: page,
-        search: searchTerm,
+        is_active: is_active,
       },
     });
   },

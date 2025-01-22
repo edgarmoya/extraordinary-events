@@ -1,12 +1,11 @@
-import { React, useContext, useState, useEffect, useCallback } from "react";
-import Modal from "./Modal";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
-import AuthContext from "../contexts/AuthContext";
+import { React, useState, useEffect, useCallback } from "react";
+import Modal from "../Modal";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { useForm } from "react-hook-form";
-import EntityService from "../api/entities.api";
-import SectorService from "../api/sectors.api";
-import LocationService from "../api/locations.api";
-import FormSelect from "./FormSelect";
+import EntityService from "../../api/entities.api";
+import SectorService from "../../api/sectors.api";
+import LocationService from "../../api/locations.api";
+import FormSelect from "../FormSelect";
 import { HttpStatusCode } from "axios";
 
 function ModalEntities({
@@ -18,7 +17,6 @@ function ModalEntities({
   entityData,
   readOnly,
 }) {
-  const { authTokens } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [sectors, setSectors] = useState([]);
@@ -51,55 +49,41 @@ function ModalEntities({
   };
 
   //* Función para cargar los sectores activos que se mostrarán para seleccionar
-  const loadActiveSectors = useCallback(
-    async (currentPage) => {
-      try {
-        let allSectors = [];
-        let nextPage = currentPage;
-        while (true) {
-          const response = await SectorService.getActiveSectors(
-            authTokens,
-            nextPage
-          );
-          const newSectors = response.data.results;
-          allSectors = [...allSectors, ...newSectors];
+  const loadActiveSectors = useCallback(async () => {
+    try {
+      const response = await SectorService.getSectors(
+        undefined,
+        undefined,
+        "True"
+      );
 
-          if (response.data.next) {
-            nextPage += 1;
-          } else {
-            break;
-          }
-        }
-        setSectors(allSectors);
-      } catch (error) {
-        console.error("Error fetching sectors: ", error);
-      }
-    },
-    [authTokens]
-  );
+      setSectors(response.data);
+    } catch (error) {
+      console.error("Error obteniendo sectores: ", error);
+    }
+  }, []);
 
   //* Función para cargar las provincias
   const loadProvinces = useCallback(async () => {
     try {
-      const response = await LocationService.getProvinces(authTokens);
+      const response = await LocationService.getProvinces();
       setProvinces(response.data.results);
     } catch (error) {
-      console.error("Error fetching provinces: ", error);
+      console.error("Error obteniendo provincias: ", error);
     }
-  }, [authTokens]);
+  }, []);
 
   //* Función para cargar los municipios
   const loadMunicipalities = useCallback(async () => {
     try {
       const response = await LocationService.getMunicipalities(
-        authTokens,
         selectedProvince
       );
       setMunicipalities(response.data.results);
     } catch (error) {
-      console.error("Error fetching municipalities: ", error);
+      console.error("Error obteniendo los municipios: ", error);
     }
-  }, [authTokens, selectedProvince]);
+  }, [selectedProvince]);
 
   const handleProvinceChange = (selectedValue) => {
     setSelectedProvince(selectedValue);
@@ -108,9 +92,9 @@ function ModalEntities({
 
   const handleAddEntity = async (data) => {
     try {
-      const response = await EntityService.addEntity(authTokens, data);
+      const response = await EntityService.addEntity(data);
       if (response.status === HttpStatusCode.Created) {
-        showSuccessToast("Entidad agregada");
+        showSuccessToast("Entidad agregada con éxito");
         onRefresh();
         handleCloseModal();
       } else {
@@ -118,29 +102,20 @@ function ModalEntities({
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-          handleCloseModal();
-        } else if (status === HttpStatusCode.BadRequest) {
-          showErrorToast("Error al agregar, código existente");
-        } else {
-          showErrorToast("Error al agregar entidad");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
 
   const handleUpdateEntity = async (entityId, data) => {
     try {
-      const response = await EntityService.updateEntity(
-        authTokens,
-        entityId,
-        data
-      );
+      const response = await EntityService.updateEntity(entityId, data);
 
       if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Entidad actualizada");
+        showSuccessToast("Entidad actualizada con éxito");
         onRefresh();
         handleCloseModal();
       } else {
@@ -148,22 +123,17 @@ function ModalEntities({
       }
     } catch (error) {
       if (error.response) {
-        const status = error.response.status;
-        if (status === HttpStatusCode.Forbidden) {
-          showErrorToast("No tiene permiso para realizar esta acción");
-          handleCloseModal();
-        } else if (status === HttpStatusCode.BadRequest) {
-          showErrorToast("Error al actualizar, código existente");
-        } else {
-          showErrorToast("Error al actualizar entidad");
-        }
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
       }
     }
   };
 
   const handleSaveEntity = async (data) => {
     setIsLoading(true);
-    if (entityData && entityData.id_entity) {
+    if (entityData?.id_entity) {
       await handleUpdateEntity(entityData.id_entity, data);
     } else {
       await handleAddEntity(data);
@@ -177,19 +147,28 @@ function ModalEntities({
   };
 
   useEffect(() => {
-    loadActiveSectors(1);
-    loadProvinces();
-    if (entityData && entityData.province) {
-      handleSelectChange(selectedProvince);
+    if (entityData?.province) {
+      handleSelectChange(entityData?.province);
     }
-    loadMunicipalities();
-  }, [
-    loadActiveSectors,
-    loadProvinces,
-    selectedProvince,
-    entityData,
-    loadMunicipalities,
-  ]);
+  }, [isOpen, entityData]);
+
+  useEffect(() => {
+    if (selectedProvince) {
+      loadMunicipalities();
+    }
+  }, [selectedProvince, loadMunicipalities]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadActiveSectors();
+    }
+  }, [isOpen, loadActiveSectors]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadProvinces();
+    }
+  }, [isOpen, loadProvinces]);
 
   return (
     <div>

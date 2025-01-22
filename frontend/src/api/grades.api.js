@@ -2,7 +2,7 @@ import axiosInstance from "./axiosInstance";
 
 const GradeService = {
   getGrades: async () => {
-    return axiosInstance.get(`/grades/`, {});
+    return axiosInstance.get(`/grades/`);
   },
 };
 
