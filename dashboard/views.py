@@ -1,6 +1,6 @@
 from django.http import JsonResponse
+from rest_framework import status
 from django.views.decorators.http import require_http_methods
-from django.db.models import Count
 from django.utils import timezone
 from events.models import Event
 from locations.models import Municipality, Province
@@ -12,6 +12,10 @@ from events.models import Measure
 @require_http_methods(["GET"])
 def event_counts(request):
     total_events_count = Event.objects.count()
+
+    if total_events_count == 0:
+        return JsonResponse({'detail': 'No existen hechos extraordinarios registrados'}, status=status.HTTP_404_NOT_FOUND)
+
     open_events_count = Event.objects.filter(status=Event.OPEN).count()
     closed_events_count = Event.objects.filter(status=Event.CLOSED).count()
 
@@ -50,7 +54,7 @@ def events_count_by_province(request, province_name):
         # Obtener la provincia por el nombre
         province = Province.objects.get(description=province_name)
     except Province.DoesNotExist:
-        return JsonResponse({'error': 'Provincia no encontrada'}, status=404)
+        return JsonResponse({'detail': 'Provincia no encontrada'}, status=status.HTTP_404_NOT_FOUND)
 
     # Obtener todos los municipios asociados a la provincia
     municipalities = Municipality.objects.filter(province=province)
@@ -80,6 +84,8 @@ def percentage_of_events_by_sector(request):
 
     # Obtener la cantidad total de eventos
     total_events_count = Event.objects.count()
+    if total_events_count == 0:
+        return JsonResponse({'detail': 'No existen hechos extraordinarios registrados'}, status=status.HTTP_404_NOT_FOUND)
 
     # Inicializar una lista para almacenar los resultados
     results = []
@@ -87,7 +93,7 @@ def percentage_of_events_by_sector(request):
     # Calcular el porcentaje de eventos por cada sector
     for sector in active_sectors:
         events_in_sector_count = Event.objects.filter(entity__sector=sector).count()
-        
+
         if events_in_sector_count > 0:
             percentage_in_sector = (events_in_sector_count / total_events_count) * 100
             results.append({
@@ -95,18 +101,19 @@ def percentage_of_events_by_sector(request):
                 'percentage_in_sector': round(percentage_in_sector, 2),
         })
 
-    response_data = {
-        'results': results,
-    }
+    if not results:
+        return JsonResponse({'detail': 'No existen hechos asociados a sectores activos'}, status=status.HTTP_200_OK)
 
-    return JsonResponse(response_data)
+    return JsonResponse({'results': results})
 
 
 @require_http_methods(["GET"])
 def events_count_scope(request):
     # Obtener todas las provincias
     provinces = Municipality.objects.filter(province__isnull=False).values('province__description').distinct()
-
+    if not provinces.exists():
+        return JsonResponse({'detail': 'No existen provincias con municipios registrados'}, status=status.HTTP_404_NOT_FOUND)
+    
     # Obtener la cantidad de hechos relevantes y de corrupción por cada provincia
     results = []
     for province in provinces:
@@ -121,6 +128,9 @@ def events_count_scope(request):
             'corruption_events_count': corruption_events_count,
         })
 
+    if not results:
+        return JsonResponse({'detail': 'No existen eventos registrados por alcance'}, status=status.HTTP_404_NOT_FOUND)
+
     return JsonResponse({'results': results})
 
 
@@ -128,6 +138,8 @@ def events_count_scope(request):
 def events_count_by_type(request):
     # Obtener todos los tipos activos
     active_types = Type.objects.filter(is_active=True)
+    if not active_types.exists():
+        return JsonResponse({'detail': 'No existen tipos activos'}, status=status.HTTP_404_NOT_FOUND)
 
     # Obtener la cantidad de hechos por cada tipo
     results = []
@@ -139,8 +151,7 @@ def events_count_by_type(request):
             'events_count': events_count,
         })
 
-    response_data = {
-        'results': results,
-    }
+    if not results:
+        return JsonResponse({'detail': 'No existen eventos registrados por tipo'}, status=status.HTTP_404_NOT_FOUND)
 
-    return JsonResponse(response_data)
+    return JsonResponse({'results': results})
