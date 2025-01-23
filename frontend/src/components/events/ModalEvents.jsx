@@ -42,10 +42,14 @@ function ModalEvents({
     const timezoneOffset = eventDataValue.getTimezoneOffset();
     eventDataValue.setMinutes(eventDataValue.getMinutes() - timezoneOffset);
 
-    if (eventDataValue.getTime() !== occurrenceDate.getTime()) {
-      setOccurrenceDate(eventDataValue);
-    }
-  }, [eventData, occurrenceDate]);
+    // Solo actualiza si el tiempo es diferente
+    setOccurrenceDate((prevDate) => {
+      if (eventDataValue.getTime() !== prevDate.getTime()) {
+        return eventDataValue;
+      }
+      return prevDate; // No actualiza si son iguales
+    });
+  }, [eventData]);
 
   const handleCloseModal = () => {
     reset();
@@ -287,8 +291,10 @@ function ModalEvents({
   };
 
   useEffect(() => {
-    handleEventDateChange();
-  }, [isOpen]);
+    if (isOpen) {
+      handleEventDateChange();
+    }
+  }, [isOpen, handleEventDateChange]);
 
   return (
     <div>
