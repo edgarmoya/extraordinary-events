@@ -13,6 +13,7 @@ import EntitiesPage from "./pages/EntitiesPage";
 import TypesPage from "./pages/TypesPage";
 import SectorsPage from "./pages/SectorsPage";
 import ClassificationsPage from "./pages/ClassificationsPage";
+import FieldsPage from "./pages/FieldsPage";
 
 function App() {
   return (
@@ -66,6 +67,12 @@ function App() {
                 path={Paths.INACTIVE_CLASSIFICATIONS}
                 element={<ClassificationsPage />}
               />
+            </Route>
+
+            <Route path={Paths.ADDFIELDS} element={<FieldsPage />}>
+              {/* Rutas secundarias de ADDFIELDS */}
+              <Route path={Paths.ACTIVE_ADDFIELDS} element={<FieldsPage />} />
+              <Route path={Paths.INACTIVE_ADDFIELDS} element={<FieldsPage />} />
             </Route>
           </Route>
         </Routes>

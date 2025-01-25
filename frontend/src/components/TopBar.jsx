@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
 import ActionButton from "./ActionButton";
+import { showErrorToast } from "../utils/toastUtils";
 
 function TopBar({
   onAdd,
@@ -31,11 +32,6 @@ function TopBar({
 
   const isCheck = (path) => {
     return location.pathname === path ? "" : "d-none";
-  };
-
-  const handleClearSearch = () => {
-    setSearchTerm("");
-    onSearch("");
   };
 
   return (
@@ -176,13 +172,24 @@ function TopBar({
             placeholder={searchMessage}
             aria-label="Search"
             value={searchTerm}
-            onClick={handleClearSearch}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              if (e.target.value === "") {
+                setSearchTerm(null);
+                onSearch(null);
+              }
+            }}
           />
           <button
             className="btn btn-primary ms-auto"
             type="button"
-            onClick={() => onSearch(searchTerm)}
+            onClick={() => {
+              if (searchTerm === "") {
+                showErrorToast("El campo de búsqueda no puede estar vacío");
+              } else {
+                onSearch(searchTerm);
+              }
+            }}
           >
             Buscar
           </button>

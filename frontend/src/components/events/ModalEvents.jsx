@@ -4,9 +4,11 @@ import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import AuthContext from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import EventService from "../../api/event.api";
+import FieldService from "../../api/fields.api";
 import ModalEventsGeneral from "./ModalEventsGeneral";
 import ModalEventsMeasure from "./ModalEventsMeasure";
 import ModalEventsAttachment from "./ModalEventsAttachment";
+import ModalEventsField from "./ModalEventsField";
 import { HttpStatusCode } from "axios";
 import { format } from "date-fns";
 
@@ -25,6 +27,7 @@ function ModalEvents({
 
   const [measures, setMeasures] = useState([]);
   const [attachments, setAttachments] = useState([]);
+  const [fieldValues, setFieldValues] = useState([]);
 
   const {
     register,
@@ -55,6 +58,7 @@ function ModalEvents({
     reset();
     setMeasures([]);
     setAttachments([]);
+    setFieldValues([]);
     onClose();
   };
 
@@ -63,23 +67,37 @@ function ModalEvents({
     try {
       const response = await EventService.addEvent(data);
       if (response.status === HttpStatusCode.Created) {
-        // Agregar medidas
-        for (const measure of measures) {
-          const measureData = {
-            event: response.data.id,
-            description: measure.description,
-          };
-          await handleAddMeasure(measureData);
-        }
+        const eventId = response.data.id;
 
-        // Agregar anexos
-        for (const attachment of attachments) {
-          const attachmentData = {
-            event: response.data.id,
+        // Promesas para agregar dependencias
+        const measurePromises = measures.map((measure) =>
+          handleAddMeasure({
+            event: eventId,
+            description: measure.description,
+          })
+        );
+
+        const attachmentPromises = attachments.map((attachment) =>
+          handleAddAttachment({
+            event: eventId,
             image: attachment.image,
-          };
-          await handleAddAttachment(attachmentData);
-        }
+          })
+        );
+
+        const fieldPromises = fieldValues.map((fieldValue) =>
+          handleAddField({
+            event: eventId,
+            add_field: fieldValue.add_field,
+            value: fieldValue.value,
+          })
+        );
+
+        // Ejecutar todas las promesas en paralelo
+        await Promise.all([
+          ...measurePromises,
+          ...attachmentPromises,
+          ...fieldPromises,
+        ]);
 
         showSuccessToast("Hecho extraordinario agregado con éxito");
         onRefresh();
@@ -245,6 +263,79 @@ function ModalEvents({
     }
   };
 
+  //* Función para agregar campo adicional
+  const handleAddField = async (data) => {
+    try {
+      const response = await FieldService.addFieldValue(data);
+      return response.status;
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
+      }
+    }
+  };
+
+  //* Función para eliminar campo adicional
+  const handleDeleteField = async (fieldId) => {
+    try {
+      const response = await FieldService.deleteFieldValue(fieldId);
+
+      if (response.status === HttpStatusCode.NoContent) {
+        return response.status;
+      }
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        const errorMessage = data?.detail || "Error desconocido";
+        showErrorToast(errorMessage);
+        console.error(`Error ${status}: ${errorMessage}`);
+      }
+    }
+  };
+
+  //* Función para modificar los campos adicionales
+  const handleAddDeleteFields = async (eventId, fieldValues) => {
+    // Obtener campos existentes asociadas al evento
+    const existingFields = await FieldService.getFieldValues(eventId);
+
+    // Identificar campos a agregar y eliminar
+    const fieldsToAdd = [];
+    const fieldsToDelete = [];
+
+    // Identificar campos existentes a editar y eliminar
+    for (const existingField of existingFields.data) {
+      const matchingField = fieldValues.find((m) => m.id === existingField.id);
+
+      if (!matchingField) {
+        // El campo no se encuentra en los campos nuevos, entonces es un campo a eliminar
+        fieldsToDelete.push(existingField.id);
+      }
+    }
+
+    // Identificar campos nuevos a agregar
+    for (const fieldValue of fieldValues) {
+      if (!existingFields.data.some((m) => m.id === fieldValue.id)) {
+        // El campo no existe en los campos existentes, entonces agregar
+        fieldsToAdd.push({
+          event: eventId,
+          add_field: fieldValue.add_field,
+          value: fieldValue.value,
+        });
+      }
+    }
+
+    for (const fieldToAdd of fieldsToAdd) {
+      await handleAddField(fieldToAdd);
+    }
+
+    for (const fieldToDelete of fieldsToDelete) {
+      await handleDeleteField(fieldToDelete);
+    }
+  };
+
   //* Función para actualizar un hecho extraordinario
   const handleUpdateEvent = async (eventId, data) => {
     try {
@@ -257,6 +348,7 @@ function ModalEvents({
 
       await handleAddDeleteMeasures(eventId, measures);
       await handleAddDeleteAttachment(eventId, attachments);
+      await handleAddDeleteFields(eventId, fieldValues);
 
       showSuccessToast("Hecho extraordinario actualizado con éxito");
       onRefresh();
@@ -349,6 +441,20 @@ function ModalEvents({
                   Anexos
                 </button>
               </li>
+              <li className="nav-item">
+                <button
+                  className="nav-link"
+                  id="field-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#field-tab-pane"
+                  type="button"
+                  role="tab"
+                  aria-controls="field-tab-pane"
+                  aria-selected="false"
+                >
+                  Campos adicionales
+                </button>
+              </li>
             </ul>
             <div className="tab-content" id="myTabContent">
               <div
@@ -392,6 +498,20 @@ function ModalEvents({
                 <ModalEventsAttachment
                   attachments={attachments}
                   setAttachments={setAttachments}
+                  eventData={eventData}
+                  readOnly={readOnly}
+                />
+              </div>
+              <div
+                className="tab-pane fade"
+                id="field-tab-pane"
+                role="tabpanel"
+                aria-labelledby="field-tab"
+                tabIndex="0"
+              >
+                <ModalEventsField
+                  fieldValues={fieldValues}
+                  setFieldValues={setFieldValues}
                   eventData={eventData}
                   readOnly={readOnly}
                 />

@@ -146,6 +146,23 @@ function Sidebar({ isOpen }) {
               Tipos
             </Link>
           </li>
+          <li className="nav-item pb-1">
+            <Link
+              to={Paths.ACTIVE_ADDFIELDS}
+              className={`nav-link ${isActiveLink(Paths.ADDFIELDS)}`}
+            >
+              <svg
+                className="nav-icon me-3"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                height={"1.4rem"}
+              >
+                <path d="m22.562 8.5a4.994 4.994 0 0 0 -3.562-8.5h-14a4.994 4.994 0 0 0 -3.562 8.5 4.978 4.978 0 0 0 0 7 4.994 4.994 0 0 0 3.562 8.5h14a4.994 4.994 0 0 0 3.562-8.5 4.978 4.978 0 0 0 0-7zm-17.562 5.5a2 2 0 0 1 0-4v.5a1.5 1.5 0 0 0 3 0v-.5h2v.5a1.5 1.5 0 0 0 3 0v-.5h6a2 2 0 0 1 0 4zm0-11v.5a1.5 1.5 0 0 0 3 0v-.5h2v.5a1.5 1.5 0 0 0 3 0v-.5h6a2 2 0 0 1 0 4h-14a2 2 0 0 1 0-4zm14 18h-14a2 2 0 0 1 0-4v.5a1.5 1.5 0 0 0 3 0v-.5h2v.5a1.5 1.5 0 0 0 3 0v-.5h6a2 2 0 0 1 0 4z" />
+              </svg>
+              Campos adicionales
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="sidebar-footer text-center pt-0">

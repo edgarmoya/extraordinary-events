@@ -30,6 +30,11 @@ export const CLASSIFICATIONS = "/classifications";
 export const ACTIVE_CLASSIFICATIONS = "/classifications/active";
 export const INACTIVE_CLASSIFICATIONS = "/classifications/inactive";
 
+//* Datos adicionales
+export const ADDFIELDS = "/addfields";
+export const ACTIVE_ADDFIELDS = "/addfields/active";
+export const INACTIVE_ADDFIELDS = "/addfields/inactive";
+
 const Paths = {
   EMPTY,
   ADMIN,
@@ -51,6 +56,9 @@ const Paths = {
   TYPES,
   ACTIVE_TYPES,
   INACTIVE_TYPES,
+  ADDFIELDS,
+  ACTIVE_ADDFIELDS,
+  INACTIVE_ADDFIELDS,
 };
 
 export default Paths;
