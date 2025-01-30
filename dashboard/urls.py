@@ -1,10 +1,18 @@
-from django.urls import path
-from .views import event_counts, events_count_by_province, percentage_of_events_by_sector, events_count_scope, events_count_by_type
+from rest_framework import routers
+from .views import EventsCountViewSet, \
+                    EventsCountByProvinceViewSet, \
+                    PercentageOfEventsBySectorViewSet, \
+                    EventsCountScopeViewSet, \
+                    EventsCountByTypeViewSet, \
+                    EventSummaryViewSet
 
-urlpatterns = [
-    path('event_counts/', event_counts, name='event_counts'),
-    path('events_count_by_province/<str:province_name>/', events_count_by_province, name='events_count_by_province'),
-    path('percentage_of_events_by_sector/', percentage_of_events_by_sector, name='percentage_of_events_by_sector'),
-    path('events_count_scope/', events_count_scope, name='events_count_scope'),
-    path('events_count_by_type/', events_count_by_type, name='events_count_by_type'),
-]
+router = routers.DefaultRouter()
+
+router.register(r'event_summary', EventSummaryViewSet, basename='event_summary')
+router.register(r'events_count', EventsCountViewSet, basename='events_count')
+router.register(r'events_count_by_province', EventsCountByProvinceViewSet, basename='events_count_by_province')
+router.register(r'percentage_of_events_by_sector', PercentageOfEventsBySectorViewSet, basename='percentage_of_events_by_sector')
+router.register(r'events_count_scope', EventsCountScopeViewSet, basename='events_count_scope')
+router.register(r'events_count_by_type', EventsCountByTypeViewSet, basename='events_count_by_type')
+
+urlpatterns = router.urls
