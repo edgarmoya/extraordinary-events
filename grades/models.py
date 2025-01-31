@@ -1,8 +1,7 @@
 from django.db import models
 
-# Create your models here.
 class Grade(models.Model):
-    description = models.CharField(max_length=100, verbose_name='Nombre')
+    description = models.CharField(max_length=100, unique=True, verbose_name='Nombre')
     is_active = models.BooleanField(default=True, verbose_name='Activo')
 
     class Meta:
