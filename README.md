@@ -1,19 +1,13 @@
-# Extraordinary Events
-A web application for online control of extraordinary events occurring within the entire structure of the AZCUBA Business Group in the country
+# Hechos Extraordinarios
+Una aplicación web para el control en línea de los hechos extraordinarios que ocurren dentro de toda la estructura del Grupo Empresarial AZCUBA en el país.
 
-## Objective
-The main objective of this project is to develop an information system that enables immediate registration of extraordinary events and becomes an efficient tool for their control. Through this application, users should be able to take proactive actions and achieve a reduction in controlled events and, consequently, a decrease in the economic losses associated with these incidents in the short and medium term.
+## Objetivo
+El objetivo principal de este proyecto es desarrollar un sistema de información que permita el registro inmediato de hechos extraordinarios y se convierta en una herramienta eficiente para su control. A través de esta aplicación, los usuarios deben poder tomar acciones proactivas y lograr una reducción de los eventos controlados y, consecuentemente, una disminución de las pérdidas económicas asociadas con estos incidentes a corto y mediano plazo.
 
-## Methodology
-The project development will adhere to the "Methodology for the Processing of Extraordinary Events" dated November 7, 2022, serving as a guide for the implementation of necessary functionalities.
+## Metodología
+El desarrollo del proyecto se ajusta a la "Metodología para el Tratamiento de Hechos Extraordinarios" fechada el 7 de noviembre de 2022, que servirá como guía para la implementación de las funcionalidades necesarias.
 
-## Technologies Used
-- Frontend: ReactJS
+## Tecnologías Utilizadas
+- Frontend: React.js
 - Backend: Django
-- Database: PostgreSQL
-
-## Learning Purpose
-This project also serves as a significant learning experience. Utilizing technologies like React and Django will provide practical insights into developing modern web applications and creating efficient systems for managing tasks and events. Additionally, it aims to enhance project management skills in software development.
-
-## Note
-This project is part of a university internship, aiming to apply theoretical knowledge in a real-world setting using industry-standard technologies. The primary focus is on learning and improving skills in developing robust and functional web applications.
+- Base de datos: PostgreSQL
