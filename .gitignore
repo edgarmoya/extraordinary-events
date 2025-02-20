@@ -1,0 +1,20 @@
+# Environments
+venv/
+
+# VisualStudioCode
+.vscode/
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.db
+*.sqlite3
+*.log
+
+media/
+node_modules/
+
+commands.txt
