@@ -2,7 +2,7 @@ import React from "react";
 
 const TableLoader = ({ rows = 10, columns = 4 }) => {
   return (
-    <div className="mt-1" aria-hidden="true">
+    <div className="mt-1">
       <table className="table table-sm table-responsive">
         <thead className="sticky-top z-1">
           <tr>

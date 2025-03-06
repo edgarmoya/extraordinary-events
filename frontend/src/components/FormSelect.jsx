@@ -12,6 +12,7 @@ function FormSelect({
   errors,
   setValue,
   defaultValue,
+  floatingForm = true,
 }) {
   const [options, setOptions] = useState([]);
   const [selected, setSelected] = useState(defaultValue);
@@ -22,14 +23,14 @@ function FormSelect({
   }, [data, setValue, registerName, defaultValue]);
 
   function truncateText(text, maxLength = 100) {
-    if (text.length > maxLength) {
+    if (text?.length > maxLength) {
       return text.substring(0, maxLength) + "...";
     }
     return text;
   }
 
   return (
-    <div className={`form-floating z-0 ${className}`}>
+    <div className={`z-0 ${floatingForm ? "form-floating" : ""} ${className}`}>
       <select
         name={registerName}
         onChangeCapture={(event) => {
@@ -50,7 +51,7 @@ function FormSelect({
           </option>
         ))}
       </select>
-      <label htmlFor="floatingSelectGrid">{name}</label>
+      {floatingForm && <label htmlFor="floatingSelectGrid">{name}</label>}
       {errors[registerName] && (
         <div className="invalid-feedback">{errors[registerName].message}</div>
       )}
