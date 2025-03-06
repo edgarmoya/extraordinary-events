@@ -58,7 +58,7 @@ function HomePage() {
   const layerProps = {
     onClick: ({ target }) => {
       setClicked(target.attributes.name.value);
-      loadEventsByProvince(target.attributes.name.value);
+      loadEventsByProvince(target.attributes.id.value);
     },
   };
 
@@ -76,13 +76,15 @@ function HomePage() {
   }, []);
 
   //* Función para cargar resumen por provincia
-  const loadEventsByProvince = useCallback(async (name) => {
+  const loadEventsByProvince = useCallback(async (provinceId) => {
     try {
-      const response = await DashboardService.getEventsCountByProvince(name);
+      const response = await DashboardService.getEventsCountByProvince(
+        provinceId
+      );
       setEventsByProvince(response.data.events_count);
       setMeasuresByProvince(response.data.measures_count);
     } catch (error) {
-      console.error("Error fetching overview: ", error);
+      console.error("Error obteniendo resumen: ", error);
     }
   }, []);
 
@@ -92,7 +94,7 @@ function HomePage() {
       // Ejecutar todas las llamadas en paralelo
       const [overviewResponse, sectorResponse, scopesResponse, typesResponse] =
         await Promise.all([
-          DashboardService.getEventCounts(),
+          DashboardService.getEventsCount(),
           DashboardService.getPercentageBySector(),
           DashboardService.getEventsCountScope(),
           DashboardService.getEventsCountByType(),
