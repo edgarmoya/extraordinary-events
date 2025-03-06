@@ -10,7 +10,6 @@ function Modal({ isOpen, title, onClose, size, children }) {
             tabIndex="-1"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
-            aria-hidden="true"
           >
             <div className={`modal-dialog ${size}`}>
               <div className="modal-content">
