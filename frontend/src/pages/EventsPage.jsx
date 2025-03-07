@@ -11,7 +11,6 @@ import AuthContext from "../contexts/AuthContext";
 import Layout from "./Layout";
 import Paths from "../routes/Paths";
 import EventService from "../api/event.api";
-import Pagination from "../components/Pagination";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmClose from "../components/ModalConfirmClose";
 import GridEvents from "../components/events/GridEvents";
@@ -199,16 +198,12 @@ function EventsPage() {
                 data={events}
                 onRowSelected={(row) => setSelectedRow(row)}
                 onAdd={() => setModalAddIsOpen(true)}
+                onPageChange={handlePageChange}
+                currentPage={currentPage}
+                totalRows={totalEvents}
               />
             )}
           </Suspense>
-          <div className="card card-footer bg-body border-0">
-            <Pagination
-              onPageChange={handlePageChange}
-              currentPage={currentPage}
-              totalRows={totalEvents}
-            />
-          </div>
         </div>
       </div>
 

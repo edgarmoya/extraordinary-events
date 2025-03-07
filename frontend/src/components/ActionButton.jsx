@@ -1,4 +1,4 @@
-import Tooltip from "./Tooltip";
+import Tooltip from "./ui/Tooltip";
 
 const ActionButton = ({ tooltipText, onClick, svgPath, show = true }) => {
   if (!show) return null; // Si no debe mostrarse, retorna null.

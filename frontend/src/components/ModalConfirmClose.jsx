@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import Modal from "./Modal";
+import Modal from "./ui/Modal";
 
 function ModalConfirmClose({ isOpen, onClose, onAction, message }) {
   const [isLoading, setIsLoading] = useState(false);

@@ -1,5 +1,5 @@
 import { React, useContext, useState } from "react";
-import Modal from "../Modal";
+import Modal from "../ui/Modal";
 import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import AuthContext from "../../contexts/AuthContext";
 import UserService from "../../api/users.api";

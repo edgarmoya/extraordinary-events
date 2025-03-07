@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
 import Paths from "../routes/Paths";
 import EntityService from "../api/entities.api";
-import Pagination from "../components/Pagination";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
 import GridEntities from "../components/entities/GridEntities";
@@ -180,16 +179,11 @@ function EntitiesPage() {
               data={entities}
               onRowSelected={(row) => setSelectedRow(row)}
               onAdd={() => setModalAddIsOpen(true)}
-            />
-          )}
-
-          <div className="card card-footer bg-body border-0">
-            <Pagination
               onPageChange={handlePageChange}
               currentPage={currentPage}
               totalRows={totalEntities}
             />
-          </div>
+          )}
         </div>
       </div>
 

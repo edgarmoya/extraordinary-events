@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
 import Paths from "../routes/Paths";
 import FieldService from "../api/fields.api";
-import Pagination from "../components/Pagination";
 import ModalConfirmDelete from "../components/ModalConfirmDelete";
 import ModalConfirmActivate from "../components/ModalConfirmActivate";
 import GridFields from "../components/additional_fields/GridFields";
@@ -172,16 +171,11 @@ function FieldsPage() {
               data={fields}
               onRowSelected={(row) => setSelectedRow(row)}
               onAdd={() => setModalAddIsOpen(true)}
-            />
-          )}
-
-          <div className="card card-footer bg-body border-0">
-            <Pagination
               onPageChange={handlePageChange}
               currentPage={currentPage}
               totalRows={totalFields}
             />
-          </div>
+          )}
         </div>
       </div>
 

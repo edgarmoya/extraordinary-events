@@ -70,7 +70,11 @@ function Pagination({ totalRows, currentPage, onPageChange }) {
   return (
     <nav className="z-0" aria-label="Page navigation example">
       <ul className="pagination m-0 justify-content-center">
-        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+        <li
+          className={`page-item ${
+            currentPage === 1 ? "disabled cursor-not-allowed" : ""
+          }`}
+        >
           <button
             className="page-link"
             onClick={() => handlePageChange(currentPage - 1)}
@@ -81,7 +85,7 @@ function Pagination({ totalRows, currentPage, onPageChange }) {
         {renderPaginationItems()}
         <li
           className={`page-item ${
-            currentPage === totalPages ? "disabled" : ""
+            currentPage === totalPages ? "disabled cursor-not-allowed" : ""
           }`}
         >
           <button

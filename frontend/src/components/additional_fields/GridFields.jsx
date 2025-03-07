@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import TableEmptyMessage from "../TableEmptyMessage";
+import Pagination from "../ui/Pagination";
+import Grid from "../ui/Grid";
 
-function GridFields({ data, onRowSelected, onAdd }) {
+function GridFields({
+  data,
+  onRowSelected,
+  onAdd,
+  onPageChange,
+  currentPage,
+  totalRows,
+}) {
   const [selectedRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (row) => {
@@ -9,7 +18,7 @@ function GridFields({ data, onRowSelected, onAdd }) {
     onRowSelected(row);
   };
 
-  // Mapeo de tipos de campo
+  // Tipos de campo
   const fieldType = {
     text: "Texto",
     number: "Número",
@@ -17,48 +26,55 @@ function GridFields({ data, onRowSelected, onAdd }) {
   };
 
   return (
-    <section className="overflow-y-auto mt-1">
-      <table className="table table-sm table-hover table-responsive">
-        <thead className="sticky-top z-1">
-          <tr>
-            <th scope="col">Descripción</th>
-            <th scope="col">Tipo de campo</th>
-            <th scope="col">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 ? (
-            <tr>
-              <td colSpan="3" className="text-center">
-                <TableEmptyMessage onAdd={onAdd} />
-              </td>
-            </tr>
-          ) : (
-            data.map((field) => (
-              <tr
-                key={field.id}
-                className={selectedRow === field ? "table-active" : ""}
-                onClick={() => handleRowClick(field)}
-              >
-                <td className="w-75">{field.description}</td>
-                <td>{fieldType[field.field_type] || "Desconocido"}</td>
-                <td>
-                  {field.is_active ? (
-                    <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
-                      activo
-                    </div>
-                  ) : (
-                    <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
-                      inactivo
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </section>
+    <>
+      {data.length === 0 ? (
+        <div className="text-center">
+          <TableEmptyMessage onAdd={onAdd} />
+        </div>
+      ) : (
+        <>
+          <Grid>
+            <Grid.Head>
+              <Grid.Header>Descripción</Grid.Header>
+              <Grid.Header>Tipo de campo</Grid.Header>
+              <Grid.Header>Estado</Grid.Header>
+            </Grid.Head>
+            <Grid.Body>
+              {data.map((field) => (
+                <Grid.Row
+                  key={field.id}
+                  className={selectedRow === field ? "table-active" : ""}
+                  onClick={() => handleRowClick(field)}
+                >
+                  <Grid.Cell className="w-75">{field.description}</Grid.Cell>
+                  <Grid.Cell>
+                    {fieldType[field.field_type] || "Desconocido"}
+                  </Grid.Cell>
+                  <Grid.Cell>
+                    {field.is_active ? (
+                      <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                        activo
+                      </div>
+                    ) : (
+                      <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
+                        inactivo
+                      </div>
+                    )}
+                  </Grid.Cell>
+                </Grid.Row>
+              ))}
+            </Grid.Body>
+          </Grid>
+          <div className="card card-footer bg-body pt-2 border-0">
+            <Pagination
+              onPageChange={onPageChange}
+              currentPage={currentPage}
+              totalRows={totalRows}
+            />
+          </div>
+        </>
+      )}
+    </>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import Modal from "../Modal";
+import Modal from "../ui/Modal";
 import AuthContext from "../../contexts/AuthContext";
 import UserService from "../../api/users.api";
 

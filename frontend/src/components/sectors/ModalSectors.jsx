@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import Modal from "../Modal";
+import Modal from "../ui/Modal";
 import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { useForm } from "react-hook-form";
 import SectorsService from "../../api/sectors.api";
@@ -37,6 +37,16 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
         const errorMessage = data?.detail || "Error desconocido";
         showErrorToast(errorMessage);
         console.error(`Error ${status}: ${errorMessage}`);
+      } else if (error.request) {
+        // La solicitud fue hecha pero no se recibió respuesta
+        showErrorToast(
+          "No se pudo conectar al servidor. Por favor, verifique su conexión"
+        );
+        console.error("Error de conexión:", error.message);
+      } else {
+        // Algo sucedió al configurar la solicitud
+        showErrorToast("Error al realizar la solicitud");
+        console.error("Error:", error.message);
       }
     } finally {
       handleCloseModal();

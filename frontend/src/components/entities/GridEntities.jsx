@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import TableEmptyMessage from "../TableEmptyMessage";
+import Pagination from "../ui/Pagination";
+import Grid from "../ui/Grid";
 
-function GridEntities({ data, onRowSelected, onAdd }) {
+function GridEntities({
+  data,
+  onRowSelected,
+  onAdd,
+  onPageChange,
+  currentPage,
+  totalRows,
+}) {
   const [selectedRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (row) => {
@@ -10,54 +19,59 @@ function GridEntities({ data, onRowSelected, onAdd }) {
   };
 
   return (
-    <section className="overflow-y-auto mt-1">
-      <table className="table table-sm table-hover table-responsive">
-        <thead className="sticky-top z-1">
-          <tr>
-            <th scope="col">Código</th>
-            <th scope="col">Descripción</th>
-            <th scope="col">Sector</th>
-            <th scope="col">Municipio</th>
-            <th scope="col">Correo electrónico</th>
-            <th scope="col">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 ? (
-            <tr>
-              <td colSpan="6" className="text-center">
-                <TableEmptyMessage onAdd={onAdd} />
-              </td>
-            </tr>
-          ) : (
-            data.map((entity) => (
-              <tr
-                key={entity.id_entity}
-                className={selectedRow === entity ? "table-active" : ""}
-                onClick={() => handleRowClick(entity)}
-              >
-                <td>{entity.id_entity}</td>
-                <td>{entity.description}</td>
-                <td>{entity.sector_description}</td>
-                <td>{entity.municipality_description}</td>
-                <td>{entity.email}</td>
-                <td>
-                  {entity.is_active ? (
-                    <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
-                      activo
-                    </div>
-                  ) : (
-                    <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
-                      inactivo
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </section>
+    <>
+      {data.length === 0 ? (
+        <div className="text-center">
+          <TableEmptyMessage onAdd={onAdd} />
+        </div>
+      ) : (
+        <>
+          <Grid>
+            <Grid.Head>
+              <Grid.Header>Código</Grid.Header>
+              <Grid.Header>Descripción</Grid.Header>
+              <Grid.Header>Sector</Grid.Header>
+              <Grid.Header>Municipio</Grid.Header>
+              <Grid.Header>Correo electrónico</Grid.Header>
+              <Grid.Header>Estado</Grid.Header>
+            </Grid.Head>
+            <Grid.Body>
+              {data.map((entity) => (
+                <Grid.Row
+                  key={entity.id_entity}
+                  className={selectedRow === entity ? "table-active" : ""}
+                  onClick={() => handleRowClick(entity)}
+                >
+                  <Grid.Cell>{entity.id_entity}</Grid.Cell>
+                  <Grid.Cell>{entity.description}</Grid.Cell>
+                  <Grid.Cell>{entity.sector_description}</Grid.Cell>
+                  <Grid.Cell>{entity.municipality_description}</Grid.Cell>
+                  <Grid.Cell>{entity.email}</Grid.Cell>
+                  <Grid.Cell>
+                    {entity.is_active ? (
+                      <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                        activo
+                      </div>
+                    ) : (
+                      <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
+                        inactivo
+                      </div>
+                    )}
+                  </Grid.Cell>
+                </Grid.Row>
+              ))}
+            </Grid.Body>
+          </Grid>
+          <div className="card card-footer bg-body pt-2 border-0">
+            <Pagination
+              onPageChange={onPageChange}
+              currentPage={currentPage}
+              totalRows={totalRows}
+            />
+          </div>
+        </>
+      )}
+    </>
   );
 }
 

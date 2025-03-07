@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="municipality",
             name="description",
-            field=models.CharField(max_length=100, unique=True, verbose_name="Nombre"),
+            field=models.CharField(max_length=100, verbose_name="Nombre"),
         ),
         migrations.AlterField(
             model_name="province",

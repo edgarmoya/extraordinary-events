@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
 import GridSectors from "../components/sectors/GridSectors";
 import SectorService from "../api/sectors.api";
-import Pagination from "../components/Pagination";
 import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
 import ModalSectors from "../components/sectors/ModalSectors";
@@ -172,16 +171,11 @@ function SectorsPage() {
               data={sectors}
               onRowSelected={(row) => setSelectedRow(row)}
               onAdd={() => setModalAddIsOpen(true)}
-            />
-          )}
-
-          <div className="card card-footer bg-body border-0">
-            <Pagination
               onPageChange={handlePageChange}
               currentPage={currentPage}
               totalRows={totalSectors}
             />
-          </div>
+          )}
         </div>
       </div>
 

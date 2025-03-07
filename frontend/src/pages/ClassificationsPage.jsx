@@ -4,7 +4,6 @@ import Layout from "./Layout";
 import GridClassifications from "../components/classifications/GridClassifications";
 import TableLoader from "../components/skeletons/TableLoader";
 import ClassificationService from "../api/classifications.api";
-import Pagination from "../components/Pagination";
 import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
 import ModalClassifications from "../components/classifications/ModalClassifications";
@@ -177,16 +176,11 @@ function ClassificationsPage() {
               data={classifications}
               onRowSelected={(row) => setSelectedRow(row)}
               onAdd={() => setModalAddIsOpen(true)}
-            />
-          )}
-
-          <div className="card card-footer bg-body border-0">
-            <Pagination
               onPageChange={handlePageChange}
               currentPage={currentPage}
               totalRows={totalClassifications}
             />
-          </div>
+          )}
         </div>
       </div>
 

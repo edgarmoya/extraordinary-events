@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
-import Modal from "../Modal";
+import Modal from "../ui/Modal";
 import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import AuthContext from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";

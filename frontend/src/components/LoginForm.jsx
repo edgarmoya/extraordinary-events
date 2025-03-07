@@ -60,6 +60,7 @@ export const LoginForm = () => {
                 formSubmitted && errors.username ? "is-invalid" : ""
               }`}
               placeholder="Username"
+              autoComplete="username"
               {...register("username", {
                 required: "Por favor, ingrese su usuario",
               })}
@@ -77,6 +78,7 @@ export const LoginForm = () => {
                 formSubmitted && errors.password ? "is-invalid" : ""
               }`}
               placeholder="Password"
+              autoComplete="current-password"
               {...register("password", {
                 required: "Por favor, ingrese su contraseña",
               })}

@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import Layout from "./Layout";
 import GridTypes from "../components/type_events/GridTypes";
 import TypeService from "../api/types.api";
-import Pagination from "../components/Pagination";
 import TopBar from "../components/TopBar";
 import Paths from "../routes/Paths";
 import ModalTypes from "../components/type_events/ModalTypes";
@@ -164,16 +163,11 @@ function TypesPage() {
               data={types}
               onRowSelected={(row) => setSelectedRow(row)}
               onAdd={() => setModalAddIsOpen(true)}
-            />
-          )}
-
-          <div className="card card-footer bg-body border-0">
-            <Pagination
               onPageChange={handlePageChange}
               currentPage={currentPage}
               totalRows={totalTypes}
             />
-          </div>
+          )}
         </div>
       </div>
 

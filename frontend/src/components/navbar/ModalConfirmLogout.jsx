@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import Modal from "../Modal";
+import Modal from "../ui/Modal";
 
 function ModalConfirmLogout({ isOpen, onClose, onLogout }) {
   const [isLoading, setIsLoading] = useState(false);
