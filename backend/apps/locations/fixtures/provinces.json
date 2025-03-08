@@ -1,0 +1,130 @@
+[
+    {
+      "model": "locations.province",
+      "pk": 1,
+      "fields": {
+        "description": "Pinar del Río",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 2,
+      "fields": {
+        "description": "Artemisa",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 3,
+      "fields": {
+        "description": "La Habana",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 4,
+      "fields": {
+        "description": "Mayabeque",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 5,
+      "fields": {
+        "description": "Matanzas",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 6,
+      "fields": {
+        "description": "Villa Clara",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 7,
+      "fields": {
+        "description": "Cienfuegos",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 8,
+      "fields": {
+        "description": "Sancti Spíritus",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 9,
+      "fields": {
+        "description": "Ciego de Ávila",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 10,
+      "fields": {
+        "description": "Camagüey",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 11,
+      "fields": {
+        "description": "Las Tunas",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 12,
+      "fields": {
+        "description": "Holguín",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 13,
+      "fields": {
+        "description": "Granma",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 14,
+      "fields": {
+        "description": "Santiago de Cuba",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 15,
+      "fields": {
+        "description": "Guantánamo",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.province",
+      "pk": 16,
+      "fields": {
+        "description": "Isla de la Juventud",
+        "is_active": "True"
+      }
+    }
+]

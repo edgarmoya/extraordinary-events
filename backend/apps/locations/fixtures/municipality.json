@@ -1,0 +1,1514 @@
+[
+    {
+      "model": "locations.municipality",
+      "pk": 1,
+      "fields": {
+        "description": "Sandino",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 2,
+      "fields": {
+        "description": "Mantua",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 3,
+      "fields": {
+        "description": "Minas de Matahambre",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 4,
+      "fields": {
+        "description": "Viñales",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 5,
+      "fields": {
+        "description": "La Palma",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 6,
+      "fields": {
+        "description": "Los Palacios",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 7,
+      "fields": {
+        "description": "Consolación del Sur",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 8,
+      "fields": {
+        "description": "Pinar del Rí­o",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 9,
+      "fields": {
+        "description": "San Luis",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 10,
+      "fields": {
+        "description": "San Juan y Martínez",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 11,
+      "fields": {
+        "description": "Güane",
+        "province_id": 1,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 12,
+      "fields": {
+        "description": "Bahí­a Honda",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 13,
+      "fields": {
+        "description": "Mariel",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 14,
+      "fields": {
+        "description": "Güanajay",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 15,
+      "fields": {
+        "description": "Caimito",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 16,
+      "fields": {
+        "description": "Bauta",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 17,
+      "fields": {
+        "description": "San Antonio de los Baños",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 18,
+      "fields": {
+        "description": "Güira de Melena",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 19,
+      "fields": {
+        "description": "Alquizar",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 20,
+      "fields": {
+        "description": "Artemisa",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 21,
+      "fields": {
+        "description": "Candelaria",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 22,
+      "fields": {
+        "description": "San Cristobal",
+        "province_id": 2,
+        "is_active": "True"
+      }
+    }, 
+    {
+      "model": "locations.municipality",
+      "pk": 23,
+      "fields": {
+        "description": "Playa",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 24,
+      "fields": {
+        "description": "Plaza de la Revolución",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 25,
+      "fields": {
+        "description": "Centro Habana",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 26,
+      "fields": {
+        "description": "La Habana Vieja",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 27,
+      "fields": {
+        "description": "Regla",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 28,
+      "fields": {
+        "description": "La Habana del Este",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 29,
+      "fields": {
+        "description": "Guanabacoa",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 30,
+      "fields": {
+        "description": "San Miguel del Padrón",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 31,
+      "fields": {
+        "description": "Diez de Octubre",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 32,
+      "fields": {
+        "description": "Cerro",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 33,
+      "fields": {
+        "description": "Marianao",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 34,
+      "fields": {
+        "description": "La Lisa",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 35,
+      "fields": {
+        "description": "Boyeros",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 36,
+      "fields": {
+        "description": "Arroyo Naranjo",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 37,
+      "fields": {
+        "description": "Cotorro",
+        "province_id": 3,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 38,
+      "fields": {
+        "description": "Bejucal",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 39,
+      "fields": {
+        "description": "San José de las Lajas",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 40,
+      "fields": {
+        "description": "Jaruco",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 41,
+      "fields": {
+        "description": "Santa Cruz del Norte",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 42,
+      "fields": {
+        "description": "Madruga",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 43,
+      "fields": {
+        "description": "Nueva Paz",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 44,
+      "fields": {
+        "description": "San Nicolás",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 45,
+      "fields": {
+        "description": "Güines",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 46,
+      "fields": {
+        "description": "Melena del Sur",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 47,
+      "fields": {
+        "description": "Batabanó",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 48,
+      "fields": {
+        "description": "Quivican",
+        "province_id": 4,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 49,
+      "fields": {
+        "description": "Matanzas",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 50,
+      "fields": {
+        "description": "Cárdenas",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 51,
+      "fields": {
+        "description": "Martí",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 52,
+      "fields": {
+        "description": "Colón",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 53,
+      "fields": {
+        "description": "Perico",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 54,
+      "fields": {
+        "description": "Jovellanos",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 55,
+      "fields": {
+        "description": "Pedro Betancourt",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 56,
+      "fields": {
+        "description": "Limonar",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 57,
+      "fields": {
+        "description": "Unión de Reyes",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 58,
+      "fields": {
+        "description": "Ciénaga de Zapata",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 59,
+      "fields": {
+        "description": "Jagüey Grande",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 60,
+      "fields": {
+        "description": "Calimete",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 61,
+      "fields": {
+        "description": "Los Arabos",
+        "province_id": 5,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 62,
+      "fields": {
+        "description": "Corralillo",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 63,
+      "fields": {
+        "description": "Quemado de Güines",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 64,
+      "fields": {
+        "description": "Sagua la Grande",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 65,
+      "fields": {
+        "description": "Encrucijada",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 66,
+      "fields": {
+        "description": "Camajua­ní",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 67,
+      "fields": {
+        "description": "Caibarién",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 68,
+      "fields": {
+        "description": "Remedios",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 69,
+      "fields": {
+        "description": "Placetas",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 70,
+      "fields": {
+        "description": "Santa Clara",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 71,
+      "fields": {
+        "description": "Cifuentes",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 72,
+      "fields": {
+        "description": "Santo Domingo",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 73,
+      "fields": {
+        "description": "Ranchuelo",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 74,
+      "fields": {
+        "description": "Manicaragua",
+        "province_id": 6,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 75,
+      "fields": {
+        "description": "Aguada de Pasajeros",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 76,
+      "fields": {
+        "description": "Rodas",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 77,
+      "fields": {
+        "description": "Palmira",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 78,
+      "fields": {
+        "description": "Lajas",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 79,
+      "fields": {
+        "description": "Cruces",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 80,
+      "fields": {
+        "description": "Cumanayagua",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 81,
+      "fields": {
+        "description": "Cienfuegos",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 82,
+      "fields": {
+        "description": "Abreus",
+        "province_id": 7,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 83,
+      "fields": {
+        "description": "Yaguajay",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 84,
+      "fields": {
+        "description": "Jatibonico",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 85,
+      "fields": {
+        "description": "Taguasco",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 86,
+      "fields": {
+        "description": "Cabaiguan",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 87,
+      "fields": {
+        "description": "Fomento",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 88,
+      "fields": {
+        "description": "Trinidad",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 89,
+      "fields": {
+        "description": "Sancti Spíritus",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 90,
+      "fields": {
+        "description": "La Sierpe",
+        "province_id": 8,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 91,
+      "fields": {
+        "description": "Chambas",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 92,
+      "fields": {
+        "description": "Morón",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 93,
+      "fields": {
+        "description": "Bolivia",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 94,
+      "fields": {
+        "description": "Primero de Enero",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 95,
+      "fields": {
+        "description": "Ciro Redondo",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 96,
+      "fields": {
+        "description": "Florencia",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 97,
+      "fields": {
+        "description": "Majagua",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 98,
+      "fields": {
+        "description": "Ciego de Ávila",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 99,
+      "fields": {
+        "description": "Venezuela",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 100,
+      "fields": {
+        "description": "Baraguá",
+        "province_id": 9,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 101,
+      "fields": {
+        "description": "Carlos Manuel de Céspedes",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 102,
+      "fields": {
+        "description": "Esmeralda",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 103,
+      "fields": {
+        "description": "Sierra de Cubitas",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 104,
+      "fields": {
+        "description": "Minas",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 105,
+      "fields": {
+        "description": "Nuevitas",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 106,
+      "fields": {
+        "description": "Guaimaro",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 107,
+      "fields": {
+        "description": "Sibanicú",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 108,
+      "fields": {
+        "description": "Camagüey",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 109,
+      "fields": {
+        "description": "Florida",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 110,
+      "fields": {
+        "description": "Vertientes",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 111,
+      "fields": {
+        "description": "Jimaguayú",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 112,
+      "fields": {
+        "description": "Najasa",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 113,
+      "fields": {
+        "description": "Santa Cruz del Sur",
+        "province_id": 10,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 114,
+      "fields": {
+        "description": "Manatí",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 115,
+      "fields": {
+        "description": "Puerto Padre",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 116,
+      "fields": {
+        "description": "Jesús Menéndez",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 117,
+      "fields": {
+        "description": "Majibacoa",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 118,
+      "fields": {
+        "description": "Las Tunas",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 119,
+      "fields": {
+        "description": "Jobabo",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 120,
+      "fields": {
+        "description": "Colombia",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 121,
+      "fields": {
+        "description": "Amancio",
+        "province_id": 11,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 122,
+      "fields": {
+        "description": "Gibara",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 123,
+      "fields": {
+        "description": "Rafael Freyre",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 124,
+      "fields": {
+        "description": "Banes",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 125,
+      "fields": {
+        "description": "Antilla",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 126,
+      "fields": {
+        "description": "Baguanos",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 127,
+      "fields": {
+        "description": "Holguín",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 128,
+      "fields": {
+        "description": "Calixto García",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 129,
+      "fields": {
+        "description": "Cacocum",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 130,
+      "fields": {
+        "description": "Urbano Noris",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 131,
+      "fields": {
+        "description": "Cueto",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 132,
+      "fields": {
+        "description": "Mayarí",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 133,
+      "fields": {
+        "description": "Frank País",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 134,
+      "fields": {
+        "description": "Sagua de Tanamo",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 135,
+      "fields": {
+        "description": "Moa",
+        "province_id": 12,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 136,
+      "fields": {
+        "description": "Río Cauto",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 137,
+      "fields": {
+        "description": "Cauto Cristo",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 138,
+      "fields": {
+        "description": "Jiguaní",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 139,
+      "fields": {
+        "description": "Bayamo",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 140,
+      "fields": {
+        "description": "Yara",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 141,
+      "fields": {
+        "description": "Manzanillo",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 142,
+      "fields": {
+        "description": "Campechuela",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 143,
+      "fields": {
+        "description": "Media Luna",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 144,
+      "fields": {
+        "description": "Niquero",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 145,
+      "fields": {
+        "description": "Pilón",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 146,
+      "fields": {
+        "description": "Bartolomé Masó",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 147,
+      "fields": {
+        "description": "Buey Arriba",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 148,
+      "fields": {
+        "description": "Güisa",
+        "province_id": 13,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 149,
+      "fields": {
+        "description": "Contramaestre",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 150,
+      "fields": {
+        "description": "Mella",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 151,
+      "fields": {
+        "description": "San Luis",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 152,
+      "fields": {
+        "description": "Segundo Frente",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 153,
+      "fields": {
+        "description": "Songo - La Maya",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 154,
+      "fields": {
+        "description": "Santiago de Cuba",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 155,
+      "fields": {
+        "description": "Palma Soriano",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 156,
+      "fields": {
+        "description": "Tercer Frente",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 157,
+      "fields": {
+        "description": "Guamá",
+        "province_id": 14,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 158,
+      "fields": {
+        "description": "El Salvador",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 159,
+      "fields": {
+        "description": "Manuel Tames",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 160,
+      "fields": {
+        "description": "Yateras",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 161,
+      "fields": {
+        "description": "Baracoa",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 162,
+      "fields": {
+        "description": "Maisí",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 163,
+      "fields": {
+        "description": "Imias",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 164,
+      "fields": {
+        "description": "San Antonio del Sur",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 165,
+      "fields": {
+        "description": "Caimanera",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 166,
+      "fields": {
+        "description": "Guantánamo",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 167,
+      "fields": {
+        "description": "Niceto Pérez",
+        "province_id": 15,
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "locations.municipality",
+      "pk": 168,
+      "fields": {
+        "description": "Isla de la Juventud",
+        "province_id": 16,
+        "is_active": "True"
+      }
+    }
+]

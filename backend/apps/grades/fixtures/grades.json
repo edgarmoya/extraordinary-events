@@ -1,0 +1,18 @@
+[
+    {
+      "model": "grades.grade",
+      "pk": 1,
+      "fields": {
+        "description": "Primer Grado",
+        "is_active": "True"
+      }
+    },
+    {
+      "model": "grades.grade",
+      "pk": 2,
+      "fields": {
+        "description": "Segundo Grado",
+        "is_active": "True"
+      }
+    }
+]

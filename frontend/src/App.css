@@ -231,3 +231,7 @@
   max-height: 90%;
   object-fit: contain;
 }
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
