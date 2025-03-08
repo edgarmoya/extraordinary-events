@@ -27,7 +27,7 @@ function Sidebar({ isOpen }) {
   };
 
   return (
-    <nav className={`sidebar p-2 shadow-sm ${isOpen ? "is-open" : ""}`}>
+    <nav className={`sidebar p-2 shadow-sm ${isOpen ? "open" : ""}`}>
       <div className="sidebar-body">
         <Link
           to={Paths.HOME}
@@ -165,7 +165,7 @@ function Sidebar({ isOpen }) {
           </li>
         </ul>
       </div>
-      <div className="sidebar-footer text-center pt-0">
+      <div className="text-center mt-auto">
         <hr className="text-body" />
         <a
           className="fs-small text-body text-decoration-none fw-bold"
