@@ -1,8 +1,12 @@
 from django.contrib import admin
-from .models import CustomUser
+from django.contrib.auth.models import Group
+from .models import CustomUser, Role, CustomUserGroup
 from django.contrib.auth.admin import UserAdmin
 
-# Register your models here.
+class CustomUserGroupInline(admin.TabularInline):
+    model = CustomUserGroup
+    extra = 1  # Muestra filas vacías para agregar nuevos registros
+
 class UserAdminConfig(UserAdmin):
     model = CustomUser
     search_fields = ('user_name',)
@@ -10,16 +14,26 @@ class UserAdminConfig(UserAdmin):
     ordering = ('-start_date',)
     list_display = ('user_name', 'first_name', 'last_name', 'is_active', 'is_staff')
     fieldsets = (
-        (None, {'fields': ('password',)}),
-        ('Información Personal', {'fields': ('first_name', 'last_name')}),
-        ('Permisos', {'fields': ('is_staff', 'groups')}),
-        ('Estado actual', {'fields': ('is_active', )}),
+        ('Información Personal', {'fields': ('password', 'user_name', 'first_name', 'last_name')}),
+        ('Permisos', {'fields': ('is_active', 'is_staff')}),
     )
     add_fieldsets = (
-        (None, {
+        ("Información Personal", {
             'classes': ('wide',),
-            'fields': ('user_name', 'first_name', 'last_name', 'password1', 'password2', 'is_active', 'is_staff', 'groups')}
+            'fields': ('user_name', 'first_name', 'last_name', 'password1', 'password2')}
         ),
+        ('Permisos', {'fields': ('is_active', 'is_staff')}),
     )
+    inlines = [CustomUserGroupInline]  # Agrega la relación con entidades
+
+class GroupAdminConfig(admin.ModelAdmin):
+    model = Group
+    search_fields = ('name',)
+    list_display = ('name',)
+    inlines = [CustomUserGroupInline]  # Agrega la relación con entidades
+
+
+admin.site.unregister(Group)
+admin.site.register(Role, GroupAdminConfig)
 
 admin.site.register(CustomUser, UserAdminConfig)
