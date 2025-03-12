@@ -35,6 +35,11 @@ export const ADDFIELDS = "/addfields";
 export const ACTIVE_ADDFIELDS = "/addfields/active";
 export const INACTIVE_ADDFIELDS = "/addfields/inactive";
 
+//* Usuarios
+export const USERS = "/users";
+export const ACTIVE_USERS = "/users/active";
+export const INACTIVE_USERS = "/users/inactive";
+
 const Paths = {
   EMPTY,
   ADMIN,
@@ -59,6 +64,9 @@ const Paths = {
   ADDFIELDS,
   ACTIVE_ADDFIELDS,
   INACTIVE_ADDFIELDS,
+  USERS,
+  ACTIVE_USERS,
+  INACTIVE_USERS,
 };
 
 export default Paths;
