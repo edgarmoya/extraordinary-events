@@ -31,10 +31,13 @@ function Layout({ children, pageTitle }) {
 
   return (
     <div className="App" data-bs-theme={theme}>
+      {sidebarIsOpen && (
+        <div className="overlay" onClick={() => setSidebarOpen(false)}></div>
+      )}
       <Sidebar isOpen={sidebarIsOpen} />
       <div
         className={`container-fluid content bg-body-secondary ${
-          sidebarIsOpen ? "is-open" : ""
+          sidebarIsOpen ? "open" : ""
         }`}
       >
         <Navbar

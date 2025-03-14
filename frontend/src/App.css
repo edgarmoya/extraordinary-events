@@ -48,7 +48,7 @@
   border: 1px solid transparent;
   border-right-color: rgba(0, 0, 0, 0.125);
 }
-.sidebar.is-open {
+.sidebar.open {
   margin-left: 0;
   transition: 0.5s;
 }
@@ -72,21 +72,38 @@
 .content {
   padding: 0px;
   margin-left: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 @media only screen and (max-width: 965px) {
-
   .sidebar{
     display: none;
   }
 
-  .sidebar.is-open {
-    display: block;
-    min-width: 100%;
-    max-width: 100%;
+  .sidebar.open {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    z-index: 100;
+    height: 100dvh;
+    min-width: 65%;
+    max-width: 65%;
     margin-left: 0;
     transition: all 0.5s, height 0s;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
   }
 }
 
@@ -189,6 +206,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 50;
 }
 
 .date-picker-container {
