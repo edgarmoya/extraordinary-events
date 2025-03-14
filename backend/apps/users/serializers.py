@@ -7,7 +7,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    password = serializers.CharField(min_length=8, write_only=True)
+    password = serializers.CharField(min_length=8, write_only=True, required=False)
     last_login = serializers.DateTimeField(format="%d-%m-%Y (%I:%M %p)", read_only=True)
     start_date = serializers.DateTimeField(format="%d-%m-%Y (%I:%M %p)", read_only=True)
 
@@ -20,6 +20,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
         if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)  # Evita sobrescribir la contraseña si no se envía
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
             instance.set_password(password)
         instance.save()
         return instance

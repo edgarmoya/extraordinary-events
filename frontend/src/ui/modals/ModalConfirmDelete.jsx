@@ -1,14 +1,15 @@
-import { React, useState } from "react";
+import React from "react";
 import Modal from "./Modal";
+import Spinner from "../Spinner";
 
-function ModalConfirmDelete({ isOpen, onClose, onDelete, message }) {
-  const [isLoading, setIsLoading] = useState(false);
-
+function ModalConfirmDelete({ isOpen, onClose, onDelete, message, loading }) {
   const handleDelete = async () => {
-    setIsLoading(true);
-    await onDelete();
-    onClose();
-    setIsLoading(false);
+    try {
+      await onDelete();
+      onClose();
+    } catch (error) {
+      console.log("Error al eliminar: ", error);
+    }
   };
 
   return (
@@ -22,9 +23,16 @@ function ModalConfirmDelete({ isOpen, onClose, onDelete, message }) {
           <button
             className="btn btn-danger"
             onClick={handleDelete}
-            disabled={isLoading}
+            disabled={loading}
           >
-            {isLoading ? "Eliminando..." : "Eliminar"}
+            {loading ? (
+              <>
+                <Spinner />
+                Eliminando...
+              </>
+            ) : (
+              "Eliminar"
+            )}
           </button>
         </div>
       </Modal>

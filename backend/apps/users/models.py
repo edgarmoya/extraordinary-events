@@ -38,6 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         through='CustomUserGroup',  # Usa la tabla intermedia personalizada
         related_name="custom_users"
     )
+    user_permissions = None  
 
     objects = CustomUserManager()
 

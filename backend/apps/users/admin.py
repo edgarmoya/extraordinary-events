@@ -11,6 +11,7 @@ class UserAdminConfig(UserAdmin):
     model = CustomUser
     search_fields = ('user_name',)
     list_filter = ('is_active', 'is_staff')
+    filter_horizontal = ()
     ordering = ('-start_date',)
     list_display = ('user_name', 'first_name', 'last_name', 'is_active', 'is_staff')
     fieldsets = (

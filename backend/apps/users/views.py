@@ -44,7 +44,9 @@ class UserView(viewsets.ModelViewSet):
             return CustomUser.objects.none()
 
         # Filtra los usuarios que pertenecen a esas entidades
-        queryset = CustomUser.objects.filter(customusergroup__entity__in=admin_entities)
+        queryset = CustomUser.objects.filter(
+            Q(customusergroup__entity__in=admin_entities) | Q(customusergroup__isnull=True)
+        ).exclude(is_superuser=True)
 
         # Aplica el filtro por término de búsqueda si está presente
         if search_term:

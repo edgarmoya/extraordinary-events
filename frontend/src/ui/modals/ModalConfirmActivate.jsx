@@ -1,5 +1,6 @@
-import { React, useState } from "react";
+import React from "react";
 import Modal from "./Modal";
+import Spinner from "../Spinner";
 
 function ModalConfirmActivate({
   isOpen,
@@ -7,34 +8,42 @@ function ModalConfirmActivate({
   onActivate,
   message,
   activated,
+  loading,
 }) {
-  const [isLoading, setIsLoading] = useState(false);
-
   const handleActivate = async () => {
-    setIsLoading(true);
-    await onActivate();
-    onClose();
-    setIsLoading(false);
+    try {
+      await onActivate();
+      onClose();
+    } catch (error) {
+      console.log("Error al cambiar el estado: ", error);
+    }
   };
 
   return (
-    <div>
-      <Modal isOpen={isOpen} title={"Confirmación"} onClose={onClose}>
-        <div className="modal-body text-body-emphasis">{message}</div>
-        <div className="modal-footer">
-          <button type="button" onClick={onClose} className="btn btn-secondary">
-            Cancelar
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={handleActivate}
-            disabled={isLoading}
-          >
-            {isLoading ? "Guardando..." : activated ? "Inactivar" : "Activar"}
-          </button>
-        </div>
-      </Modal>
-    </div>
+    <Modal isOpen={isOpen} title={"Confirmación"} onClose={onClose}>
+      <div className="modal-body text-body-emphasis">{message}</div>
+      <div className="modal-footer">
+        <button type="button" onClick={onClose} className="btn btn-secondary">
+          Cancelar
+        </button>
+        <button
+          className="btn btn-danger"
+          onClick={handleActivate}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Spinner />
+              Guardando...
+            </>
+          ) : activated ? (
+            "Inactivar"
+          ) : (
+            "Activar"
+          )}
+        </button>
+      </div>
+    </Modal>
   );
 }
 
