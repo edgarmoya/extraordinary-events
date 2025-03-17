@@ -163,7 +163,7 @@ function ModalClassifications({
           <button
             type="button"
             onClick={handleFormSubmit}
-            className="btn btn-primary"
+            className="btn btn-primary text-white"
             disabled={isLoading}
           >
             {isLoading

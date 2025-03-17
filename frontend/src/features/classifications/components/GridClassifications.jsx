@@ -45,11 +45,11 @@ function GridClassifications({
                   <td>{classification.grade_description}</td>
                   <td>
                     {classification.is_active ? (
-                      <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                      <div className="d-inline px-2 bg-primary-badge text-primary rounded-1">
                         activo
                       </div>
                     ) : (
-                      <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
+                      <div className="d-inline px-2 bg-danger-badge rounded-1">
                         inactivo
                       </div>
                     )}

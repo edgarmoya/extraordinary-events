@@ -531,7 +531,7 @@ function ModalEvents({
             <button
               type="button"
               onClick={handleSubmit(handleFormSubmit)}
-              className="btn btn-primary"
+              className="btn btn-primary text-white"
               disabled={isLoading}
             >
               {isLoading ? "Guardando..." : eventData ? "Modificar" : "Añadir"}

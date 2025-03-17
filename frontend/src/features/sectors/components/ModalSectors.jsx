@@ -127,7 +127,7 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
           <button
             type="button"
             onClick={handleFormSubmit}
-            className="btn btn-primary"
+            className="btn btn-primary text-white"
             disabled={isLoading}
           >
             {isLoading ? "Guardando..." : sectorData ? "Modificar" : "Añadir"}

@@ -98,7 +98,7 @@ export const LoginForm = () => {
             )}
           </div>
           <button
-            className="btn btn-primary w-100 mt-4"
+            className="btn btn-primary text-white w-100 mt-4"
             onClick={handleFormSubmit}
           >
             Iniciar sesión

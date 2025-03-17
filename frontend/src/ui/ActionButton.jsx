@@ -8,7 +8,7 @@ const ActionButton = ({ tooltipText, onClick, svgPath, show = true }) => {
       <button
         type="button"
         onClick={onClick}
-        className={`btn border-secondary-subtle btn-accions-blue shadow-sm w-100`}
+        className="btn-accion shadow-sm w-100"
       >
         {svgPath}
       </button>

@@ -117,7 +117,7 @@ function ModalChangePassword({ isOpen, onClose }) {
           <button
             type="button"
             onClick={handleFormSubmit}
-            className="btn btn-primary"
+            className="btn btn-primary text-white"
             disabled={isLoading}
           >
             {isLoading ? "Cambiando..." : "Cambiar"}

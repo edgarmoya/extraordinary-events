@@ -207,7 +207,7 @@ function ModalUsers({ isOpen, onClose, onRefresh, title, userData }) {
           </button>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary text-white"
             disabled={creating || updating}
           >
             {userData ? (

@@ -36,9 +36,7 @@ function Layout({ children, pageTitle }) {
       )}
       <Sidebar isOpen={sidebarIsOpen} />
       <div
-        className={`container-fluid content bg-body-secondary ${
-          sidebarIsOpen ? "open" : ""
-        }`}
+        className={`content bg-body-secondary ${sidebarIsOpen ? "open" : ""}`}
       >
         <Navbar
           onToggleSidebar={toggleSidebar}

@@ -34,19 +34,23 @@ class UserView(viewsets.ModelViewSet):
 
         user = self.request.user # Usuario autenticado
 
-        # Obtiene las entidades donde el usuario autenticado es administrador
-        admin_entities = CustomUserGroup.objects.filter(
-            user=user, group__name='administrador'
-        ).values_list('entity', flat=True)
+        # Si el usuario es superusuario, devuelve todos los usuarios
+        if user.is_superuser:
+            queryset = CustomUser.objects.all()
+        else:
+            # Obtiene las entidades donde el usuario autenticado es administrador
+            admin_entities = CustomUserGroup.objects.filter(
+                user=user, group__name='administrador'
+            ).values_list('entity', flat=True)
 
-        # Si el usuario no es administrador en ninguna entidad, devuelve un queryset vacío
-        if not admin_entities:
-            return CustomUser.objects.none()
+            # Si el usuario no es administrador en ninguna entidad, devuelve un queryset vacío
+            if not admin_entities:
+                return CustomUser.objects.none()
 
-        # Filtra los usuarios que pertenecen a esas entidades
-        queryset = CustomUser.objects.filter(
-            Q(customusergroup__entity__in=admin_entities) | Q(customusergroup__isnull=True)
-        ).exclude(is_superuser=True)
+            # Filtra los usuarios que pertenecen a esas entidades o que no tienen grupo asignado
+            queryset = CustomUser.objects.filter(
+                Q(customusergroup__entity__in=admin_entities) | Q(customusergroup__isnull=True)
+            ).exclude(is_superuser=True)
 
         # Aplica el filtro por término de búsqueda si está presente
         if search_term:

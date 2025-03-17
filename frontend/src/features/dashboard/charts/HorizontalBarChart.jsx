@@ -18,7 +18,7 @@ const HorizontalBarChart = ({ typesData }) => {
       {
         label: "Cantidad",
         data: typesData.map((data) => data.events_count),
-        backgroundColor: "rgb(13, 110, 253)",
+        backgroundColor: "#76e376",
       },
     ],
   };

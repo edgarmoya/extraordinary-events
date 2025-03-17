@@ -147,7 +147,7 @@ function ModalFields({ isOpen, onClose, onRefresh, title, fieldData }) {
           <button
             type="button"
             onClick={handleFormSubmit}
-            className="btn btn-primary"
+            className="btn btn-primary text-white"
             disabled={isLoading}
           >
             {isLoading ? "Guardando..." : fieldData ? "Modificar" : "Añadir"}

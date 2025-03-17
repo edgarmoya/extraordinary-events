@@ -181,7 +181,7 @@ function TopBar({
             }}
           />
           <button
-            className="btn btn-primary ms-auto"
+            className="btn btn-primary text-white ms-auto"
             type="button"
             onClick={() => {
               if (searchTerm === "") {
