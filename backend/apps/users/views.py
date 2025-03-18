@@ -8,6 +8,9 @@ from rest_framework.pagination import PageNumberPagination
 from apps.events.models import Event
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+import locale
+
+locale.setlocale(locale.LC_TIME, 'es_ES.utf8')  # Asegurar formato en español
 
 class UserPagination(PageNumberPagination):
     page_size = 25
@@ -238,5 +241,14 @@ class UserGroupsView(views.APIView):
 
             grouped_roles[role].append({"id":entity.id_entity, "entity": entity.description})
 
-        # Devolver la respuesta con los nombres de los grupos
-        return Response(grouped_roles, status=status.HTTP_200_OK)
+        user_data = {
+            "user_name": user.user_name, 
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "start_date": user.start_date.strftime("%d de %B del %Y") if user.start_date else None,
+            "is_superuser": user.is_superuser,
+            "roles": grouped_roles
+        }
+
+        # Devolver la respuesta con el usuario y los grupos a los que pertenece
+        return Response(user_data, status=status.HTTP_200_OK)

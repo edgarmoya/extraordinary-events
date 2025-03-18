@@ -275,6 +275,10 @@
   background: #555;
 }
 
+/* ---------------------------------------------------
+    SELECT STYLE
+----------------------------------------------------- */
+
 select option:checked{
   color: #fff;
   background: #888;
@@ -285,3 +289,16 @@ select option:hover{
   background-color: #888 !important;
   box-shadow: 0 0 10px 100px #000 inset;
 }
+
+/* ---------------------------------------------------
+    DROPDOWN STYLE
+----------------------------------------------------- */
+.dropdown-item-danger{
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+.dropdown-item-danger:hover{
+  background: #dc3545;
+  color: #fff;
+}
+

@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import Modal from "../../ui/modals/Modal";
+import Spinner from "../../ui/Spinner";
 
 function ModalConfirmLogout({ isOpen, onClose, onLogout }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -7,8 +8,8 @@ function ModalConfirmLogout({ isOpen, onClose, onLogout }) {
   const handleLogout = async () => {
     setIsLoading(true);
     await onLogout();
-    setIsLoading(false);
     onClose();
+    setIsLoading(false);
   };
 
   return (
@@ -26,7 +27,14 @@ function ModalConfirmLogout({ isOpen, onClose, onLogout }) {
             onClick={handleLogout}
             disabled={isLoading}
           >
-            {isLoading ? "Cerrando sesión..." : "Cerrar sesión"}
+            {isLoading ? (
+              <>
+                <Spinner />
+                Cerrando sesión...
+              </>
+            ) : (
+              "Cerrar sesión"
+            )}
           </button>
         </div>
       </Modal>

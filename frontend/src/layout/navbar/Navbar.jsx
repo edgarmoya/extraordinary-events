@@ -116,7 +116,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
                 </li>
                 <li>
                   <button
-                    className="dropdown-item rounded-1"
+                    className="w-100 border-0 py-1 px-3 text-start rounded-1 dropdown-item-danger"
                     onClick={handleLogout}
                   >
                     Cerrar sesión
