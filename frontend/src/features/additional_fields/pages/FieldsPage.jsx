@@ -11,6 +11,7 @@ import ModalFields from "../components/ModalFields";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 import TableLoader from "../../../ui/skeletons/TableLoader";
+import { AddIcon, UpdateIcon, DeleteIcon, ActiveIcon } from "../../../ui/icons";
 
 function FieldsPage() {
   const location = useLocation();
@@ -121,49 +122,65 @@ function FieldsPage() {
   return (
     <Layout pageTitle="Campos adicionales">
       <div className="container-fluid">
-        {/* Accions */}
-        <TopBar
-          searchMessage={"Buscar campos ..."}
-          watchButton={false}
-          searchInput={true}
-          pathAll={Paths.ADDFIELDS}
-          pathActive={Paths.ACTIVE_ADDFIELDS}
-          pathInactive={Paths.INACTIVE_ADDFIELDS}
-          onAdd={() => setModalAddIsOpen(true)}
-          onUpdate={() => {
-            if (selectedRow) {
-              setModalUpdateIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el campo que desea modificar");
-            }
-          }}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el campo que desea eliminar");
-            }
-          }}
-          onActivate={() => {
-            if (selectedRow) {
-              setModalActivateIsOpen(true);
-            } else {
-              showErrorToast(
-                "Seleccione el campo que desea activar o inactivar"
-              );
-            }
-          }}
-          onSearch={(term) => {
-            clearSelectedRow();
-            setSearchTerm(term);
-            setCurrentPage(1);
-          }}
-        />
-        {/* Grid */}
-        <div
-          className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 115px)" }}
-        >
+        {/* Acciones */}
+        <TopBar>
+          <TopBar.Button
+            label="Agregar"
+            onClick={() => setModalAddIsOpen(true)}
+            icon={AddIcon}
+          />
+          <TopBar.Button
+            label="Modificar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalUpdateIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el campo que desea modificar");
+              }
+            }}
+            icon={UpdateIcon}
+          />
+          <TopBar.Button
+            label="Eliminar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el campo que desea eliminar");
+              }
+            }}
+            icon={DeleteIcon}
+          />
+          <TopBar.Button
+            label="Activar/Inactivar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalActivateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione el campo que desea activar o inactivar"
+                );
+              }
+            }}
+            icon={ActiveIcon}
+          />
+          <TopBar.Dropdown
+            pathAll={Paths.ADDFIELDS}
+            pathActive={Paths.ACTIVE_ADDFIELDS}
+            pathInactive={Paths.INACTIVE_ADDFIELDS}
+          />
+          <TopBar.Search
+            searchMessage={"Buscar campos ..."}
+            onSearch={(term) => {
+              clearSelectedRow();
+              setSearchTerm(term);
+              setCurrentPage(1);
+            }}
+          />
+        </TopBar>
+
+        {/* Tabla de los campos adicionales */}
+        <div className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm">
           {loading ? (
             <TableLoader columns={3} />
           ) : (

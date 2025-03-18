@@ -2,8 +2,8 @@ import React from "react";
 
 function Grid({ children }) {
   return (
-    <section className="overflow-y-auto my-1">
-      <table className="table table-sm table-hover table-responsive m-0">
+    <section className="overflow-auto px-3">
+      <table className="table table-sm table-hover table-responsive">
         {children}
       </table>
     </section>
@@ -12,7 +12,7 @@ function Grid({ children }) {
 
 function Head({ children }) {
   return (
-    <thead className="sticky-top z-1">
+    <thead className="sticky-md-top z-1">
       <tr>{children}</tr>
     </thead>
   );

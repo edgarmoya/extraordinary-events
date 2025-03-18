@@ -4,6 +4,7 @@ import ModalConfirmLogout from "./ModalConfirmLogout";
 import ModalChangePassword from "./ModalChangePassword";
 import ModalProfile from "./ModalProfile";
 import ThemeToggle from "./ThemeToggle";
+import { MenuIcon } from "../../ui/icons";
 
 function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   const { user, logoutUser } = useContext(AuthContext);
@@ -40,23 +41,16 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   return (
     <>
       <header className="navbar bg-body-secondary">
-        <div className="container-fluid">
+        <div className="container-fluid mx-3 px-0">
           <div className="col-auto">
             {/* Sidebar Toggle */}
             <button
               id="toggleSidebarBtn"
               type="button"
               onClick={onToggleSidebar}
-              className="btn btn-home text-body-secondary bg-body-secondary px-2 ms-2"
+              className="btn btn-home text-body-secondary bg-body-secondary px-1 px-md-2"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                height={"1.5rem"}
-              >
-                <path d="M0,3.5c0-.83,.67-1.5,1.5-1.5H17.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5H1.5c-.83,0-1.5-.67-1.5-1.5Zm17.5,14.5H1.5c-.83,0-1.5,.67-1.5,1.5s.67,1.5,1.5,1.5H17.5c.83,0,1.5-.67,1.5-1.5s-.67-1.5-1.5-1.5Zm5-8H6.5c-.83,0-1.5,.67-1.5,1.5s.67,1.5,1.5,1.5H22.5c.83,0,1.5-.67,1.5-1.5s-.67-1.5-1.5-1.5Z" />
-              </svg>
+              <MenuIcon />
             </button>
           </div>
           {/* Title */}
@@ -81,7 +75,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
           <div className="col-auto">
             <div className="dropdown">
               <button
-                className="dropdown-toggle border-0 bg-body-secondary mx-1"
+                className="dropdown-toggle border-0 bg-body-secondary ms-1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >

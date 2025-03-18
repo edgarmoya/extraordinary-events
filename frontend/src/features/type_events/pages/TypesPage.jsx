@@ -11,6 +11,7 @@ import ModalConfirmActivate from "../../../ui/modals/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 import TableLoader from "../../../ui/skeletons/TableLoader";
+import { ActiveIcon, AddIcon, DeleteIcon, UpdateIcon } from "../../../ui/icons";
 
 function TypesPage() {
   const location = useLocation();
@@ -113,49 +114,69 @@ function TypesPage() {
   return (
     <Layout pageTitle="Tipos">
       <div className="container-fluid">
-        {/* Accions */}
-        <TopBar
-          searchMessage={"Buscar tipo ..."}
-          watchButton={false}
-          searchInput={true}
-          pathAll={Paths.TYPES}
-          pathActive={Paths.ACTIVE_TYPES}
-          pathInactive={Paths.INACTIVE_TYPES}
-          onAdd={() => setModalAddIsOpen(true)}
-          onUpdate={() => {
-            if (selectedRow) {
-              setModalUpdateIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el tipo de hecho que desea modificar");
-            }
-          }}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el tipo de hecho que desea eliminar");
-            }
-          }}
-          onActivate={() => {
-            if (selectedRow) {
-              setModalActivateIsOpen(true);
-            } else {
-              showErrorToast(
-                "Seleccione el tipo de hecho que desea activar o inactivar"
-              );
-            }
-          }}
-          onSearch={(term) => {
-            clearSelectedRow();
-            setCurrentPage(1);
-            setSearchTerm(term);
-          }}
-        />
-        {/* Grid */}
-        <div
-          className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 115px)" }}
-        >
+        {/* Acciones */}
+        <TopBar>
+          <TopBar.Button
+            label="Agregar"
+            onClick={() => setModalAddIsOpen(true)}
+            icon={AddIcon}
+          />
+          <TopBar.Button
+            label="Modificar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalUpdateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione el tipo de hecho que desea modificar"
+                );
+              }
+            }}
+            icon={UpdateIcon}
+          />
+          <TopBar.Button
+            label="Eliminar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione el tipo de hecho que desea eliminar"
+                );
+              }
+            }}
+            icon={DeleteIcon}
+          />
+          <TopBar.Button
+            label="Activar/Inactivar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalActivateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione el tipo de hecho que desea activar o inactivar"
+                );
+              }
+            }}
+            icon={ActiveIcon}
+          />
+          <TopBar.Dropdown
+            pathAll={Paths.TYPES}
+            pathActive={Paths.ACTIVE_TYPES}
+            pathInactive={Paths.INACTIVE_TYPES}
+          />
+          <TopBar.Search
+            searchMessage={"Buscar tipo ..."}
+            onSearch={(term) => {
+              clearSelectedRow();
+              setCurrentPage(1);
+              setSearchTerm(term);
+            }}
+          />
+        </TopBar>
+
+        {/* Tabla de contenido */}
+        <div className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm justify-content-between">
           {loading ? (
             <TableLoader columns={3} />
           ) : (

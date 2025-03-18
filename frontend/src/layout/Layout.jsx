@@ -35,6 +35,7 @@ function Layout({ children, pageTitle }) {
         <div className="overlay" onClick={() => setSidebarOpen(false)}></div>
       )}
       <Sidebar isOpen={sidebarIsOpen} />
+
       <div
         className={`content bg-body-secondary ${sidebarIsOpen ? "open" : ""}`}
       >
