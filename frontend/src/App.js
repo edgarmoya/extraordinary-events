@@ -14,6 +14,7 @@ import TypesPage from "./features/type_events/pages/TypesPage";
 import SectorsPage from "./features/sectors/pages/SectorsPage";
 import ClassificationsPage from "./features/classifications/pages/ClassificationsPage";
 import FieldsPage from "./features/additional_fields/pages/FieldsPage";
+import UsersPage from "./features/users/page/UsersPage";
 
 function App() {
   return (
@@ -73,6 +74,12 @@ function App() {
               {/* Rutas secundarias de ADDFIELDS */}
               <Route path={Paths.ACTIVE_ADDFIELDS} element={<FieldsPage />} />
               <Route path={Paths.INACTIVE_ADDFIELDS} element={<FieldsPage />} />
+            </Route>
+
+            <Route path={Paths.USERS} element={<UsersPage />}>
+              {/* Rutas secundarias de USERS */}
+              <Route path={Paths.ACTIVE_USERS} element={<UsersPage />} />
+              <Route path={Paths.INACTIVE_USERS} element={<UsersPage />} />
             </Route>
           </Route>
         </Routes>

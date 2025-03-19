@@ -1,9 +1,10 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Base URL para la API
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: `${API_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -14,12 +15,9 @@ const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refresh_token");
   if (refreshToken) {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/token/refresh/",
-        {
-          refresh: refreshToken,
-        }
-      );
+      const response = await axios.post(`${API_URL}/api/token/refresh/`, {
+        refresh: refreshToken,
+      });
       const { access } = response.data;
       localStorage.setItem("access_token", access);
       return access;
