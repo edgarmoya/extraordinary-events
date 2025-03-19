@@ -9,7 +9,7 @@ router.register('users', UserView, 'users')
 urlpatterns = [
     path('users/<int:user_id>/change-password/', ChangePasswordView.as_view(), name='change-password'),
     path('users/<int:user_id>/roles/', UserGroupsView.as_view(), name='roles'),
-    path('users/<int:user_id>/update_roles/', CustomUserGroupView.as_view(), name='update_roles'),
+    path('users/<int:user_id>/update-roles/', CustomUserGroupView.as_view(), name='update_roles'),
 ]
 
 urlpatterns += router.urls

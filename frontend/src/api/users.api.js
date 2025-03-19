@@ -41,6 +41,11 @@ const UserService = {
     const { id, ...user } = data;
     return axiosInstance.post(`/users/${id}/change-password/`, user);
   },
+
+  updateRoles: async (data) => {
+    const { id, roles } = data;
+    return axiosInstance.put(`/users/${id}/update-roles/`, roles);
+  },
 };
 
 export default UserService;

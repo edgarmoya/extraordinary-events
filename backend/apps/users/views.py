@@ -53,7 +53,7 @@ class UserView(viewsets.ModelViewSet):
             # Filtra los usuarios que pertenecen a esas entidades o que no tienen grupo asignado
             queryset = CustomUser.objects.filter(
                 Q(customusergroup__entity__in=admin_entities) | Q(customusergroup__isnull=True)
-            ).exclude(is_superuser=True)
+            ).exclude(is_superuser=True).distinct()
 
         # Aplica el filtro por término de búsqueda si está presente
         if search_term:

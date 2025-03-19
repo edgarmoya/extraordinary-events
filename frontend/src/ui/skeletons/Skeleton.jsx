@@ -1,7 +1,9 @@
 import React from "react";
 
-const Skeleton = ({ children }) => {
-  return <div className="d-flex flex-column gap-0">{children}</div>;
+const Skeleton = ({ children, className }) => {
+  return (
+    <div className={`d-flex flex-column gap-0 ${className}`}>{children}</div>
+  );
 };
 
 Skeleton.Text = ({

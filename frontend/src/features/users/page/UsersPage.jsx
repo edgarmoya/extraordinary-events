@@ -18,8 +18,10 @@ import {
   DeleteIcon,
   ActiveIcon,
   LockIcon,
+  ShieldIcon,
 } from "../../../ui/icons";
 import ModalChangePassword from "../../../layout/navbar/ModalChangePassword";
+import ModalRoles from "../components/ModalRoles";
 
 function UsersPage() {
   const location = useLocation();
@@ -33,6 +35,7 @@ function UsersPage() {
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
   const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
   const [modalPassIsOpen, setModalPassIsOpen] = useState(false);
+  const [modalRolesIsOpen, setModalRolesIsOpen] = useState(false);
 
   const isActive =
     location.pathname === Paths.ACTIVE_USERS
@@ -160,6 +163,19 @@ function UsersPage() {
               }
             }}
           />
+          <TopBar.Button
+            label={"Asignar roles"}
+            icon={ShieldIcon}
+            onClick={() => {
+              if (selectedRow) {
+                setModalRolesIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione el usuario que desea asignarle roles"
+                );
+              }
+            }}
+          />
           <TopBar.Dropdown
             pathAll={Paths.USERS}
             pathActive={Paths.ACTIVE_USERS}
@@ -254,6 +270,16 @@ function UsersPage() {
           setModalPassIsOpen(false);
         }}
         showOldPassword={false}
+      />
+
+      {/* Modal para asignar roles a un usuario */}
+      <ModalRoles
+        isOpen={modalRolesIsOpen}
+        title="Asignar roles"
+        userId={selectedRow?.id}
+        onClose={() => {
+          setModalRolesIsOpen(false);
+        }}
       />
     </Layout>
   );

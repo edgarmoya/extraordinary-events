@@ -318,3 +318,13 @@ select option:hover{
   color: #fff;
 }
 
+.checkbox-container {
+  display: flex;
+  gap: 8px;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.checkbox-container:hover {
+  cursor: pointer;
+  background-color: var(--bs-secondary-bg);
+}
