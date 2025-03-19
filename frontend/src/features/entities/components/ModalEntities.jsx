@@ -336,7 +336,7 @@ function ModalEntities({
             <button
               type="button"
               onClick={handleFormSubmit}
-              className="btn btn-primary"
+              className="btn btn-primary text-white"
               disabled={isLoading}
             >
               {isLoading ? "Guardando..." : entityData ? "Modificar" : "Añadir"}

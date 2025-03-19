@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react";
 
 const useFetchData = (fetchFunction, params = [], dependencies = []) => {
@@ -16,11 +17,11 @@ const useFetchData = (fetchFunction, params = [], dependencies = []) => {
     } finally {
       setLoading(false);
     }
-  }, [fetchFunction, ...params, ...dependencies]);
+  }, [fetchFunction, ...params]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, ...dependencies]);
 
   return { data, loading, error, refetch: fetchData };
 };

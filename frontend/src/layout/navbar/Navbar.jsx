@@ -38,7 +38,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   };
 
   return (
-    <React.Fragment>
+    <>
       <header className="navbar bg-body-secondary">
         <div className="container-fluid">
           <div className="col-auto">
@@ -147,7 +147,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
         isOpen={modalProfileIsOpen}
         onClose={() => setModalProfileIsOpen(false)}
       />
-    </React.Fragment>
+    </>
   );
 }
 

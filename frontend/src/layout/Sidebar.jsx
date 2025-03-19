@@ -41,14 +41,14 @@ function Sidebar({ isOpen }) {
       <div className="sidebar-body">
         <Link
           to={Paths.HOME}
-          className="d-flex justify-content-center mb-1 mb-md-0 me-md-auto"
+          className="d-flex justify-content-center mb-md-0 me-md-auto"
         >
           <img
             className=""
-            src={"/images/logo_he_lg.png"}
+            src={"/images/logo_he.png"}
             alt="logo"
-            height={36}
-            width={126}
+            height={40}
+            width={40}
           ></img>
         </Link>
         <hr className="text-body" />

@@ -4,9 +4,9 @@ import Layout from "../../../layout/Layout";
 import { VectorMap } from "@south-paw/react-vector-maps";
 import styled from "styled-components";
 import DashboardService from "../../../api/dashboard.api";
-import PieChart from "../../../utils/charts/PieChart";
-import StackedBarChart from "../../../utils/charts/StackedBarChart";
-import HorizontalBarChart from "../../../utils/charts/HorizontalBarChart";
+import PieChart from "../charts/PieChart";
+import StackedBarChart from "../charts/StackedBarChart";
+import HorizontalBarChart from "../charts/HorizontalBarChart";
 import SmallDashboardLoader from "../skeletons/SmallDashboardLoader";
 import LargeDashboardLoader from "../skeletons/LargeDashboardLoader";
 import Paths from "../../../routes/Paths";
@@ -20,18 +20,18 @@ const Map = styled.div`
 
     // All layers are just path elements
     path {
-      fill: #0d6efd;
+      fill: #76e376;
       cursor: pointer;
       outline: none;
 
       // When a layer is hovered
       &:hover {
-        fill: #094cb0;
+        fill: rgb(89, 201, 89);
       }
 
       // When a layer is focused.
       &:focus {
-        fill: #052a63;
+        fill: rgb(50, 124, 50);
       }
     }
   }
@@ -254,7 +254,7 @@ function DashboardPage() {
                             </h6>
                             <p className="card-text">
                               {closedEventsCount}
-                              <small className="text-success">
+                              <small className="text-primary">
                                 {" "}
                                 ({percentageClosed}%){" "}
                               </small>

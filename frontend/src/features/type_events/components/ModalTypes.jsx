@@ -132,7 +132,7 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
           <button
             type="button"
             onClick={handleFormSubmit}
-            className="btn btn-primary"
+            className="btn btn-primary text-white"
             disabled={isLoading}
           >
             {isLoading ? "Guardando..." : typeData ? "Modificar" : "Añadir"}
