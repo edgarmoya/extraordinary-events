@@ -2,7 +2,7 @@ import React from "react";
 
 function TableEmptyMessage({ onAdd }) {
   return (
-    <div className="alert alert-info mt-3">
+    <div className="alert alert-info mt-3 mx-3">
       <div className="d-flex justify-content-center align-content-center">
         <svg
           className="me-2"

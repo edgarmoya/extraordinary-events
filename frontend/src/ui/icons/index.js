@@ -10,3 +10,4 @@ export { default as UpdateIcon } from "./UpdateIcon";
 export { default as ActiveIcon } from "./ActiveIcon";
 export { default as DeleteIcon } from "./DeleteIcon";
 export { default as MenuIcon } from "./MenuIcon";
+export { default as LockIcon } from "./LockIcon";

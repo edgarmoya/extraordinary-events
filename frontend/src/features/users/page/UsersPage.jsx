@@ -12,7 +12,14 @@ import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import TableLoader from "../../../ui/skeletons/TableLoader";
 import useFetchData from "../../../hooks/useFetchData";
 import useApiMutation from "../../../hooks/useApiMutation";
-import { AddIcon, UpdateIcon, DeleteIcon, ActiveIcon } from "../../../ui/icons";
+import {
+  AddIcon,
+  UpdateIcon,
+  DeleteIcon,
+  ActiveIcon,
+  LockIcon,
+} from "../../../ui/icons";
+import ModalChangePassword from "../../../layout/navbar/ModalChangePassword";
 
 function UsersPage() {
   const location = useLocation();
@@ -25,6 +32,7 @@ function UsersPage() {
   const [modalUpdateIsOpen, setModalUpdateIsOpen] = useState(false);
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
   const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
+  const [modalPassIsOpen, setModalPassIsOpen] = useState(false);
 
   const isActive =
     location.pathname === Paths.ACTIVE_USERS
@@ -139,6 +147,19 @@ function UsersPage() {
               }
             }}
           />
+          <TopBar.Button
+            label={"Restablecer contraseña"}
+            icon={LockIcon}
+            onClick={() => {
+              if (selectedRow) {
+                setModalPassIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione el usuario que desea cambiarle la contraseña"
+                );
+              }
+            }}
+          />
           <TopBar.Dropdown
             pathAll={Paths.USERS}
             pathActive={Paths.ACTIVE_USERS}
@@ -222,6 +243,17 @@ function UsersPage() {
         } el usuario "${selectedRow?.user_name}"`}
         activated={selectedRow?.is_active}
         loading={activating}
+      />
+
+      {/* Modal para restablecer contraseña de un usuario */}
+      <ModalChangePassword
+        isOpen={modalPassIsOpen}
+        title="Restablecer contraseña"
+        userId={selectedRow?.id}
+        onClose={() => {
+          setModalPassIsOpen(false);
+        }}
+        showOldPassword={false}
       />
     </Layout>
   );
