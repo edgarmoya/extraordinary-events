@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import packageJson from "../../package.json";
 import {
   UsersIcon,
   HomeIcon,
@@ -39,18 +40,17 @@ function Sidebar({ isOpen }) {
   return (
     <nav className={`sidebar p-2 shadow-sm ${isOpen ? "open" : ""}`}>
       <div className="sidebar-body">
-        <Link
-          to={Paths.HOME}
-          className="d-flex justify-content-center mb-md-0 me-md-auto"
-        >
-          <img
-            className=""
-            src={"/images/logo_he.png"}
-            alt="logo"
-            height={40}
-            width={40}
-          ></img>
-        </Link>
+        <div className="d-flex position-relative flex-row justify-content-center align-items-start">
+          <Link to={Paths.HOME}>
+            <img
+              src={"/images/logo_he.png"}
+              alt="logo"
+              height={40}
+              width={40}
+            />
+          </Link>
+          <span className="version version-center">{`v${packageJson.version}`}</span>
+        </div>
         <hr className="text-body" />
         <ul className="nav nav-pills flex-column mb-auto">
           <SidebarItem
