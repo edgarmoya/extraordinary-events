@@ -34,7 +34,7 @@ const UserService = {
   },
 
   getUserGroups: async (idUser) => {
-    return axiosInstance.get(`/users/${idUser}/groups/`);
+    return axiosInstance.get(`/users/${idUser}/roles/`);
   },
 
   changePassword: async (idUser, oldPassword, newPassword) => {
