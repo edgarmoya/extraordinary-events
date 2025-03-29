@@ -6,14 +6,18 @@ import {
   TagIcon,
   BuildIcon,
   CalendarIcon,
+  SectorIcon,
+  DataIcon,
+  TypeIcon,
 } from "../ui/icons";
 import Paths from "../routes/Paths";
 import { Link } from "react-router-dom";
-import SectorIcon from "../ui/icons/SectorIcon";
-import DataIcon from "../ui/icons/DataIcon";
-import TypeIcon from "../ui/icons/TypeIcon";
+import useRolesInfo from "../hooks/useRolesInfo";
 
 function Sidebar({ isOpen }) {
+  // Obtener roles del usuario
+  const rolesInfo = useRolesInfo();
+
   // Estado para almacenar la URL actual
   const [currentURL, setCurrentURL] = useState(window.location.pathname);
 
@@ -59,48 +63,62 @@ function Sidebar({ isOpen }) {
             icon={() => <HomeIcon className="nav-icon me-3" />}
             isActive={isActiveLink(Paths.HOME)}
           />
-          <SidebarItem
-            label="Hechos"
-            path={Paths.EVENTS}
-            icon={() => <CalendarIcon className="nav-icon me-3" />}
-            isActive={isActiveLink(Paths.EVENTS)}
-          />
-          <SidebarItem
-            label="Clasificaciones"
-            path={Paths.ACTIVE_CLASSIFICATIONS}
-            icon={() => <TagIcon className="nav-icon me-3" />}
-            isActive={isActiveLink(Paths.CLASSIFICATIONS)}
-          />
-          <SidebarItem
-            label="Entidades"
-            path={Paths.ACTIVE_ENTITIES}
-            icon={() => <BuildIcon className="nav-icon me-3" />}
-            isActive={isActiveLink(Paths.ENTITIES)}
-          />
-          <SidebarItem
-            label="Sectores"
-            path={Paths.ACTIVE_SECTORS}
-            icon={() => <SectorIcon className="nav-icon me-3" />}
-            isActive={isActiveLink(Paths.SECTORS)}
-          />
-          <SidebarItem
-            label="Tipos"
-            path={Paths.ACTIVE_TYPES}
-            icon={() => <TypeIcon className="nav-icon me-3" />}
-            isActive={isActiveLink(Paths.TYPES)}
-          />
-          <SidebarItem
-            label="Campos adicionales"
-            path={Paths.ACTIVE_ADDFIELDS}
-            icon={() => <DataIcon className="nav-icon me-3" size="1.4rem" />}
-            isActive={isActiveLink(Paths.ADDFIELDS)}
-          />
-          <SidebarItem
-            label="Usuarios"
-            path={Paths.ACTIVE_USERS}
-            icon={() => <UsersIcon className="nav-icon me-3" size="1.4rem" />}
-            isActive={isActiveLink(Paths.USERS)}
-          />
+          {(rolesInfo.isOperador || rolesInfo.isConsultor) && (
+            <SidebarItem
+              label="Hechos"
+              path={Paths.EVENTS}
+              icon={() => <CalendarIcon className="nav-icon me-3" />}
+              isActive={isActiveLink(Paths.EVENTS)}
+            />
+          )}
+          {rolesInfo.isAdministrador && (
+            <SidebarItem
+              label="Clasificaciones"
+              path={Paths.ACTIVE_CLASSIFICATIONS}
+              icon={() => <TagIcon className="nav-icon me-3" />}
+              isActive={isActiveLink(Paths.CLASSIFICATIONS)}
+            />
+          )}
+          {(rolesInfo.isAdministrador || rolesInfo.isSuperuser) && (
+            <SidebarItem
+              label="Entidades"
+              path={Paths.ACTIVE_ENTITIES}
+              icon={() => <BuildIcon className="nav-icon me-3" />}
+              isActive={isActiveLink(Paths.ENTITIES)}
+            />
+          )}
+          {rolesInfo.isAdministrador && (
+            <SidebarItem
+              label="Sectores"
+              path={Paths.ACTIVE_SECTORS}
+              icon={() => <SectorIcon className="nav-icon me-3" />}
+              isActive={isActiveLink(Paths.SECTORS)}
+            />
+          )}
+          {rolesInfo.isAdministrador && (
+            <SidebarItem
+              label="Tipos"
+              path={Paths.ACTIVE_TYPES}
+              icon={() => <TypeIcon className="nav-icon me-3" />}
+              isActive={isActiveLink(Paths.TYPES)}
+            />
+          )}
+          {rolesInfo.isAdministrador && (
+            <SidebarItem
+              label="Campos adicionales"
+              path={Paths.ACTIVE_ADDFIELDS}
+              icon={() => <DataIcon className="nav-icon me-3" size="1.4rem" />}
+              isActive={isActiveLink(Paths.ADDFIELDS)}
+            />
+          )}
+          {(rolesInfo.isAdministrador || rolesInfo.isSuperuser) && (
+            <SidebarItem
+              label="Usuarios"
+              path={Paths.ACTIVE_USERS}
+              icon={() => <UsersIcon className="nav-icon me-3" size="1.4rem" />}
+              isActive={isActiveLink(Paths.USERS)}
+            />
+          )}
         </ul>
       </div>
       <div className="text-center mt-auto">

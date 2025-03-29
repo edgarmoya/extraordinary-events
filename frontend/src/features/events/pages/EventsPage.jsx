@@ -25,6 +25,7 @@ import {
   EyeIcon,
   UpdateIcon,
 } from "../../../ui/icons";
+import useRolesInfo from "../../../hooks/useRolesInfo";
 
 function EventsPage() {
   const { user } = useContext(AuthContext);
@@ -40,6 +41,8 @@ function EventsPage() {
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
   const [modalCloseIsOpen, setModalCloseIsOpen] = useState(false);
   const [modalWatchIsOpen, setModalWatchIsOpen] = useState(false);
+
+  const rolesInfo = useRolesInfo();
 
   //* Función para cargar los hechos según la ubicación actual
   const loadEvents = useCallback(async () => {
@@ -140,6 +143,7 @@ function EventsPage() {
             label="Agregar"
             onClick={() => setModalAddIsOpen(true)}
             icon={AddIcon}
+            disabled={!rolesInfo.isOperador}
           />
           <TopBar.Button
             label="Modificar"
@@ -157,6 +161,7 @@ function EventsPage() {
               }
             }}
             icon={UpdateIcon}
+            disabled={!rolesInfo.isOperador}
           />
           <TopBar.Button
             label="Eliminar"
@@ -168,6 +173,7 @@ function EventsPage() {
               }
             }}
             icon={DeleteIcon}
+            disabled={!rolesInfo.isOperador}
           />
           <TopBar.Button
             label="Cerrar"
@@ -185,6 +191,7 @@ function EventsPage() {
               }
             }}
             icon={ActiveIcon}
+            disabled={!rolesInfo.isOperador}
           />
           <TopBar.Button
             label="Ver"
