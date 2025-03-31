@@ -75,17 +75,16 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
           <div className="col-auto">
             <div className="dropdown">
               <button
-                className="dropdown-toggle border-0 bg-body-secondary ms-1"
+                className="dropdown-toggle border-0 bg-body-secondary ms-1 d-flex align-items-center"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <img
-                  src={"/images/profile.png"}
-                  alt="profile"
-                  width="24"
-                  height="24"
-                  className="rounded-circle me-2"
-                ></img>
+                <div
+                  className="bg-profile-icon me-md-2 rounded-circle"
+                  style={{ width: 24, height: 24 }}
+                >
+                  <span>E</span>
+                </div>
                 <strong className="d-none d-sm-inline">{user.username}</strong>
               </button>
               <ul className="dropdown-menu dropdown-menu-end text-small p-1 shadow">
