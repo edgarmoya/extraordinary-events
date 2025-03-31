@@ -1,11 +1,11 @@
 from django.db import models
 
-# Create your models here.
 class Province(models.Model):
     description = models.CharField(max_length=100, unique=True, verbose_name='Nombre')
     is_active = models.BooleanField(default=True, verbose_name='Activo')
 
     class Meta:
+        db_table = 'province'
         verbose_name = 'Provincia'
         verbose_name_plural = 'Provincias'
 
@@ -18,6 +18,7 @@ class Municipality(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Activo')
 
     class Meta:
+        db_table = 'municipality'
         verbose_name = 'Muncipio'
         verbose_name_plural = 'Municipios'
 

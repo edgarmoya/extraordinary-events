@@ -4,7 +4,6 @@ from apps.entities.models import Entity
 from apps.type_events.models import Type
 from apps.users.models import CustomUser
 
-
 class Event(models.Model):
     OPEN = 'open'
     CLOSED = 'closed'
@@ -33,6 +32,7 @@ class Event(models.Model):
     closed_date = models.DateTimeField(null=True, blank=True, verbose_name='Fecha cerrado')
 
     class Meta:
+        db_table = 'event'
         verbose_name = 'Hecho extraordinario'
         verbose_name_plural = 'Hechos extraordinarios'
 
@@ -45,6 +45,7 @@ class Measure(models.Model):
     description = models.TextField(blank=False, verbose_name='Medida')
 
     class Meta:
+        db_table = 'measure'
         verbose_name = 'Medida'
         verbose_name_plural = 'Medidas'
 
@@ -57,6 +58,7 @@ class Attachment(models.Model):
     image = models.ImageField(upload_to='attachments/', verbose_name='Imagen')
 
     class Meta:
+        db_table = 'attachment'
         verbose_name = 'Adjunto'
         verbose_name_plural = 'Adjuntos'
 

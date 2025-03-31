@@ -5,6 +5,7 @@ class Grade(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Activo')
 
     class Meta:
+        db_table = 'grade'
         verbose_name = 'Grado'
         verbose_name_plural = 'Grados'
 
