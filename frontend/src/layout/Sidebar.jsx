@@ -12,6 +12,7 @@ import {
 } from "../ui/icons";
 import Paths from "../routes/Paths";
 import { Link } from "react-router-dom";
+import Copyright from "../ui/Copyright";
 import useRolesInfo from "../hooks/useRolesInfo";
 
 function Sidebar({ isOpen }) {
@@ -121,26 +122,7 @@ function Sidebar({ isOpen }) {
           )}
         </ul>
       </div>
-      <div className="text-center mt-auto">
-        <hr className="text-body" />
-        <a
-          className="fs-small text-body text-decoration-none fw-bold"
-          href="https://www.datazucar.cu/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img
-            src={"/images/datazucar.png"}
-            className="mb-1 me-1"
-            alt="DATAZUCAR"
-            width="15"
-            height="15"
-          />
-          DATAZUCAR © 2025
-          <br />
-          <span className="fw-light">Todos los derechos reservados.</span>
-        </a>
-      </div>
+      <Copyright />
     </nav>
   );
 }

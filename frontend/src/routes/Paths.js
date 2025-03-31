@@ -1,6 +1,5 @@
 //* Generales
 export const EMPTY = "/";
-export const ADMIN = "/admin";
 export const HOME = "/home";
 export const LOGIN = "/login";
 export const LOGOUT = "/logout";
@@ -42,7 +41,6 @@ export const INACTIVE_USERS = "/users/inactive";
 
 const Paths = {
   EMPTY,
-  ADMIN,
   HOME,
   LOGIN,
   LOGOUT,

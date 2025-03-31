@@ -28,18 +28,28 @@ export const AuthProvider = ({ children }) => {
       : null
   );
 
-  const loginUser = async (credentials) => {
+  const loginUser = async (credentials, setLoading, setStatusMessage) => {
     try {
+      setLoading(true);
       const response = await axios.post(`${API_URL}/api/token/`, credentials);
-      const { access, refresh } = response.data;
 
+      setStatusMessage("Verificando credenciales...");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const { access, refresh } = response.data;
       setAccessToken(access);
       localStorage.setItem(ACCESS_TOKEN, access);
       localStorage.setItem(REFRESH_TOKEN, refresh);
 
+      setStatusMessage("Iniciando sesión...");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       setUser(jwtDecode(access));
     } catch (error) {
       throw new Error("Error de autenticación");
+    } finally {
+      setLoading(false);
+      setStatusMessage("");
     }
   };
 
