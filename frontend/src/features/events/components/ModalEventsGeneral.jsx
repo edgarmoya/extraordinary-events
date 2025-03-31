@@ -61,7 +61,8 @@ function ModalEventsGeneral({
       const response = await EntityService.getEntities(
         undefined,
         undefined,
-        "True"
+        "True",
+        "operador"
       );
 
       const transform = response.data.map((entity) => ({

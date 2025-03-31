@@ -136,7 +136,7 @@ function EventsPage() {
 
   return (
     <Layout pageTitle="Hechos">
-      <div className="container-fluid px-2 px-md-3">
+      <div className="container-fluid">
         {/* Acciones */}
         <TopBar>
           <TopBar.Button

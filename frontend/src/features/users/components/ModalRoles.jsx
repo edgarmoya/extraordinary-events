@@ -19,7 +19,13 @@ function ModalRoles({ isOpen, title, userId, onClose }) {
 
   const { data: entities, loading: loadingEntities } = useFetchData(
     isOpen ? EntityService.getEntities : null,
-    [],
+    [undefined, undefined, "True", undefined],
+    [isOpen, userId]
+  );
+
+  const { data: activeEntities } = useFetchData(
+    isOpen ? EntityService.getEntities : null,
+    [undefined, undefined, "True", "administrador"],
     [isOpen, userId]
   );
 
@@ -193,32 +199,38 @@ function ModalRoles({ isOpen, title, userId, onClose }) {
               <GroupCard title="Entidades">
                 <div className="d-flex flex-column gap-1">
                   {activeRole ? (
-                    entities?.map(({ id_entity, description }, index) => (
-                      <div key={index} className="checkbox-container">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          value={id_entity}
-                          id={`${id_entity}Checkbox`}
-                          checked={
-                            (selectedRoles[activeRole]?.selected &&
-                              selectedRoles[activeRole].entities?.includes(
-                                id_entity
-                              )) ||
-                            false
-                          }
-                          onChange={() =>
-                            handleEntityChange(activeRole, id_entity)
-                          }
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${id_entity}Checkbox`}
-                        >
-                          {description}
-                        </label>
-                      </div>
-                    ))
+                    entities?.map(({ id_entity, description }, index) => {
+                      const enabled = activeEntities?.some(
+                        (ae) => ae.id_entity === id_entity
+                      );
+                      return (
+                        <div key={index} className="checkbox-container">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value={id_entity}
+                            id={`${id_entity}Checkbox`}
+                            disabled={!enabled}
+                            checked={
+                              (selectedRoles[activeRole]?.selected &&
+                                selectedRoles[activeRole].entities?.includes(
+                                  id_entity
+                                )) ||
+                              false
+                            }
+                            onChange={() =>
+                              handleEntityChange(activeRole, id_entity)
+                            }
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`${id_entity}Checkbox`}
+                          >
+                            {description}
+                          </label>
+                        </div>
+                      );
+                    })
                   ) : (
                     <p>Selecciona un rol para ver las entidades</p>
                   )}
