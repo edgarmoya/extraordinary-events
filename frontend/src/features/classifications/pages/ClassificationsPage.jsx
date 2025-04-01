@@ -11,6 +11,7 @@ import ModalConfirmDelete from "../../../ui/modals/ModalConfirmDelete";
 import ModalConfirmActivate from "../../../ui/modals/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { HttpStatusCode } from "axios";
+import { ActiveIcon, AddIcon, DeleteIcon, UpdateIcon } from "../../../ui/icons";
 
 function ClassificationsPage() {
   const location = useLocation();
@@ -126,49 +127,69 @@ function ClassificationsPage() {
   return (
     <Layout pageTitle="Clasificaciones">
       <div className="container-fluid">
-        {/* Accions */}
-        <TopBar
-          searchMessage={"Buscar clasificación ..."}
-          watchButton={false}
-          searchInput={true}
-          pathAll={Paths.CLASSIFICATIONS}
-          pathActive={Paths.ACTIVE_CLASSIFICATIONS}
-          pathInactive={Paths.INACTIVE_CLASSIFICATIONS}
-          onAdd={() => setModalAddIsOpen(true)}
-          onUpdate={() => {
-            if (selectedRow) {
-              setModalUpdateIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la clasificación que desea modificar");
-            }
-          }}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la clasificación que desea eliminar");
-            }
-          }}
-          onActivate={() => {
-            if (selectedRow) {
-              setModalActivateIsOpen(true);
-            } else {
-              showErrorToast(
-                "Seleccione la clasificación que desea activar o inactivar"
-              );
-            }
-          }}
-          onSearch={(term) => {
-            clearSelectedRow();
-            setCurrentPage(1);
-            setSearchTerm(term);
-          }}
-        />
-        {/* Grid */}
-        <div
-          className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 115px)" }}
-        >
+        {/* Acciones */}
+        <TopBar>
+          <TopBar.Button
+            label="Agregar"
+            onClick={() => setModalAddIsOpen(true)}
+            icon={AddIcon}
+          />
+          <TopBar.Button
+            label="Modificar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalUpdateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione la clasificación que desea modificar"
+                );
+              }
+            }}
+            icon={UpdateIcon}
+          />
+          <TopBar.Button
+            label="Eliminar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione la clasificación que desea eliminar"
+                );
+              }
+            }}
+            icon={DeleteIcon}
+          />
+          <TopBar.Button
+            label="Activar/Inactivar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalActivateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione la clasificación que desea activar o inactivar"
+                );
+              }
+            }}
+            icon={ActiveIcon}
+          />
+          <TopBar.Dropdown
+            pathAll={Paths.CLASSIFICATIONS}
+            pathActive={Paths.ACTIVE_CLASSIFICATIONS}
+            pathInactive={Paths.INACTIVE_CLASSIFICATIONS}
+          />
+          <TopBar.Search
+            searchMessage={"Buscar clasificación ..."}
+            onSearch={(term) => {
+              clearSelectedRow();
+              setCurrentPage(1);
+              setSearchTerm(term);
+            }}
+          />
+        </TopBar>
+
+        {/* Tabla de clasificaciones */}
+        <div className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm">
           {loading ? (
             <TableLoader columns={3} />
           ) : (

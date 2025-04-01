@@ -11,6 +11,7 @@ import ModalConfirmActivate from "../../../ui/modals/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 import TableLoader from "../../../ui/skeletons/TableLoader";
+import { ActiveIcon, AddIcon, DeleteIcon, UpdateIcon } from "../../../ui/icons";
 
 function SectorsPage() {
   const location = useLocation();
@@ -121,47 +122,66 @@ function SectorsPage() {
   return (
     <Layout pageTitle="Sectores">
       <div className="container-fluid">
-        {/* Accions */}
-        <TopBar
-          searchMessage={"Buscar sector ..."}
-          watchButton={false}
-          searchInput={true}
-          pathAll={Paths.SECTORS}
-          pathActive={Paths.ACTIVE_SECTORS}
-          pathInactive={Paths.INACTIVE_SECTORS}
-          onAdd={() => setModalAddIsOpen(true)}
-          onUpdate={() => {
-            if (selectedRow) {
-              setModalUpdateIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el sector que desea modificar");
-            }
-          }}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el sector que desea eliminar");
-            }
-          }}
-          onActivate={() => {
-            if (selectedRow) {
-              setModalActivateIsOpen(true);
-            } else {
-              showErrorToast(
-                "Seleccione el sector que desea activar o inactivar"
-              );
-            }
-          }}
-          onSearch={(term) => {
-            clearSelectedRow();
-            setCurrentPage(1);
-            setSearchTerm(term);
-          }}
-        />
-        {/* Grid */}
+        {/* Acciones */}
+        <TopBar>
+          <TopBar.Button
+            label="Agregar"
+            onClick={() => setModalAddIsOpen(true)}
+            icon={AddIcon}
+          />
+          <TopBar.Button
+            label="Modificar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalUpdateIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el sector que desea modificar");
+              }
+            }}
+            icon={UpdateIcon}
+          />
+          <TopBar.Button
+            label="Eliminar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el sector que desea eliminar");
+              }
+            }}
+            icon={DeleteIcon}
+          />
+          <TopBar.Button
+            label="Activar/Inactivar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalActivateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione el sector que desea activar o inactivar"
+                );
+              }
+            }}
+            icon={ActiveIcon}
+          />
+          <TopBar.Dropdown
+            pathAll={Paths.SECTORS}
+            pathActive={Paths.ACTIVE_SECTORS}
+            pathInactive={Paths.INACTIVE_SECTORS}
+          />
+          <TopBar.Search
+            searchMessage={"Buscar sector ..."}
+            onSearch={(term) => {
+              clearSelectedRow();
+              setCurrentPage(1);
+              setSearchTerm(term);
+            }}
+          />
+        </TopBar>
+
+        {/* Tabla con sectores */}
         <div
-          className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
+          className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm justify-content-between"
           style={{ maxHeight: "calc(100vh - 115px)" }}
         >
           {loading ? (

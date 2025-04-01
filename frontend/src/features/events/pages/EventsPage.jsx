@@ -18,6 +18,13 @@ import TopBar from "../../../layout/TopBar";
 import ModalEvents from "../components/ModalEvents";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { HttpStatusCode } from "axios";
+import {
+  ActiveIcon,
+  AddIcon,
+  DeleteIcon,
+  EyeIcon,
+  UpdateIcon,
+} from "../../../ui/icons";
 
 function EventsPage() {
   const { user } = useContext(AuthContext);
@@ -125,70 +132,91 @@ function EventsPage() {
   }, [loadEvents]);
 
   return (
-    <Layout pageTitle="Hechos extraordinarios">
-      <div className="container-fluid">
-        {/* Actions */}
-        <TopBar
-          searchMessage={"Buscar hecho ..."}
-          closeBtn={true}
-          watchButton={true}
-          searchInput={true}
-          pathAll={Paths.EVENTS}
-          textPathAll={"Mostrar todos"}
-          pathActive={Paths.OPEN_EVENTS}
-          textPathActive={"Mostrar abiertos"}
-          pathInactive={Paths.CLOSE_EVENTS}
-          textPathInactive={"Mostrar cerrados"}
-          onAdd={() => setModalAddIsOpen(true)}
-          onUpdate={() => {
-            if (selectedRow) {
-              if (selectedRow.status === "closed") {
-                showErrorToast(
-                  "No puede ser modificado un hecho cerrado anteriormente"
-                );
+    <Layout pageTitle="Hechos">
+      <div className="container-fluid px-2 px-md-3">
+        {/* Acciones */}
+        <TopBar>
+          <TopBar.Button
+            label="Agregar"
+            onClick={() => setModalAddIsOpen(true)}
+            icon={AddIcon}
+          />
+          <TopBar.Button
+            label="Modificar"
+            onClick={() => {
+              if (selectedRow) {
+                if (selectedRow.status === "closed") {
+                  showErrorToast(
+                    "No puede ser modificado un hecho cerrado anteriormente"
+                  );
+                } else {
+                  setModalUpdateIsOpen(true);
+                }
               } else {
-                setModalUpdateIsOpen(true);
+                showErrorToast("Seleccione el hecho que desea modificar");
               }
-            } else {
-              showErrorToast("Seleccione el hecho que desea modificar");
-            }
-          }}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el hecho que desea eliminar");
-            }
-          }}
-          onActivate={() => {
-            if (selectedRow) {
-              if (selectedRow.status === "closed") {
-                showErrorToast("El hecho seleccionado ya se encuentra cerrado");
+            }}
+            icon={UpdateIcon}
+          />
+          <TopBar.Button
+            label="Eliminar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
               } else {
-                setModalCloseIsOpen(true);
+                showErrorToast("Seleccione el hecho que desea eliminar");
               }
-            } else {
-              showErrorToast("Seleccione el hecho que desea cerrar");
-            }
-          }}
-          onWatch={() => {
-            if (selectedRow) {
-              setModalWatchIsOpen(true);
-            } else {
-              showErrorToast("Seleccione el hecho que desea visualizar");
-            }
-          }}
-          onSearch={(term) => {
-            clearSelectedRow();
-            setSearchTerm(term);
-            setCurrentPage(1);
-          }}
-        />
-        {/* Grid */}
-        <div
-          className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 115px)" }}
-        >
+            }}
+            icon={DeleteIcon}
+          />
+          <TopBar.Button
+            label="Cerrar"
+            onClick={() => {
+              if (selectedRow) {
+                if (selectedRow.status === "closed") {
+                  showErrorToast(
+                    "El hecho seleccionado ya se encuentra cerrado"
+                  );
+                } else {
+                  setModalCloseIsOpen(true);
+                }
+              } else {
+                showErrorToast("Seleccione el hecho que desea cerrar");
+              }
+            }}
+            icon={ActiveIcon}
+          />
+          <TopBar.Button
+            label="Ver"
+            onClick={() => {
+              if (selectedRow) {
+                setModalWatchIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el hecho que desea visualizar");
+              }
+            }}
+            icon={EyeIcon}
+          />
+          <TopBar.Dropdown
+            pathAll={Paths.EVENTS}
+            textPathAll={"Mostrar todos"}
+            pathActive={Paths.OPEN_EVENTS}
+            textPathActive={"Mostrar abiertos"}
+            pathInactive={Paths.CLOSE_EVENTS}
+            textPathInactive={"Mostrar cerrados"}
+          />
+          <TopBar.Search
+            searchMessage={"Buscar hecho ..."}
+            onSearch={(term) => {
+              clearSelectedRow();
+              setSearchTerm(term);
+              setCurrentPage(1);
+            }}
+          />
+        </TopBar>
+
+        {/* Tabla de hechos */}
+        <div className="card card-body table-container my-2 py-1 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
           {/* Renderizar el loader o el GridEvents */}
           <Suspense fallback={<TableLoader />}>
             {loading ? (

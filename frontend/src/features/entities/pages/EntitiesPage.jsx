@@ -11,6 +11,13 @@ import ModalEntities from "../components/ModalEntities";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { HttpStatusCode } from "axios";
 import TableLoader from "../../../ui/skeletons/TableLoader";
+import {
+  ActiveIcon,
+  AddIcon,
+  DeleteIcon,
+  EyeIcon,
+  UpdateIcon,
+} from "../../../ui/icons";
 
 function EntitiesPage() {
   const location = useLocation();
@@ -122,56 +129,76 @@ function EntitiesPage() {
   return (
     <Layout pageTitle="Entidades">
       <div className="container-fluid">
-        {/* Accions */}
-        <TopBar
-          searchMessage={"Buscar entidad ..."}
-          watchButton={true}
-          searchInput={true}
-          pathAll={Paths.ENTITIES}
-          pathActive={Paths.ACTIVE_ENTITIES}
-          pathInactive={Paths.INACTIVE_ENTITIES}
-          onAdd={() => setModalAddIsOpen(true)}
-          onUpdate={() => {
-            if (selectedRow) {
-              setModalUpdateIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la entidad que desea modificar");
-            }
-          }}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la entidad que desea eliminar");
-            }
-          }}
-          onActivate={() => {
-            if (selectedRow) {
-              setModalActivateIsOpen(true);
-            } else {
-              showErrorToast(
-                "Seleccione la entidad que desea activar o inactivar"
-              );
-            }
-          }}
-          onWatch={() => {
-            if (selectedRow) {
-              setModalWatchIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la entidad que desea visualizar");
-            }
-          }}
-          onSearch={(term) => {
-            clearSelectedRow();
-            setSearchTerm(term);
-            setCurrentPage(1);
-          }}
-        />
-        {/* Grid */}
-        <div
-          className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 115px)" }}
-        >
+        {/* Acciones */}
+        <TopBar>
+          <TopBar.Button
+            label="Agregar"
+            onClick={() => setModalAddIsOpen(true)}
+            icon={AddIcon}
+          />
+          <TopBar.Button
+            label="Modificar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalUpdateIsOpen(true);
+              } else {
+                showErrorToast("Seleccione la entidad que desea modificar");
+              }
+            }}
+            icon={UpdateIcon}
+          />
+          <TopBar.Button
+            label="Eliminar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
+              } else {
+                showErrorToast("Seleccione la entidad que desea eliminar");
+              }
+            }}
+            icon={DeleteIcon}
+          />
+          <TopBar.Button
+            label="Activar/Inactivar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalActivateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione la entidad que desea activar o inactivar"
+                );
+              }
+            }}
+            icon={ActiveIcon}
+          />
+          <TopBar.Button
+            label="Ver"
+            onClick={() => {
+              if (selectedRow) {
+                setModalWatchIsOpen(true);
+              } else {
+                showErrorToast("Seleccione la entidad que desea visualizar");
+              }
+            }}
+            icon={EyeIcon}
+          />
+          <TopBar.Dropdown
+            pathAll={Paths.ENTITIES}
+            pathActive={Paths.ACTIVE_ENTITIES}
+            pathInactive={Paths.INACTIVE_ENTITIES}
+          />
+          <TopBar.Search
+            searchMessage={"Buscar entidad ..."}
+            onSearch={(term) => {
+              clearSelectedRow();
+              setSearchTerm(term);
+              setCurrentPage(1);
+            }}
+          />
+        </TopBar>
+
+        {/* Tabla de entidades */}
+        <div className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm justify-content-between">
           {loading ? (
             <TableLoader columns={6} />
           ) : (

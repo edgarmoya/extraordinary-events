@@ -1,7 +1,11 @@
 .App {
   display: flex;
+  flex-direction: row;
   width: 100%;
   align-items: stretch;
+  max-height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
 }
 
 .App-logo {
@@ -71,10 +75,12 @@
     CONTENT STYLE
 ----------------------------------------------------- */
 .content {
+  display: flex;
+  flex-direction: column;
   padding: 0px;
   margin-left: 0;
   width: 100%;
-  min-height: 100dvh;
+  overflow: hidden;
 }
 
 @media only screen and (max-width: 965px) {
@@ -89,8 +95,8 @@
     position: fixed;
     z-index: 100;
     height: 100dvh;
-    min-width: 65%;
-    max-width: 65%;
+    min-width: 45%;
+    max-width: 45%;
     margin-left: 0;
     transition: all 0.5s, height 0s;
   }
@@ -106,6 +112,23 @@
     align-items: center;
     justify-content: center;
     z-index: 50;
+  }
+}
+
+@media only screen and (max-width: 645px) {
+  .sidebar.open {
+    min-width: 65%;
+    max-width: 65%;
+  }
+}
+
+.table-container{
+  max-height: calc(100dvh - 115px);
+}
+
+@media only screen and (max-width: 768px){
+  .table-container{
+    max-height: calc(100dvh - 200px);
   }
 }
 
@@ -148,16 +171,6 @@
   color: var(--bs-primary);
 }
 
-.btn-accion-red{
-  background-color: var(--bs-body-bg);
-  color: var(--bs-secondary-color);
-}
-
-.btn-accion-red:hover{
-  background-color: var(--bs-tertiary-bg);
-  color: #dc3545;
-}
-
 /* ---------------------------------------------------
     STATUS BUTTONS STYLE
 ----------------------------------------------------- */
@@ -169,7 +182,7 @@
 .bg-gray-badge{
   background-color: #adb5bd3d;
   font-weight: 500;
-  color: #6c757d;
+  color: #92979b;
 }
 .bg-primary-badge{
   background-color: #76e3762c;
@@ -186,7 +199,6 @@
   font-weight: 500;
 }
 
-
 /* ---------------------------------------------------
     SCROLL STYLE
 ----------------------------------------------------- */
@@ -198,18 +210,22 @@
 
 /* Estilo para el track del scroll */
 ::-webkit-scrollbar-track {
-  border-radius: 5px; /* Redondear los bordes del track */
+  border-radius: 4px; /* Redondear los bordes del track */
 }
 
 /* Estilo para el thumb (el "scrollbar" móvil) */
 ::-webkit-scrollbar-thumb {
   background-color: #888;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 /* Estilo para el thumb cuando el usuario pasa el cursor sobre él */
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--bg-body-bg);
 }
 
 .backdrop {
