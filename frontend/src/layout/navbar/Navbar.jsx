@@ -131,9 +131,10 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
 
       {/* Modal para cambiar contraseña */}
       <ModalChangePassword
+        title="Cambiar contraseña"
         isOpen={modalChangeIsOpen}
+        userId={user.user_id}
         onClose={() => setModalChangeIsOpen(false)}
-        onChangePassword={onToggleSidebar}
       />
 
       {/* Modal para ver perfil */}
