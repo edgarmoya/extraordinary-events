@@ -33,6 +33,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     start_date = models.DateTimeField(default=timezone.now, verbose_name="Fecha de registro")
     is_staff = models.BooleanField(default=False, verbose_name='Acceso al panel de administración')
     is_active = models.BooleanField(default=True, verbose_name='Activo')
+    first_login = models.BooleanField(default=True, verbose_name='Sesión iniciada')
+    failed_attempts = models.IntegerField(default=0, verbose_name='Intentos fallidos')
+    lock_until = models.DateTimeField(null=True, blank=True, verbose_name='Tiempo de espera')  # Tiempo hasta que puede volver a intentar
     groups = models.ManyToManyField(
         Group,
         through='CustomUserGroup',  # Usa la tabla intermedia personalizada

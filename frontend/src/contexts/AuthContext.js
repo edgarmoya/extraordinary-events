@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Paths from "../routes/Paths";
 import useFetchData from "../hooks/useFetchData";
 import UserService from "../api/users.api";
+import { showErrorToast, showLoginToast } from "../utils/toastUtils";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -28,7 +29,13 @@ export const AuthProvider = ({ children }) => {
       : null
   );
 
-  const loginUser = async (credentials, setLoading, setStatusMessage) => {
+  const loginUser = async (
+    credentials,
+    setLoading,
+    setStatusMessage,
+    setChangePassword,
+    setUserId
+  ) => {
     try {
       setLoading(true);
       const response = await axios.post(`${API_URL}/api/token/`, credentials);
@@ -36,20 +43,29 @@ export const AuthProvider = ({ children }) => {
       setStatusMessage("Verificando credenciales...");
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const { access, refresh } = response.data;
+      const { access, refresh, first_login, user_id } = response.data;
+
       setAccessToken(access);
       localStorage.setItem(ACCESS_TOKEN, access);
       localStorage.setItem(REFRESH_TOKEN, refresh);
 
-      setStatusMessage("Iniciando sesión...");
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (first_login) {
+        setUserId(user_id);
+        setChangePassword(true);
+        showErrorToast("Debe cambiar su contraseña antes de iniciar sesión");
+      } else {
+        setStatusMessage("Iniciando sesión...");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      setUser(jwtDecode(access));
+        setUser(jwtDecode(access));
+        navigate(`${Paths.HOME}`);
+        showLoginToast(jwtDecode(access).username);
+      }
     } catch (error) {
-      throw new Error("Error de autenticación");
+      const { detail } = error.response.data;
+      throw new Error(detail || "Error al iniciar sesión");
     } finally {
       setLoading(false);
-      setStatusMessage("");
     }
   };
 

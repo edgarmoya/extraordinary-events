@@ -13,6 +13,7 @@ function ModalChangePassword({
   userId,
   showOldPassword = true,
   onClose,
+  onPasswordChange,
 }) {
   const [showPwd, setShowPwd] = useState(false);
   const [showConfPwd, setShowConfPwd] = useState(false);
@@ -24,6 +25,7 @@ function ModalChangePassword({
     reset,
     watch,
     setError,
+    getValues,
   } = useForm();
 
   // Observa el valor del campo "new_password"
@@ -39,6 +41,7 @@ function ModalChangePassword({
     {
       onSuccess: () => {
         showSuccessToast("Contraseña cambiada correctamente");
+        onPasswordChange && onPasswordChange(getValues("new_password"));
         handleCloseModal();
       },
       onError: (message) => {
@@ -52,109 +55,110 @@ function ModalChangePassword({
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} title={title} onClose={handleCloseModal}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="modal-body">
-            {showOldPassword && (
-              <div className="form-floating">
-                <input
-                  type="password"
-                  name="old_password"
-                  className={`form-control ${
-                    errors.old_password ? "is-invalid" : ""
-                  }`}
-                  {...register("old_password", { required: true })}
-                ></input>
-                <label htmlFor="floatingInput">Contraseña actual*</label>
-                {errors.old_password && (
-                  <div className="invalid-feedback">
-                    Por favor, inserte su contraseña actual
-                  </div>
-                )}
+    <Modal isOpen={isOpen} title={title} onClose={handleCloseModal}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="modal-body">
+          {showOldPassword && (
+            <div className="form-floating">
+              <input
+                type="password"
+                name="old_password"
+                autoComplete="current-password"
+                className={`form-control ${
+                  errors.old_password ? "is-invalid" : ""
+                }`}
+                {...register("old_password", { required: true })}
+              ></input>
+              <label htmlFor="floatingInput">Contraseña actual*</label>
+              {errors.old_password && (
+                <div className="invalid-feedback">
+                  Por favor, inserte su contraseña actual
+                </div>
+              )}
+            </div>
+          )}
+          <div className={`form-floating ${showOldPassword && "mt-2"}`}>
+            <input
+              type={showPwd ? "text" : "password"}
+              name="new_password"
+              autoComplete="new-password"
+              className={`form-control ${
+                errors.new_password ? "is-invalid" : ""
+              }`}
+              {...register("new_password", {
+                required: "La contraseña es obligatoria",
+              })}
+            ></input>
+            <label htmlFor="floatingInput">Nueva contraseña*</label>
+            {errors.new_password && (
+              <div className="invalid-feedback">
+                {errors.new_password.message}
               </div>
             )}
-            <div className={`form-floating ${showOldPassword && "mt-2"}`}>
-              <input
-                type={showPwd ? "text" : "password"}
-                name="new_password"
-                className={`form-control ${
-                  errors.new_password ? "is-invalid" : ""
-                }`}
-                {...register("new_password", {
-                  required: "La contraseña es obligatoria",
-                })}
-              ></input>
-              <label htmlFor="floatingInput">Nueva contraseña*</label>
-              {errors.new_password && (
-                <div className="invalid-feedback">
-                  {errors.new_password.message}
-                </div>
-              )}
-              {!errors.new_password && (
-                <div
-                  className="position-absolute pointer pwd-icon"
-                  onClick={() => setShowPwd(!showPwd)}
-                >
-                  {showPwd ? <EyeIcon /> : <ClosedEyeIcon />}
-                </div>
-              )}
-            </div>
-            <div className="form-floating mt-2">
-              <input
-                type={showConfPwd ? "text" : "password"}
-                name="confirm_new_password"
-                className={`form-control ${
-                  errors.confirm_new_password ? "is-invalid" : ""
-                }`}
-                {...register("confirm_new_password", {
-                  required: "Debes confirmar la contraseña",
-                  validate: (value) =>
-                    value === passwordWatch || "Las contraseñas no coinciden",
-                })}
-              ></input>
-              <label htmlFor="floatingInput">Confirmar contraseña*</label>
-              {errors.confirm_new_password && (
-                <div className="invalid-feedback">
-                  {errors.confirm_new_password.message}
-                </div>
-              )}
-              {!errors.confirm_new_password && (
-                <div
-                  className="position-absolute pointer pwd-icon"
-                  onClick={() => setShowConfPwd(!showConfPwd)}
-                >
-                  {showConfPwd ? <EyeIcon /> : <ClosedEyeIcon />}
-                </div>
-              )}
-            </div>
+            {!errors.new_password && (
+              <div
+                className="position-absolute pointer pwd-icon"
+                onClick={() => setShowPwd(!showPwd)}
+              >
+                {showPwd ? <EyeIcon /> : <ClosedEyeIcon />}
+              </div>
+            )}
           </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={handleCloseModal}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary text-white"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Spinner />
-                  Cambiando...
-                </>
-              ) : (
-                "Cambiar"
-              )}
-            </button>
+          <div className="form-floating mt-2">
+            <input
+              type={showConfPwd ? "text" : "password"}
+              name="confirm_new_password"
+              autoComplete="new-password"
+              className={`form-control ${
+                errors.confirm_new_password ? "is-invalid" : ""
+              }`}
+              {...register("confirm_new_password", {
+                required: "Debes confirmar la contraseña",
+                validate: (value) =>
+                  value === passwordWatch || "Las contraseñas no coinciden",
+              })}
+            ></input>
+            <label htmlFor="floatingInput">Confirmar contraseña*</label>
+            {errors.confirm_new_password && (
+              <div className="invalid-feedback">
+                {errors.confirm_new_password.message}
+              </div>
+            )}
+            {!errors.confirm_new_password && (
+              <div
+                className="position-absolute pointer pwd-icon"
+                onClick={() => setShowConfPwd(!showConfPwd)}
+              >
+                {showConfPwd ? <EyeIcon /> : <ClosedEyeIcon />}
+              </div>
+            )}
           </div>
-        </form>
-      </Modal>
-    </>
+        </div>
+        <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleCloseModal}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="btn btn-primary text-white"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Spinner />
+                Cambiando...
+              </>
+            ) : (
+              "Cambiar"
+            )}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 
