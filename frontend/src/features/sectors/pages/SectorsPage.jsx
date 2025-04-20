@@ -96,7 +96,7 @@ function SectorsPage() {
 
   return (
     <Layout pageTitle="Sectores">
-      <div className="container-fluid">
+      <div className="container-fluid h-100">
         {/* Acciones */}
         <TopBar>
           <TopBar.Button
@@ -156,7 +156,7 @@ function SectorsPage() {
 
         {/* Tabla con sectores */}
         <div
-          className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm justify-content-between"
+          className="card h-100 card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between"
           style={{ maxHeight: "calc(100vh - 115px)" }}
         >
           {loading ? (

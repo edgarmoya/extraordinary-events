@@ -56,13 +56,13 @@ function ModalEventsGeneral({
   };
 
   //* Función para cargar las entidades activas que se mostrarán para seleccionar
-  const loadActiveEntities = async () => {
+  const loadActiveEntities = async (status, roles) => {
     try {
       const response = await EntityService.getEntities(
         undefined,
         undefined,
-        "True",
-        "operador"
+        status,
+        roles
       );
 
       const transform = response.data.map((entity) => ({
@@ -89,9 +89,13 @@ function ModalEventsGeneral({
 
   useEffect(() => {
     loadActiveClassifications();
-    loadActiveEntities();
+    if (readOnly) {
+      loadActiveEntities(undefined, "operador,consultor");
+    } else {
+      loadActiveEntities("True", "operador");
+    }
     loadActiveTypes();
-  }, []);
+  }, [readOnly]);
 
   return (
     <div>
@@ -124,7 +128,7 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"scope"}
-                defaultValue={eventData ? eventData.scope : ""}
+                defaultValue={eventData?.scope || ""}
                 disabled={readOnly}
               />
             </div>
@@ -157,7 +161,7 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"entity"}
-                defaultValue={eventData ? eventData.entity : ""}
+                defaultValue={eventData?.entity || ""}
                 disabled={readOnly}
               />
             </div>
@@ -171,7 +175,7 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"event_type"}
-                defaultValue={eventData ? eventData.event_type : ""}
+                defaultValue={eventData?.event_type || ""}
                 disabled={readOnly}
               />
             </div>
@@ -188,7 +192,7 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"classification"}
-                defaultValue={eventData ? eventData.classification : ""}
+                defaultValue={eventData?.classification || ""}
                 disabled={readOnly}
               />
             </div>
@@ -202,11 +206,16 @@ function ModalEventsGeneral({
                 className={`form-control ${
                   errors.synthesis ? "is-invalid" : ""
                 }`}
-                defaultValue={eventData ? eventData.synthesis : ""}
+                defaultValue={eventData?.synthesis || ""}
                 {...register("synthesis", { required: true })}
                 disabled={readOnly}
               />
               <label htmlFor="floatingInput">Síntesis*</label>
+              {errors.synthesis && (
+                <div className="invalid-feedback">
+                  Por favor, inserte la síntesis del hecho
+                </div>
+              )}
             </div>
           </div>
 
@@ -216,7 +225,7 @@ function ModalEventsGeneral({
                 type="text"
                 name="cause"
                 className={`form-control ${errors.cause ? "is-invalid" : ""}`}
-                defaultValue={eventData ? eventData.cause : ""}
+                defaultValue={eventData?.cause || ""}
                 {...register("cause", { required: false })}
                 disabled={readOnly}
               />

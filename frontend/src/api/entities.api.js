@@ -1,13 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
 const EntityService = {
-  getEntities: async (page, searchTerm, isActive, role) => {
+  getEntities: async (page, searchTerm, isActive, roles) => {
     return axiosInstance.get(`/entities/`, {
       params: {
         page: page,
         search: searchTerm,
-        is_active: isActive,
-        role: role,
+        ...(isActive !== undefined && { is_active: isActive }),
+        ...(roles && { roles }),
       },
     });
   },

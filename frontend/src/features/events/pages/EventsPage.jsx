@@ -24,6 +24,7 @@ import {
   DeleteIcon,
   EyeIcon,
   UpdateIcon,
+  PdfIcon,
 } from "../../../ui/icons";
 import useRolesInfo from "../../../hooks/useRolesInfo";
 
@@ -125,6 +126,26 @@ function EventsPage() {
     }
   };
 
+  const handleDownload = async (id) => {
+    try {
+      const response = await EventService.downloadEvent(id);
+
+      // Crear un blob y un enlace temporal
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `reporte_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error descargando el PDF:", error);
+    }
+  };
+
   //* Función para limpiar la fila seleccionada
   const clearSelectedRow = () => {
     setSelectedRow(null);
@@ -136,7 +157,7 @@ function EventsPage() {
 
   return (
     <Layout pageTitle="Hechos">
-      <div className="container-fluid">
+      <div className="container-fluid h-100">
         {/* Acciones */}
         <TopBar>
           <TopBar.Button
@@ -161,7 +182,13 @@ function EventsPage() {
               }
             }}
             icon={UpdateIcon}
-            disabled={!rolesInfo.isOperador}
+            disabled={
+              !rolesInfo.isOperador ||
+              !rolesInfo.operador.some(
+                (entity) => entity.id === selectedRow?.entity
+              ) ||
+              selectedRow?.status === "closed"
+            }
           />
           <TopBar.Button
             label="Eliminar"
@@ -173,7 +200,13 @@ function EventsPage() {
               }
             }}
             icon={DeleteIcon}
-            disabled={!rolesInfo.isOperador}
+            disabled={
+              !rolesInfo.isOperador ||
+              !rolesInfo.operador.some(
+                (entity) => entity.id === selectedRow?.entity
+              ) ||
+              selectedRow?.status === "closed"
+            }
           />
           <TopBar.Button
             label="Cerrar"
@@ -191,7 +224,26 @@ function EventsPage() {
               }
             }}
             icon={ActiveIcon}
-            disabled={!rolesInfo.isOperador}
+            disabled={
+              !rolesInfo.isOperador ||
+              !rolesInfo.operador.some(
+                (entity) => entity.id === selectedRow?.entity
+              ) ||
+              selectedRow?.status === "closed"
+            }
+          />
+          <TopBar.Button
+            label="Reporte"
+            onClick={() => {
+              if (selectedRow) {
+                handleDownload(selectedRow.id);
+              } else {
+                showErrorToast(
+                  "Seleccione el hecho que desea descargar el reporte"
+                );
+              }
+            }}
+            icon={PdfIcon}
           />
           <TopBar.Button
             label="Ver"
@@ -204,6 +256,7 @@ function EventsPage() {
             }}
             icon={EyeIcon}
           />
+
           <TopBar.Dropdown
             pathAll={Paths.EVENTS}
             textPathAll={"Mostrar todos"}
@@ -223,7 +276,7 @@ function EventsPage() {
         </TopBar>
 
         {/* Tabla de hechos */}
-        <div className="card card-body table-container my-2 py-1 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
+        <div className="card h-100 card-body table-container my-2 py-1 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
           {/* Renderizar el loader o el GridEvents */}
           <Suspense fallback={<TableLoader />}>
             {loading ? (
