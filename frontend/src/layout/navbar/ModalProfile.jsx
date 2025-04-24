@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import Modal from "../../ui/modals/Modal";
 import AuthContext from "../../contexts/AuthContext";
 import UserService from "../../api/users.api";
@@ -9,10 +9,14 @@ function ModalProfile({ isOpen, onClose }) {
   const { user } = useContext(AuthContext);
   const [userData, setUserData] = useState({});
 
+  const fetchUserGroups = useCallback(() => {
+    return isOpen ? UserService.getUserGroups(user.user_id) : null;
+  }, [isOpen, user.user_id]);
+
   const { data, loading } = useFetchData(
-    isOpen ? UserService.getUserGroups : null,
-    isOpen ? [user.user_id] : [],
-    isOpen ? [user] : []
+    isOpen ? fetchUserGroups : null,
+    [user.user_id],
+    [user.user_id]
   );
 
   useEffect(() => {
@@ -97,8 +101,8 @@ function RoleCard({ roleName, role }) {
         style={{ maxHeight: "100px" }}
       >
         <ul className="m-0">
-          {role.map((el) => (
-            <li>{el.entity}</li>
+          {role.map((el, index) => (
+            <li key={index}>{el.entity}</li>
           ))}
         </ul>
       </div>

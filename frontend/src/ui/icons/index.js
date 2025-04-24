@@ -11,3 +11,4 @@ export { default as ActiveIcon } from "./ActiveIcon";
 export { default as DeleteIcon } from "./DeleteIcon";
 export { default as MenuIcon } from "./MenuIcon";
 export { default as LockIcon } from "./LockIcon";
+export { default as ShieldIcon } from "./ShieldIcon";
