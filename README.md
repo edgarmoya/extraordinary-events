@@ -19,3 +19,5 @@ La carpeta ``backend`` contiene el código relacionado con el servidor, API y de
 
 **Frontend (React)**
 La carpeta ``frontend`` contiene el código relacionado con la interfaz de usuario de la aplicación, desarrollada con React. Para instrucciones sobre cómo configurar, ejecutar y desplegar, consulta el archivo README.md
+
+**instalar por los pasos del readme.md que esta dentro de la carpeta backend**
