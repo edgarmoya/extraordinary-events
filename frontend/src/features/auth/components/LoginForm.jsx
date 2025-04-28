@@ -5,6 +5,7 @@ import Paths from "../../../routes/Paths";
 import AuthContext from "../../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { ClosedEyeIcon, EyeIcon } from "../../../ui/icons";
+import packageJson from "../../../../package.json";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -45,8 +46,11 @@ export const LoginForm = () => {
             alt="logo_he"
             height={35}
             width={35}
-          ></img>
-          <h2 className="text-body-emphasis">Bienvenido</h2>
+          />
+          <div className="position-relative">
+            <h2 className="text-body-emphasis">Bienvenido</h2>
+            <span className="version version-right">{`v${packageJson.version}`}</span>
+          </div>
         </div>
 
         <p className="w-100 text-center mb-4">
