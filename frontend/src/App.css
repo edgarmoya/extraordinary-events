@@ -1,7 +1,11 @@
 .App {
   display: flex;
+  flex-direction: row;
   width: 100%;
   align-items: stretch;
+  max-height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
 }
 
 .App-logo {
@@ -48,7 +52,7 @@
   border: 1px solid transparent;
   border-right-color: rgba(0, 0, 0, 0.125);
 }
-.sidebar.is-open {
+.sidebar.open {
   margin-left: 0;
   transition: 0.5s;
 }
@@ -59,8 +63,9 @@
 .nav-link.inactive .nav-icon {
   color: var(--bs-secondary-color);
 }
-.nav-link:hover {
-  background-color: var(--bs-secondary-bg)
+.nav-link.inactive:hover {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-secondary-color);
 }
 .fs-small{
   font-size: 0.9em;
@@ -70,23 +75,60 @@
     CONTENT STYLE
 ----------------------------------------------------- */
 .content {
+  display: flex;
+  flex-direction: column;
   padding: 0px;
   margin-left: 0;
-  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
 
 @media only screen and (max-width: 965px) {
-
   .sidebar{
     display: none;
   }
 
-  .sidebar.is-open {
-    display: block;
-    min-width: 100%;
-    max-width: 100%;
+  .sidebar.open {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    z-index: 100;
+    height: 100dvh;
+    min-width: 45%;
+    max-width: 45%;
     margin-left: 0;
     transition: all 0.5s, height 0s;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+}
+
+@media only screen and (max-width: 645px) {
+  .sidebar.open {
+    min-width: 65%;
+    max-width: 65%;
+  }
+}
+
+.table-container{
+  max-height: calc(100dvh - 115px);
+}
+
+@media only screen and (max-width: 768px){
+  .table-container{
+    max-height: calc(100dvh - 200px);
   }
 }
 
@@ -117,42 +159,45 @@
 /* ---------------------------------------------------
     TOP BAR
 ----------------------------------------------------- */
-.btn-accions-blue{
+.btn-accion{
+  padding: 6px 12px;
+  border: 1px solid var(--bs-secondary-border-subtle);
+  border-radius: 7px;
   background-color: var(--bs-body-bg);
   color: var(--bs-secondary-color);
 }
 
-.btn-accions-blue:hover{
-  background-color: var(--bs-tertiary-bg);
-  color: #0d6efd;
-}
-
-.btn-accions-red{
-  background-color: var(--bs-body-bg);
-  color: var(--bs-secondary-color);
-}
-
-.btn-accions-red:hover{
-  background-color: var(--bs-tertiary-bg);
-  color: #dc3545;
+.btn-accion:hover{
+  color: var(--bs-primary);
 }
 
 /* ---------------------------------------------------
     STATUS BUTTONS STYLE
 ----------------------------------------------------- */
-.bg-primary-light{
+.bg-blue-badge{
   background-color: #0d6dfd1e;
   font-weight: 500;
+  color: #0d6efd;
 }
-.bg-danger-light{
+.bg-gray-badge{
+  background-color: #adb5bd3d;
+  font-weight: 500;
+  color: #92979b;
+}
+.bg-primary-badge{
+  background-color: #76e3762c;
+  font-weight: 500;
+  color: var(--bs-primary);
+}
+.bg-danger-badge{
   background-color: #dc35461f;
   font-weight: 500;
+  color: #dc3545;
 }
-.bg-success-light{
+.bg-success-badge{
   background-color: #35dc4b1f;
   font-weight: 500;
 }
-
 
 /* ---------------------------------------------------
     SCROLL STYLE
@@ -165,18 +210,22 @@
 
 /* Estilo para el track del scroll */
 ::-webkit-scrollbar-track {
-  border-radius: 5px; /* Redondear los bordes del track */
+  border-radius: 4px; /* Redondear los bordes del track */
 }
 
 /* Estilo para el thumb (el "scrollbar" móvil) */
 ::-webkit-scrollbar-thumb {
   background-color: #888;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 /* Estilo para el thumb cuando el usuario pasa el cursor sobre él */
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--bg-body-bg);
 }
 
 .backdrop {
@@ -189,6 +238,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 50;
 }
 
 .date-picker-container {
@@ -231,3 +281,74 @@
   max-height: 90%;
   object-fit: contain;
 }
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+::selection{
+  color: #fff;
+  background: #555;
+}
+
+/* ---------------------------------------------------
+    SELECT STYLE
+----------------------------------------------------- */
+
+select option:checked{
+  color: #fff;
+  background: #888;
+}
+
+select option:hover{
+  color: #fff;
+  background-color: #888 !important;
+  box-shadow: 0 0 10px 100px #000 inset;
+}
+
+/* ---------------------------------------------------
+    DROPDOWN STYLE
+----------------------------------------------------- */
+.dropdown-item-danger{
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+.dropdown-item-danger:hover{
+  background: #dc3545;
+  color: #fff;
+}
+
+/* ---------------------------------------------------
+    CHECKBOXS STYLE
+----------------------------------------------------- */
+.checkbox-container {
+  display: flex;
+  gap: 8px;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.checkbox-container:hover {
+  cursor: pointer;
+  background-color: var(--bs-secondary-bg);
+}
+
+.version{
+  position: absolute;
+  background-color: var(--bs-primary);
+  border-radius: 5px;
+  padding: 0px 3px;
+  color: #fff;
+  font-size: 0.5rem;
+  border: 1px solid #fff;
+}
+
+.version-center{
+  top: -5px;
+  left: 54%;
+}
+
+.version-right{
+  top: -5px;
+  right: -30px;
+}
+

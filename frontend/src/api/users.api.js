@@ -5,27 +5,46 @@ const UserService = {
     return axiosInstance.get(`/users/${id}/`);
   },
 
-  getUserGroups: async (idUser) => {
-    return axiosInstance.get(`/users/${idUser}/groups/`);
+  getUsers: async (page, searchTerm, isActive) => {
+    return axiosInstance.get(`/users/`, {
+      params: {
+        page: page,
+        search: searchTerm,
+        is_active: isActive,
+      },
+    });
   },
 
-  changePassword: async (idUser, oldPassword, newPassword) => {
-    const requestData = {
-      old_password: oldPassword,
-      new_password: newPassword,
-    };
+  addUser: async (user) => {
+    return axiosInstance.post(`/users/`, user);
+  },
 
-    try {
-      const response = await axiosInstance.post(
-        `/users/${idUser}/change_password/`,
-        requestData
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        "Error al cambiar la contraseña: " + error.response.data.detail
-      );
-    }
+  updateUser: async (data) => {
+    const { id, ...user } = data;
+    return axiosInstance.put(`/users/${id}/`, user);
+  },
+
+  activateUser: async (data) => {
+    const { id, activated } = data;
+    return axiosInstance.patch(`/users/${id}/`, { is_active: !activated });
+  },
+
+  deleteUser: async (idUser) => {
+    return axiosInstance.delete(`/users/${idUser}/`);
+  },
+
+  getUserGroups: async (idUser) => {
+    return axiosInstance.get(`/users/${idUser}/roles/`);
+  },
+
+  changePassword: async (data) => {
+    const { id, ...user } = data;
+    return axiosInstance.post(`/users/${id}/change-password/`, user);
+  },
+
+  updateRoles: async (data) => {
+    const { id, roles } = data;
+    return axiosInstance.put(`/users/${id}/update-roles/`, roles);
   },
 };
 

@@ -1,28 +1,24 @@
-import axios from "axios";
-
-const API = axios.create({
-  baseURL: "http://localhost:8000/api",
-});
+import axiosInstance from "./axiosInstance";
 
 const DashboardService = {
-  getEventCounts: async () => {
-    return API.get(`/event_counts/`);
+  getEventsCount: async () => {
+    return axiosInstance.get(`/events_count/`);
   },
 
-  getEventsCountByProvince: async (province_name) => {
-    return API.get(`/events_count_by_province/${province_name}/`);
+  getEventsCountByProvince: async (province_id) => {
+    return axiosInstance.get(`/events_count_by_province/${province_id}/`);
   },
 
   getPercentageBySector: async () => {
-    return API.get(`/percentage_of_events_by_sector/`);
+    return axiosInstance.get(`/percentage_of_events_by_sector/`);
   },
 
   getEventsCountScope: async () => {
-    return API.get(`/events_count_scope/`);
+    return axiosInstance.get(`/events_count_scope/`);
   },
 
   getEventsCountByType: async () => {
-    return API.get(`/events_count_by_type/`);
+    return axiosInstance.get(`/events_count_by_type/`);
   },
 };
 

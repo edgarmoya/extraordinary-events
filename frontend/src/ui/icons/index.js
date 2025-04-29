@@ -1,0 +1,14 @@
+export { default as UsersIcon } from "./UsersIcon";
+export { default as HomeIcon } from "./HomeIcon";
+export { default as TagIcon } from "./TagIcon";
+export { default as BuildIcon } from "./BuildIcon";
+export { default as CalendarIcon } from "./CalendarIcon";
+export { default as EyeIcon } from "./EyeIcon";
+export { default as ClosedEyeIcon } from "./ClosedEyeIcon";
+export { default as AddIcon } from "./AddIcon";
+export { default as UpdateIcon } from "./UpdateIcon";
+export { default as ActiveIcon } from "./ActiveIcon";
+export { default as DeleteIcon } from "./DeleteIcon";
+export { default as MenuIcon } from "./MenuIcon";
+export { default as LockIcon } from "./LockIcon";
+export { default as ShieldIcon } from "./ShieldIcon";

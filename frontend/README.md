@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# Frontend: Hechos Extraordinarios
+Este es el frontend de la aplicación Hechos Extraordinarios desarrollado en React. La aplicación interactúa con el backend para mostrar los datos y resultados.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Requisitos
 
-## Available Scripts
+Antes de comenzar, asegúrate de tener instalado lo siguiente en tu sistema:
+* Node.js v22.12.0
+* npm v10.9.0
 
-In the project directory, you can run:
+## Instalación local
+Para instalar y configurar el frontend de la aplicación, sigue los siguientes pasos:
 
-### `npm start`
+1. **Clonar el repositorio**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    Si ya clonaste el proyecto para configurar el backend solo diríjase a la carpeta llamada ``frontend`` 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    Sino, clona el repositorio a tu máquina local:
 
-### `npm test`
+    ```bash
+    git clone https://gitlab.azcuba.cu/python/hechos-extraordinarios-nuevo.git
+    cd hechos-extraordinarios-nuevo
+    cd frontend
+    ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Instalar dependencias**
+Si ya se encuentra en el directorio del proyecto ejecuta el siguiente comando para instalar todas las dependencias necesarias:
 
-### `npm run build`
+    ```bash
+    npm install
+    ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. **Variables de entorno**
+Configura las variables de entorno necesarias para la aplicación. Crea un archivo .env en la raíz del proyecto y define las variables de entorno necesarias:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    ```plaintext
+    REACT_APP_BACKEND_URL=http://localhost:8000
+    ```
+    Asegúrate de cambiar http://localhost:8000 a la URL de tu backend si está en producción.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. **Ejecutar la aplicación en desarrollo**
+Una vez que las dependencias estén instaladas y las variables de entorno configuradas, puedes ejecutar la aplicación en modo desarrollo:
 
-### `npm run eject`
+    ```bash
+    npm start
+    ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    Esto iniciará un servidor de desarrollo y abrirá la aplicación en tu navegador. Normalmente, estará disponible en http://localhost:3000.

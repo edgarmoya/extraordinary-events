@@ -1,19 +1,20 @@
-import "./App.css";
 import React from "react";
+import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import AdminPage from "./pages/AdminPage";
-import EventsPage from "./pages/EventsPage";
+import LoginPage from "./features/auth/pages/LoginPage";
+import AdminPage from "./features/auth/pages/AdminPage";
+import EventsPage from "./features/events/pages/EventsPage";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/AuthContext";
 import Paths from "./routes/Paths";
 import PrivateRoute from "./routes/PrivateRoute";
-import HomePage from "./pages/HomePage";
-import EntitiesPage from "./pages/EntitiesPage";
-import TypesPage from "./pages/TypesPage";
-import SectorsPage from "./pages/SectorsPage";
-import ClassificationsPage from "./pages/ClassificationsPage";
-import FieldsPage from "./pages/FieldsPage";
+import DashboardPage from "./features/dashboard/pages/DashboardPage";
+import EntitiesPage from "./features/entities/pages/EntitiesPage";
+import TypesPage from "./features/type_events/pages/TypesPage";
+import SectorsPage from "./features/sectors/pages/SectorsPage";
+import ClassificationsPage from "./features/classifications/pages/ClassificationsPage";
+import FieldsPage from "./features/additional_fields/pages/FieldsPage";
+import UsersPage from "./features/users/page/UsersPage";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
           <Route path={Paths.LOGIN} element={<LoginPage />} />
 
           <Route element={<PrivateRoute />}>
-            <Route path={Paths.HOME} element={<HomePage />} />
+            <Route path={Paths.HOME} element={<DashboardPage />} />
 
             <Route path={Paths.EVENTS} element={<EventsPage />}>
               {/* Rutas secundarias de EVENTS */}
@@ -73,6 +74,12 @@ function App() {
               {/* Rutas secundarias de ADDFIELDS */}
               <Route path={Paths.ACTIVE_ADDFIELDS} element={<FieldsPage />} />
               <Route path={Paths.INACTIVE_ADDFIELDS} element={<FieldsPage />} />
+            </Route>
+
+            <Route path={Paths.USERS} element={<UsersPage />}>
+              {/* Rutas secundarias de USERS */}
+              <Route path={Paths.ACTIVE_USERS} element={<UsersPage />} />
+              <Route path={Paths.INACTIVE_USERS} element={<UsersPage />} />
             </Route>
           </Route>
         </Routes>

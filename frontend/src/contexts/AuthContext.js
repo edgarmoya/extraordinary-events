@@ -4,6 +4,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Paths from "../routes/Paths";
 
+const API_URL = process.env.REACT_APP_BACKEND_URL;
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -25,10 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (credentials) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/token/",
-        credentials
-      );
+      const response = await axios.post(`${API_URL}/api/token/`, credentials);
       const { access, refresh } = response.data;
 
       setAccessToken(access);
