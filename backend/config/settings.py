@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'apps.entities',
     'apps.type_events',
     'apps.classifications',
-    'apps.additional_fields'
+    'apps.additional_fields',
+    'apps.ai'
 ]
 
 MIDDLEWARE = [

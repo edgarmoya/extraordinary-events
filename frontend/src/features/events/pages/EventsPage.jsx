@@ -23,9 +23,11 @@ import {
   AddIcon,
   DeleteIcon,
   EyeIcon,
+  LetterIcon,
   UpdateIcon,
 } from "../../../ui/icons";
 import useRolesInfo from "../../../hooks/useRolesInfo";
+import ModalLetter from "../components/ModalLetter";
 
 function EventsPage() {
   const { user } = useContext(AuthContext);
@@ -41,6 +43,7 @@ function EventsPage() {
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
   const [modalCloseIsOpen, setModalCloseIsOpen] = useState(false);
   const [modalWatchIsOpen, setModalWatchIsOpen] = useState(false);
+  const [modalLetterIsOpen, setModalLetterIsOpen] = useState(false);
 
   const rolesInfo = useRolesInfo();
 
@@ -204,6 +207,17 @@ function EventsPage() {
             }}
             icon={EyeIcon}
           />
+          <TopBar.Button
+            label="Generar carta"
+            onClick={() => {
+              if (selectedRow) {
+                setModalLetterIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el hecho deseado");
+              }
+            }}
+            icon={LetterIcon}
+          />
           <TopBar.Dropdown
             pathAll={Paths.EVENTS}
             textPathAll={"Mostrar todos"}
@@ -304,6 +318,17 @@ function EventsPage() {
         }" perteneciente a la entidad "${
           selectedRow && selectedRow.entity_description
         }".`}
+      />
+
+      {/* Modal para generar carta */}
+      <ModalLetter
+        isOpen={modalLetterIsOpen}
+        onClose={() => {
+          setModalLetterIsOpen(false);
+        }}
+        title="Carta informativa"
+        size="modal-lg"
+        eventId={selectedRow?.id}
       />
     </Layout>
   );
