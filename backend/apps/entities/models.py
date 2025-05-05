@@ -3,7 +3,6 @@ from apps.sectors.models import Sector
 from apps.locations.models import Municipality
 from django.core.validators import RegexValidator
 
-# Create your models here.
 class Entity(models.Model):
     digits_only = RegexValidator(r'^\d+$', 'El código debe contener solo dígitos.')
 
@@ -17,6 +16,7 @@ class Entity(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Activo')
 
     class Meta:
+        db_table = 'entity'
         verbose_name = 'Entidad'
         verbose_name_plural = 'Entidades'
 

@@ -1,12 +1,12 @@
 import axiosInstance from "./axiosInstance";
 
 const SectorService = {
-  getSectors: async (page, searchTerm, is_active) => {
+  getSectors: async (page, searchTerm, isActive) => {
     return axiosInstance.get(`/sectors/`, {
       params: {
         page: page,
         search: searchTerm,
-        is_active: is_active,
+        is_active: isActive,
       },
     });
   },
@@ -15,15 +15,17 @@ const SectorService = {
     return axiosInstance.post(`/sectors/`, sector);
   },
 
-  deleteSector: async (id) => {
-    return axiosInstance.delete(`/sectors/${id}/`);
+  deleteSector: async (idSector) => {
+    return axiosInstance.delete(`/sectors/${idSector}/`);
   },
 
-  updateSector: async (id, sector) => {
+  updateSector: async (data) => {
+    const { id, ...sector } = data;
     return axiosInstance.put(`/sectors/${id}/`, sector);
   },
 
-  activateSector: async (id, activated) => {
+  activateSector: async (data) => {
+    const { id, activated } = data;
     return axiosInstance.patch(`/sectors/${id}/`, { is_active: !activated });
   },
 };

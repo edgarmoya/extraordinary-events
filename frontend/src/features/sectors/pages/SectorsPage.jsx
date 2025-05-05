@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 import GridSectors from "../components/GridSectors";
@@ -9,13 +9,13 @@ import ModalSectors from "../components/ModalSectors";
 import ModalConfirmDelete from "../../../ui/modals/ModalConfirmDelete";
 import ModalConfirmActivate from "../../../ui/modals/ModalConfirmActivate";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
-import { HttpStatusCode } from "axios";
 import TableLoader from "../../../ui/skeletons/TableLoader";
 import { ActiveIcon, AddIcon, DeleteIcon, UpdateIcon } from "../../../ui/icons";
+import useFetchData from "../../../hooks/useFetchData";
+import useApiMutation from "../../../hooks/useApiMutation";
 
 function SectorsPage() {
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
   const [sectors, setSectors] = useState([]);
   const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -26,98 +26,73 @@ function SectorsPage() {
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
   const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
 
-  //* Función para cargar todos los sectores
-  const loadSectors = useCallback(async () => {
-    setLoading(true);
-    try {
-      let response;
-      if (location.pathname === Paths.ACTIVE_SECTORS) {
-        response = await SectorService.getSectors(
-          currentPage,
-          searchTerm,
-          "True"
-        );
-      } else if (location.pathname === Paths.INACTIVE_SECTORS) {
-        response = await SectorService.getSectors(
-          currentPage,
-          searchTerm,
-          "False"
-        );
-      } else {
-        response = await SectorService.getSectors(currentPage, searchTerm);
-      }
+  const isActive =
+    location.pathname === Paths.ACTIVE_SECTORS
+      ? "True"
+      : location.pathname === Paths.INACTIVE_SECTORS
+      ? "False"
+      : undefined;
 
-      setSectors(response.data.results);
-      setTotalSectors(response.data.count);
-    } catch (error) {
-      console.error("Error obteniendo los sectores: ", error);
-    } finally {
-      setLoading(false);
+  //* Cargar todos los sectores
+  const { data, loading, refetch } = useFetchData(
+    SectorService.getSectors,
+    [currentPage, searchTerm, isActive],
+    [location.pathname, currentPage, searchTerm]
+  );
+
+  useEffect(() => {
+    if (data) {
+      setSectors(data.results || []);
+      setTotalSectors(data.count || 0);
     }
-  }, [location.pathname, currentPage, searchTerm]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    clearSelectedRow();
-  };
+  }, [data]);
 
   //* Función para eliminar un sector
-  const handleDeleteSector = async () => {
-    try {
-      const response = await SectorService.deleteSector(selectedRow.id);
-      if (response.status === HttpStatusCode.NoContent) {
+  const { execute: deleteSector, loading: deleting } = useApiMutation(
+    SectorService.deleteSector,
+    {
+      onSuccess: () => {
         showSuccessToast("Sector eliminado con éxito");
-        loadSectors();
+        refetch();
         clearSelectedRow();
-      } else {
-        showErrorToast("Error al eliminar sector");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
   //* Función para activar/inactivar un sector
-  const handleActivateSector = async () => {
-    try {
-      const response = await SectorService.activateSector(
-        selectedRow.id,
-        selectedRow.is_active
-      );
-      if (response.status === HttpStatusCode.Ok) {
-        if (selectedRow.is_active) {
-          showSuccessToast("Sector inactivado con éxito");
-        } else {
+  const { execute: activateSector, loading: activating } = useApiMutation(
+    SectorService.activateSector,
+    {
+      onSuccess: (response) => {
+        const { data } = response; // Acceder al la respuesta
+
+        if (data.is_active) {
           showSuccessToast("Sector activado con éxito");
+        } else {
+          showSuccessToast("Sector inactivado con éxito");
         }
-        loadSectors();
+
+        refetch();
         clearSelectedRow();
-      } else {
-        showErrorToast("Error al activar o inactivar sector");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
   //* Función para limpiar la fila seleccionada
   const clearSelectedRow = () => {
     setSelectedRow(null);
   };
 
-  useEffect(() => {
-    loadSectors();
-  }, [loadSectors]);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    clearSelectedRow();
+  };
 
   return (
     <Layout pageTitle="Sectores">
@@ -205,7 +180,7 @@ function SectorsPage() {
         onClose={() => setModalAddIsOpen(false)}
         title={"Añadir sector"}
         onRefresh={() => {
-          loadSectors();
+          refetch();
           clearSelectedRow();
         }}
       />
@@ -216,7 +191,7 @@ function SectorsPage() {
         onClose={() => setModalUpdateIsOpen(false)}
         title={"Modificar sector"}
         onRefresh={() => {
-          loadSectors();
+          refetch();
           clearSelectedRow();
         }}
         sectorData={selectedRow}
@@ -228,10 +203,9 @@ function SectorsPage() {
         onClose={() => {
           setModalDeleteIsOpen(false);
         }}
-        onDelete={handleDeleteSector}
-        message={`Está a punto de eliminar el sector "${
-          selectedRow && selectedRow.description
-        }".`}
+        onDelete={() => deleteSector(selectedRow?.id)}
+        message={`Está a punto de eliminar el sector "${selectedRow?.description}".`}
+        loading={deleting}
       />
 
       {/* Modal para activar/inactivar un sector */}
@@ -240,11 +214,17 @@ function SectorsPage() {
         onClose={() => {
           setModalActivateIsOpen(false);
         }}
-        onActivate={handleActivateSector}
+        onActivate={() =>
+          activateSector({
+            id: selectedRow?.id,
+            activated: selectedRow?.is_active,
+          })
+        }
         message={`Está a punto de ${
-          selectedRow && selectedRow.is_active ? "inactivar" : "activar"
-        } el sector "${selectedRow && selectedRow.description}".`}
-        activated={selectedRow && selectedRow.is_active}
+          selectedRow?.is_active ? "inactivar" : "activar"
+        } el sector "${selectedRow?.description}".`}
+        activated={selectedRow?.is_active}
+        loading={activating}
       />
     </Layout>
   );
