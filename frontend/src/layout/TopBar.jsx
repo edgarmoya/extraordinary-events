@@ -12,7 +12,7 @@ const TopBar = ({ children }) => {
   );
 };
 
-function Button({ label, onClick, icon: Icon }) {
+function Button({ label, onClick, icon: Icon, disabled }) {
   return (
     <Tooltip
       tooltipText={label}
@@ -22,6 +22,7 @@ function Button({ label, onClick, icon: Icon }) {
         type="button"
         onClick={onClick}
         className="btn-accion shadow-sm w-100"
+        disabled={disabled}
       >
         <Icon />
       </button>

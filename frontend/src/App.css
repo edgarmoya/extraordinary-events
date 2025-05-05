@@ -171,6 +171,14 @@
   color: var(--bs-primary);
 }
 
+/* Estilo para el botón cuando está deshabilitado */
+.btn-accion:disabled {
+  background-color: var(--bs-secondary-border-subtle); /* Gris de fondo para el botón deshabilitado */
+  color: #888; /* Gris claro para el texto */
+  cursor: not-allowed; /* Cambia el cursor a "no permitido" */
+  opacity: 0.7; /* Reduce la opacidad para dar el efecto de deshabilitado */
+}
+
 /* ---------------------------------------------------
     STATUS BUTTONS STYLE
 ----------------------------------------------------- */

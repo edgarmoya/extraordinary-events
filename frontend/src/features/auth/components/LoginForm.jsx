@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
 import Paths from "../../../routes/Paths";
 import AuthContext from "../../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { ClosedEyeIcon, EyeIcon } from "../../../ui/icons";
 import packageJson from "../../../../package.json";
+import { showLoginToast, showErrorToast } from "../../../utils/toastUtils";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -25,10 +25,10 @@ export const LoginForm = () => {
     loginUser({ user_name: data.username, password: data.password })
       .then((data) => {
         navigate(`${Paths.HOME}`);
-        toast.success(`Bienvenido, ${getValues("username")}`);
+        showLoginToast(getValues("username"));
       })
       .catch((error) => {
-        toast.error("Error de autenticación");
+        showErrorToast("Error de autenticación");
       });
   };
 
