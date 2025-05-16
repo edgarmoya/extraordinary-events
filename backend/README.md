@@ -23,6 +23,8 @@ Primero, clona el repositorio de GitHub a tu máquina local:
 Es recomendable crear un entorno virtual para aislar las dependencias:
 
     ```bash
+    sudo apt install python3-pip
+    sudo apt install python3.11-venv
     python3.11 -m venv venv
     source venv/bin/activate  # En Windows usa venv\Scripts\activate
     ```
