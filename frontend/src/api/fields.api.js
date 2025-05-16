@@ -19,11 +19,13 @@ const FieldService = {
     return axiosInstance.delete(`/addfields/${id}/`);
   },
 
-  updateField: async (id, field) => {
+  updateField: async (data) => {
+    const { id, ...field } = data;
     return axiosInstance.put(`/addfields/${id}/`, field);
   },
 
-  activateField: async (id, activated) => {
+  activateField: async (data) => {
+    const { id, activated } = data;
     return axiosInstance.patch(`/addfields/${id}/`, { is_active: !activated });
   },
 

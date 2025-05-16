@@ -19,11 +19,13 @@ const ClassificationService = {
     return axiosInstance.delete(`/classifications/${id}/`);
   },
 
-  updateClassification: async (id, classification) => {
+  updateClassification: async (data) => {
+    const { id, ...classification } = data;
     return axiosInstance.put(`/classifications/${id}/`, classification);
   },
 
-  activateClassification: async (id, activated) => {
+  activateClassification: async (data) => {
+    const { id, activated } = data;
     return axiosInstance.patch(`/classifications/${id}/`, {
       is_active: !activated,
     });
