@@ -13,6 +13,7 @@ class AdditionalField(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Activo")
 
     class Meta:
+        db_table = 'add_field'
         verbose_name = 'Campo adicional'
         verbose_name_plural = 'Campos adicionales'
 
@@ -25,6 +26,7 @@ class EventFieldValue(models.Model):
     value = models.TextField(verbose_name="Valor")
 
     class Meta:
+        db_table = 'event_field_value'
         verbose_name = 'Valor de campo adicional'
         verbose_name_plural = 'Valores de campos adicionales'
         constraints = [

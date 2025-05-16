@@ -12,3 +12,6 @@ export { default as DeleteIcon } from "./DeleteIcon";
 export { default as MenuIcon } from "./MenuIcon";
 export { default as LockIcon } from "./LockIcon";
 export { default as ShieldIcon } from "./ShieldIcon";
+export { default as SectorIcon } from "./SectorIcon";
+export { default as DataIcon } from "./DataIcon";
+export { default as TypeIcon } from "./TypeIcon";

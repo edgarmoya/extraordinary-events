@@ -38,7 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         through='CustomUserGroup',  # Usa la tabla intermedia personalizada
         related_name="custom_users"
     )
-    user_permissions = None  
+    user_permissions = None
 
     objects = CustomUserManager()
 
@@ -46,7 +46,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     class Meta:
-        db_table = "users"
+        db_table = "user"
         permissions = []  # Evita que se creen permisos individuales
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
@@ -67,7 +67,7 @@ class CustomUserGroup(models.Model):
     entity = models.ForeignKey(Entity, on_delete=models.CASCADE, verbose_name="Entidad")
 
     class Meta:
-        db_table = 'users_group'
+        db_table = 'user_group'
         unique_together = ('user', 'group', 'entity')  # Evita duplicados
         verbose_name = "Rol por entidad"
         verbose_name_plural = "Roles por entidad"

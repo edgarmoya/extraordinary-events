@@ -8,8 +8,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     password = serializers.CharField(min_length=8, write_only=True, required=False)
-    last_login = serializers.DateTimeField(format="%d-%m-%Y (%I:%M %p)", read_only=True)
-    start_date = serializers.DateTimeField(format="%d-%m-%Y (%I:%M %p)", read_only=True)
+    last_login = serializers.DateTimeField(format="%d-%m-%Y (%H:%M)", read_only=True)
+    start_date = serializers.DateTimeField(format="%d-%m-%Y (%H:%M)", read_only=True)
 
     class Meta:
         model = CustomUser

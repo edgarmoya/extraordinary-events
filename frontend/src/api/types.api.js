@@ -19,11 +19,13 @@ const TypeService = {
     return axiosInstance.delete(`/types/${id}/`);
   },
 
-  updateType: async (id, type) => {
+  updateType: async (data) => {
+    const { id, ...type } = data;
     return axiosInstance.put(`/types/${id}/`, type);
   },
 
-  activateType: async (id, activated) => {
+  activateType: async (data) => {
+    const { id, activated } = data;
     return axiosInstance.patch(`/types/${id}/`, { is_active: !activated });
   },
 };

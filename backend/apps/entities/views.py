@@ -6,12 +6,12 @@ from .serializers import EntitySerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Entity
 from apps.events.models import Event
+from apps.users.models import CustomUserGroup
 from .permissions import HasPermissionForAction
-
+from django.contrib.auth.models import Group
 
 class EntityPagination(PageNumberPagination):
     page_size = 25
-
 
 class EntityView(viewsets.ModelViewSet):
     # Verifica que el usuario esté autenticado y tenga los permisos necesarios
@@ -32,9 +32,30 @@ class EntityView(viewsets.ModelViewSet):
         # Obtiene los parámetros de búsqueda y estado de la solicitud
         search_term = self.request.query_params.get('search', '')
         is_active = self.request.query_params.get('is_active', '')
+        role = self.request.query_params.get('role', '')
 
-        # Obtiene todas las entidades disponibles inicialmente
-        queryset = Entity.objects.all()
+        user = self.request.user
+
+        # Si el usuario es superusuario, devuelve todas las entidades sin filtrar por roles
+        if user.is_superuser:
+            queryset = Entity.objects.all()
+        else:
+            # Filtra las entidades donde el usuario tiene permisos según el rol
+            if role:
+                # Verificar las entidades donde el usuario autenticado es tiene permisos
+                user_entity_roles = CustomUserGroup.objects.filter(user=user, group__name=role) # Roles del usuario que consulta
+
+                if not user_entity_roles.exists():
+                    return Response({"detail": "El usuario no pertenece a ninguna entidad"}, status=status.HTTP_403_FORBIDDEN)
+
+                # Obtener las entidades donde el usuario es administrador
+                entity_ids = user_entity_roles.values_list('entity', flat=True)
+
+                # Obtiene todas las entidades disponibles inicialmente
+                queryset = Entity.objects.filter(id_entity__in=entity_ids)
+            else:
+                # Si no hay rol, devuelve todas las entidades
+                queryset = Entity.objects.all()
 
         # Aplica el filtro por término de búsqueda si está presente
         if search_term:
@@ -71,6 +92,22 @@ class EntityView(viewsets.ModelViewSet):
         # Si 'page' no está presente, devuelve todos los datos sin paginación
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        """
+        Sobrescribe el método para agregar automáticamente al usuario autenticado
+        como administrador de la entidad que crea, excepto si es superusuario.
+        """
+        entity = serializer.save()  # Guarda la entidad
+        user = self.request.user
+
+        # Evitar asignación si el usuario es superusuario
+        if not user.is_superuser:
+            # Obtener o crear el grupo de administradores
+            admin_group, _ = Group.objects.get_or_create(name="administrador")
+
+            # Asignar el usuario como administrador de la entidad creada
+            CustomUserGroup.objects.create(user=user, entity=entity, group=admin_group)
 
     def destroy(self, request, *args, **kwargs):
         """
