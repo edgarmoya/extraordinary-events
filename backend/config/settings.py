@@ -141,11 +141,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-# Para ser posible entrar al admin desde react
-X_FRAME_OPTIONS = 'http://localhost:3000'
-
 # Django Admin Interface
-# X_FRAME_OPTIONS = "SAMEORIGIN"
+X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 # DjangoRestFramework Settings

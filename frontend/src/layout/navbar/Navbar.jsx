@@ -83,7 +83,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
                   className="bg-profile-icon me-md-2 rounded-circle"
                   style={{ width: 24, height: 24 }}
                 >
-                  <span>E</span>
+                  <span>{user.username.charAt(0).toUpperCase()}</span>
                 </div>
                 <strong className="d-none d-sm-inline">{user.username}</strong>
               </button>
