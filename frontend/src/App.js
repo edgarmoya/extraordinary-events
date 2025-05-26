@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./features/auth/pages/LoginPage";
-import AdminPage from "./features/auth/pages/AdminPage";
 import EventsPage from "./features/events/pages/EventsPage";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -22,7 +21,6 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path={Paths.EMPTY} element={<Navigate to={Paths.HOME} />} />
-          <Route path={Paths.ADMIN} element={<AdminPage />} />
           <Route path={Paths.LOGIN} element={<LoginPage />} />
 
           <Route element={<PrivateRoute />}>

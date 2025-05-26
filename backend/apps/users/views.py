@@ -159,13 +159,18 @@ class ChangePasswordView(views.APIView):
             new_password = serializer.validated_data['new_password']
 
             # Si no es administrador, comprobar la contraseña actual
+            is_reset = False  # Variable para determinar si es un restablecimiento
             if not user.is_staff:
                 old_password = serializer.validated_data.get('old_password')
-                if not target_user.check_password(old_password):
-                    return Response({"detail": "La contraseña actual del usuario es incorrecta"}, status=status.HTTP_400_BAD_REQUEST)
+                if old_password:
+                    if not target_user.check_password(old_password):
+                        return Response({"detail": "La contraseña actual del usuario es incorrecta"}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    is_reset = True # No se proporcionó la contraseña anterior, se considera un restablecimiento
 
             # Cambiar la contraseña del usuario objetivo
             target_user.set_password(new_password)
+            target_user.first_login = is_reset
             target_user.save()
 
             return Response({"detail": "Contraseña cambiada con éxito"}, status=status.HTTP_200_OK)

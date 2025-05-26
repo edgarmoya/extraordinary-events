@@ -13,7 +13,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'user_name', 'first_name', 'last_name', 'password', 'last_login', 'start_date', 'is_staff', 'is_active')
+        fields = ('id', 'user_name', 'first_name', 'last_name', 'password', 'last_login', 'start_date', 'is_staff', 'is_active', 'first_login')
         extra_kwargs = {'password': {'write_only': True}} # Para que la contraseña no se lea
 
     def create(self, validated_data):
@@ -48,6 +48,6 @@ class ChangePasswordSerializer(serializers.Serializer):
         # Si no es administrador, la contraseña actual es obligatoria
         is_admin = self.context.get('is_admin', False)
         if not is_admin and 'old_password' not in data:
-            raise serializers.ValidationError("Debe proporcionar la contraseña actual para cambiarla.")
+            raise serializers.ValidationError("Debe proporcionar la contraseña actual para cambiarla")
 
         return data
