@@ -88,7 +88,7 @@ function Sidebar({ isOpen }) {
               isActive={isActiveLink(Paths.ENTITIES)}
             />
           )}
-          {rolesInfo.isAdministrador && (
+          {(rolesInfo.isAdministrador || rolesInfo.isSuperuser) && (
             <SidebarItem
               label="Sectores"
               path={Paths.ACTIVE_SECTORS}
