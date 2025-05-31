@@ -6,9 +6,7 @@ from rest_framework import status
 from apps.dashboard.services import get_event_summary
 from apps.events.models import Event
 from datetime import datetime
-
-api_key1 = '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'
-api_key2 = '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'
+from apps.ai.models import ModelKey
 
 system_prompt = """
     Eres un asistente especializado en redactar cartas oficiales en español a partir de datos estructurados proporcionados en formato JSON.
@@ -27,16 +25,24 @@ system_prompt = """
     - Redacta con un tono formal, claro y objetivo.\n
     - No repitas textualmente los nombres de las claves JSON; interpreta y presenta la información de forma fluida y natural.\n
     - Si algún campo está vacío, simplemente ignóralo en la carta.
+    - Escribe solo la carta y no escribas nada antes ni después.
     - Ignora el contenido de attachment porque en el correo no se va a adjuntar esa información.
 """
 
-def generate(api_key, summary):
+def get_model_config():
+    config = ModelKey.objects.first()
+    if config:
+        return config.api_key, config.model_name
+    raise ValueError("La configuración del modelo no está disponible. Contacte al administrador para resolver este problema.")
+
+def generate(summary):
+    api_key, model = get_model_config()
     client = OpenAI(
         api_key=api_key,
         base_url="https://openrouter.ai/api/v1",
     )
     return client.chat.completions.create(
-        model="deepseek/deepseek-r1:free",
+        model=model,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f'Por favor, redacta una carta informativa oficial dirigida a la autoridad correspondiente, usando esta información: {summary}'}
@@ -44,8 +50,7 @@ def generate(api_key, summary):
         stream=False
     )
 
-
-class AskDeepSeekView(APIView):
+class AskModelView(APIView):
     def get(self, request):
         event_id = request.query_params.get("id")
         summary = ''
@@ -63,16 +68,30 @@ class AskDeepSeekView(APIView):
         except Event.DoesNotExist:
             return Response({'detail': 'Hecho extraordinario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-        for key in [api_key1, api_key2]:
-            try:
-                response = generate(key, summary)
-                if response and response.choices and len(response.choices) > 0:
-                    answer = response.choices[0].message.content
-                    return Response({"answer": answer})
+        try:
+            response = generate(summary)
+            if response and response.choices and len(response.choices) > 0:
+                answer = response.choices[0].message.content
+                return Response({"answer": answer})
+            else:
+                return Response(
+                    {"detail": "No se recibió una respuesta válida del modelo."},
+                    status=status.HTTP_502_BAD_GATEWAY
+                )
 
-            except Exception as e:
-                error_msg = str(e)
-                if "rate limit" not in error_msg.lower() and "429" not in error_msg:
-                    return Response({"detail": error_msg}, status=status.HTTP_502_BAD_GATEWAY)
+        except ValueError as ve:
+            return Response({"detail": str(ve)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response({"detail": "Ha superado el límite de peticiones en el día"}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        except Exception as e:
+            error_msg = str(e).lower()
+
+            if "rate limit" in error_msg or "429" in error_msg:
+                return Response(
+                    {"detail": "Ha superado el límite de peticiones en el día."},
+                    status=status.HTTP_429_TOO_MANY_REQUESTS
+                )
+
+            return Response(
+                {"detail": f"Error inesperado al generar la respuesta: {str(e)}"},
+                status=status.HTTP_502_BAD_GATEWAY
+            )

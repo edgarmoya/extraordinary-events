@@ -1,6 +1,6 @@
-from django.urls import path, include
-from .views import AskDeepSeekView
+from django.urls import path
+from .views import AskModelView
 
 urlpatterns = [
-    path('ask/', AskDeepSeekView.as_view(), name='ask-deepseek'),
+    path('ask/', AskModelView.as_view(), name='ask-model'),
 ]

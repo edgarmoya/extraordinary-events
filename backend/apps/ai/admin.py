@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import ModelKey
 
-# Register your models here.
+class ModelKeyAdmin(admin.ModelAdmin):
+    list_display = ['api_key', 'model_name']
+    search_fields = ('model_name',)
+
+admin.site.register(ModelKey, ModelKeyAdmin)
