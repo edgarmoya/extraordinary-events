@@ -236,6 +236,17 @@ function EventsPage() {
             }
           />
           <TopBar.Button
+            label="Ver"
+            onClick={() => {
+              if (selectedRow) {
+                setModalWatchIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el hecho que desea visualizar");
+              }
+            }}
+            icon={EyeIcon}
+          />
+          <TopBar.Button
             label="Reporte"
             onClick={() => {
               if (selectedRow) {
@@ -247,17 +258,6 @@ function EventsPage() {
               }
             }}
             icon={PdfIcon}
-          />
-          <TopBar.Button
-            label="Ver"
-            onClick={() => {
-              if (selectedRow) {
-                setModalWatchIsOpen(true);
-              } else {
-                showErrorToast("Seleccione el hecho que desea visualizar");
-              }
-            }}
-            icon={EyeIcon}
           />
           <TopBar.Button
             label="Generar carta"

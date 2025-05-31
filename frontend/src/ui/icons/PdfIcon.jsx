@@ -1,5 +1,3 @@
-import React from "react";
-
 const PdfIcon = ({ size = "1.5rem", color = "currentColor", className }) => {
   return (
     <svg
