@@ -10,5 +10,5 @@ class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entity
-        fields = fields = ('id_entity', 'municipality', 'municipality_description', 'province',
+        fields = fields = ('id', 'id_entity', 'municipality', 'municipality_description', 'province',
                         'sector_description', 'description', 'sector', 'email', 'address', 'is_active')

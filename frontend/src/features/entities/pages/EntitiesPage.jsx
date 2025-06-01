@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 import Paths from "../../../routes/Paths";
@@ -74,7 +74,7 @@ function EntitiesPage() {
     EntityService.activateEntity,
     {
       onSuccess: (response) => {
-        const { data } = response; // Acceder al la respuesta
+        const { data } = response; // Acceder a la respuesta
 
         if (data.is_active) {
           showSuccessToast("Entidad activada con éxito");
@@ -231,7 +231,7 @@ function EntitiesPage() {
         onClose={() => {
           setModalDeleteIsOpen(false);
         }}
-        onDelete={() => deleteEntity(selectedRow?.id_entity)}
+        onDelete={() => deleteEntity(selectedRow?.id)}
         message={`Está a punto de eliminar la entidad "${selectedRow?.description}".`}
         loading={deleting}
       />
@@ -244,7 +244,7 @@ function EntitiesPage() {
         }}
         onActivate={() =>
           activateEntity({
-            id: selectedRow?.id_entity,
+            id: selectedRow?.id,
             activated: selectedRow?.is_active,
           })
         }

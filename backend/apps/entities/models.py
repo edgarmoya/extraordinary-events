@@ -6,8 +6,7 @@ from django.core.validators import RegexValidator
 class Entity(models.Model):
     digits_only = RegexValidator(r'^\d+$', 'El código debe contener solo dígitos.')
 
-    id_entity = models.CharField(primary_key=True,  max_length=6,
-                                validators=[digits_only], verbose_name='Código')
+    id_entity = models.CharField(max_length=6, unique=True, validators=[digits_only], verbose_name='Código')
     description = models.CharField(max_length=255, verbose_name='Descripción')
     municipality = models.ForeignKey(Municipality, on_delete=models.PROTECT, verbose_name='Municipio')
     sector = models.ForeignKey(Sector, on_delete=models.PROTECT, verbose_name='Sector')

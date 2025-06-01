@@ -194,7 +194,7 @@ class CustomUserGroupView(views.APIView):
         existing_roles = CustomUserGroup.objects.filter(user_id=user_id)
 
         # Crear un conjunto de claves (grupo, entidad) para las relaciones existentes
-        existing_roles_set = set((role.group.id, role.entity.id_entity) for role in existing_roles)
+        existing_roles_set = set((role.group.id, role.entity.id) for role in existing_roles)
 
         # Crear un conjunto de claves (grupo, entidad) para las nuevas relaciones
         new_roles_set = set((role['group_id'], role['entity_id']) for role in roles)
@@ -244,7 +244,7 @@ class UserGroupsView(views.APIView):
             if role not in grouped_roles:
                 grouped_roles[role] = []
 
-            grouped_roles[role].append({"id":entity.id_entity, "entity": entity.description})
+            grouped_roles[role].append({"id":entity.id, "entity": entity.description})
 
         user_data = {
             "user_name": user.user_name, 

@@ -245,6 +245,7 @@ function EventsPage() {
               }
             }}
             icon={EyeIcon}
+            disabled={!selectedRow}
           />
           <TopBar.Button
             label="Reporte"
@@ -258,6 +259,7 @@ function EventsPage() {
               }
             }}
             icon={PdfIcon}
+            disabled={!selectedRow}
           />
           <TopBar.Button
             label="Generar carta"
@@ -269,6 +271,7 @@ function EventsPage() {
               }
             }}
             icon={LetterIcon}
+            disabled={!selectedRow}
           />
 
           <TopBar.Dropdown

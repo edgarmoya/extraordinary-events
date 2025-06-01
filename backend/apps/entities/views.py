@@ -54,7 +54,7 @@ class EntityView(viewsets.ModelViewSet):
                 entity_ids = user_entity_roles.values_list('entity', flat=True)
 
                 # Obtiene todas las entidades disponibles inicialmente
-                queryset = Entity.objects.filter(id_entity__in=entity_ids)
+                queryset = Entity.objects.filter(id__in=entity_ids)
             else:
                 # Si no hay rol, devuelve todas las entidades
                 queryset = Entity.objects.all()
