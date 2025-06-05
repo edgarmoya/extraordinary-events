@@ -11,6 +11,10 @@ const EventService = {
     });
   },
 
+  downloadEvent: async (id) => {
+    return axiosInstance.get(`/event/${id}/pdf`, { responseType: "blob" });
+  },
+
   addEvent: async (event) => {
     return axiosInstance.post(`/events/`, event);
   },

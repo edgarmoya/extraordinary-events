@@ -32,7 +32,7 @@ class EntityView(viewsets.ModelViewSet):
         # Obtiene los parámetros de búsqueda y estado de la solicitud
         search_term = self.request.query_params.get('search', '')
         is_active = self.request.query_params.get('is_active', '')
-        role = self.request.query_params.get('role', '')
+        roles = self.request.query_params.get('roles', '')
 
         user = self.request.user
 
@@ -41,9 +41,11 @@ class EntityView(viewsets.ModelViewSet):
             queryset = Entity.objects.all()
         else:
             # Filtra las entidades donde el usuario tiene permisos según el rol
-            if role:
+            if roles:
+                roles_list = roles.split(',')
+
                 # Verificar las entidades donde el usuario autenticado es tiene permisos
-                user_entity_roles = CustomUserGroup.objects.filter(user=user, group__name=role) # Roles del usuario que consulta
+                user_entity_roles = CustomUserGroup.objects.filter(user=user, group__name__in=roles_list) # Roles del usuario que consulta
 
                 if not user_entity_roles.exists():
                     return Response({"detail": "El usuario no pertenece a ninguna entidad"}, status=status.HTTP_403_FORBIDDEN)
