@@ -46,7 +46,7 @@ def get_event_summary(event):
         ],
         'attachments': [
             {
-                'image': attachment.image.url,
+                'image': attachment.filename,
             } for attachment in attachments
         ],
     }

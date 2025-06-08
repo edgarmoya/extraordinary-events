@@ -11,4 +11,4 @@ class EventFieldValueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventFieldValue
-        fields = '__all__'
+        exclude = ['event']

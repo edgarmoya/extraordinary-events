@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Typewriter from "./Typewriter";
 import Modal from "../../../ui/modals/Modal";
 import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";

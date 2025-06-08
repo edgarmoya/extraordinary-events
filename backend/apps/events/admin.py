@@ -23,7 +23,7 @@ class MeasureAdmin(admin.ModelAdmin):
 
 
 class AttachmentAdmin(admin.ModelAdmin):
-    list_display = ('image', 'event')
+    list_display = ('filename', 'content_type', 'event')
     search_fields = ('event',)
     list_filter = ('event',)
 
