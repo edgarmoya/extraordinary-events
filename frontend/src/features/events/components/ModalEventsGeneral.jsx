@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import EntityService from "../../../api/entities.api";
 import TypeService from "../../../api/types.api";
 import ClassificationService from "../../../api/classifications.api";
@@ -65,12 +65,7 @@ function ModalEventsGeneral({
         roles
       );
 
-      const transform = response.data.map((entity) => ({
-        id: entity.id_entity,
-        description: entity.description,
-      }));
-
-      setEntities(transform);
+      setEntities(response.data);
     } catch (error) {
       console.error("Error obteniendo entidades: ", error);
     }

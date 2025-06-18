@@ -108,7 +108,7 @@ function ModalEntities({
 
     if (entityData?.id_entity) {
       // Si hay una entidad, estamos editando
-      updateEntity({ id: entityData.id_entity, ...data }, setError);
+      updateEntity({ id: entityData.id, ...data }, setError);
     } else {
       // Si no hay entidad, estamos creando uno nuevo
       createEntity(data, setError);
@@ -149,7 +149,7 @@ function ModalEntities({
                           "El código debe ser numérico y contener hasta 6 dígitos",
                       },
                     })}
-                    disabled={readOnly || entityData?.id_entity}
+                    disabled={readOnly}
                     autoFocus={true}
                     maxLength={6}
                   />

@@ -4,7 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import EventSerializer, MeasureSerializer, AttachmentSerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Event, Measure, Attachment
-from apps.users.models import CustomUser, CustomUserGroup
+from apps.users.models import CustomUserGroup
 from .permissions import HasPermissionForAction
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
@@ -58,7 +58,7 @@ class EventView(viewsets.ModelViewSet):
                 return Event.objects.none()
 
             # Filtra los hechos que pertenecen a esas entidades
-            queryset = Event.objects.filter(entity__id_entity__in=entities).distinct()
+            queryset = Event.objects.filter(entity__id__in=entities).distinct()
 
         # Aplica el filtro por término de búsqueda si está presente
         if search_term:
