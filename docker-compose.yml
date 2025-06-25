@@ -1,14 +1,14 @@
 services:
   db:
-    image: postgres:14-alpine
-    container_name: postgres_db
+    image: postgres:14
+    container_name: postgres_hechos
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_INITDB_ARGS: "--locale=es_ES.UTF-8 --encoding=UTF8"
+      # POSTGRES_INITDB_ARGS: "--locale=es_ES.UTF-8 --encoding=UTF8"
     ports:
       - "5433:5432"
     restart: unless-stopped # Añadido para que el servicio de BD intente reiniciarse si falla
@@ -20,10 +20,11 @@ services:
       start_period: 10s # Da un tiempo inicial para que el servicio
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: django_backend
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+    image: hechosextra-backend
+    container_name: hechos_backend
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./backend:/app
@@ -40,10 +41,11 @@ services:
     restart: unless-stopped # Añadido para que el backend intente reiniciarse
 
   frontend:
-    build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
-    container_name: react_frontend
+    # build:
+    #   context: .
+    #   dockerfile: ./frontend/Dockerfile
+    image: hechosextra-frontend
+    container_name: hechos_frontend
     ports:
       - "3005:80"
     # env_file:
@@ -51,7 +53,7 @@ services:
     depends_on:
       backend:
         condition: service_started
-    restart: unless-stopped 
+    restart: unless-stopped
 
 volumes:
   postgres_data:
