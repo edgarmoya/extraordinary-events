@@ -23,7 +23,7 @@ const EventService = {
     return axiosInstance.delete(`/events/${id}/`);
   },
 
-  updateEvent: async (id, event) => {
+  updateEvent: async ({ id, event }) => {
     return axiosInstance.put(`/events/${id}/`, event);
   },
 

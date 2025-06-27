@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import CardAttachment from "./CardAttachment";
 import EventService from "../../../api/event.api";
 import { useForm } from "react-hook-form";
@@ -19,11 +19,13 @@ function ModalEventsAttachment({
 
   const handleSaveAttachment = (data) => {
     const file = data.attachment[0];
-    const url = URL.createObjectURL(file);
     const newAttachment = {
-      id: lastId + 1,
-      url: url,
-      image: file,
+      id: null,
+      tempId: lastId + 1,
+      url: URL.createObjectURL(file),
+      data: file,
+      filename: file.name,
+      content_type: file.type,
     };
     setAttachments([...attachments, newAttachment]);
     setLastId(lastId + 1);
@@ -34,7 +36,23 @@ function ModalEventsAttachment({
   const loadAttachments = useCallback(async () => {
     try {
       const response = await EventService.getAttachments(eventData?.id);
-      setAttachments(response.data);
+
+      const enrichedAttachments = response?.data?.map((attachment, index) => {
+        let fileUrl = null;
+
+        if (attachment.data && attachment.content_type) {
+          fileUrl = `data:${attachment.content_type};base64,${attachment.data}`;
+        }
+
+        return {
+          ...attachment,
+          tempId: index + 1,
+          url: fileUrl,
+        };
+      });
+
+      setLastId((prevId) => prevId + response?.data?.length);
+      setAttachments(enrichedAttachments);
     } catch (error) {
       console.error("Error obteniendo anexos: ", error);
     }
@@ -44,9 +62,9 @@ function ModalEventsAttachment({
     handleSaveAttachment(data);
   };
 
-  const handleDeleteAttachment = (id) => {
+  const handleDeleteAttachment = (tempId) => {
     const updatedAttachments = attachments.filter(
-      (attachment) => attachment.id !== id
+      (attachment) => attachment.tempId !== tempId
     );
     setAttachments(updatedAttachments);
   };
@@ -71,7 +89,7 @@ function ModalEventsAttachment({
             }`}
             {...register("attachment", { required: true })}
             autoFocus={true}
-            accept="image/*"
+            accept="*/*"
             disabled={readOnly}
           />
           <button
@@ -97,22 +115,15 @@ function ModalEventsAttachment({
           ) : (
             <div className="row d-flex align-content-center">
               {attachments.map((attachment, index) => (
-                <div key={index} className="d-flex col-lg-4 col-md-6 col-sm-12">
-                  {attachment.url ? (
-                    <CardAttachment
-                      id={attachment.id}
-                      imageUrl={attachment.url}
-                      onDelete={handleDeleteAttachment}
-                      readOnly={readOnly}
-                    />
-                  ) : (
-                    <CardAttachment
-                      id={attachment.id}
-                      imageUrl={attachment.image}
-                      onDelete={handleDeleteAttachment}
-                      readOnly={readOnly}
-                    />
-                  )}
+                <div key={index} className="col-lg-4 col-md-6 col-sm-12">
+                  <CardAttachment
+                    id={attachment.tempId}
+                    fileUrl={attachment.url}
+                    onDelete={handleDeleteAttachment}
+                    filename={attachment.filename}
+                    contentType={attachment.content_type}
+                    readOnly={readOnly}
+                  />
                 </div>
               ))}
             </div>

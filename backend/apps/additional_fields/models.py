@@ -21,7 +21,7 @@ class AdditionalField(models.Model):
         return self.description
 
 class EventFieldValue(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name="Hecho")
+    event = models.ForeignKey(Event, related_name="fields", on_delete=models.CASCADE, verbose_name="Hecho")
     add_field = models.ForeignKey(AdditionalField, on_delete=models.PROTECT, verbose_name="Campo adicional")
     value = models.TextField(verbose_name="Valor")
 

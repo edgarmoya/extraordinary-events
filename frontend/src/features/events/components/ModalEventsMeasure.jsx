@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import CardMeasure from "./CardMeasure";
 import EventService from "../../../api/event.api";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,8 @@ function ModalEventsMeasure({ measures, setMeasures, eventData, readOnly }) {
 
   const handleSaveMeasure = (data) => {
     const newMeasure = {
-      id: lastId + 1,
+      id: null,
+      tempId: lastId + 1,
       description: data.measure,
     };
     setMeasures([...measures, newMeasure]);
@@ -26,7 +27,14 @@ function ModalEventsMeasure({ measures, setMeasures, eventData, readOnly }) {
   const loadMeasures = useCallback(async () => {
     try {
       const response = await EventService.getMeasures(eventData?.id);
-      setMeasures(response.data);
+
+      const enrichedMeasures = response?.data?.map((measure, index) => ({
+        ...measure,
+        tempId: index + 1,
+      }));
+
+      setLastId((prevId) => prevId + response?.data?.length);
+      setMeasures(enrichedMeasures);
     } catch (error) {
       console.error("Error obteniendo medidas: ", error);
     }
@@ -36,8 +44,10 @@ function ModalEventsMeasure({ measures, setMeasures, eventData, readOnly }) {
     handleSaveMeasure(data);
   };
 
-  const handleDeleteMeasure = (id) => {
-    const updatedMeasures = measures.filter((measure) => measure.id !== id);
+  const handleDeleteMeasure = (tempId) => {
+    const updatedMeasures = measures.filter(
+      (measure) => measure.tempId !== tempId
+    );
     setMeasures(updatedMeasures);
   };
 
@@ -84,7 +94,7 @@ function ModalEventsMeasure({ measures, setMeasures, eventData, readOnly }) {
           measures.map((measure, index) => (
             <CardMeasure
               key={index}
-              id={measure.id}
+              id={measure.tempId}
               number={index + 1}
               description={measure.description}
               onDelete={handleDeleteMeasure}

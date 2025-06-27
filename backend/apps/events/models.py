@@ -41,7 +41,7 @@ class Event(models.Model):
 
 
 class Measure(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name='Hecho')
+    event = models.ForeignKey(Event, related_name='measures', on_delete=models.CASCADE, verbose_name='Hecho')
     description = models.TextField(blank=False, verbose_name='Medida')
 
     class Meta:
@@ -54,8 +54,10 @@ class Measure(models.Model):
 
 
 class Attachment(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name='Hecho')
-    image = models.ImageField(upload_to='attachments/', verbose_name='Imagen')
+    event = models.ForeignKey(Event, related_name='attachments', on_delete=models.CASCADE, verbose_name='Hecho')
+    filename = models.CharField(max_length=255, verbose_name='Nombre')
+    content_type = models.CharField(max_length=100, verbose_name='Tipo')
+    data = models.BinaryField(verbose_name='Contenido')
 
     class Meta:
         db_table = 'attachment'
@@ -63,4 +65,4 @@ class Attachment(models.Model):
         verbose_name_plural = 'Adjuntos'
 
     def __str__(self):
-        return f"Adjunto del hecho {self.event.id}"
+        return f"Adjunto del hecho {self.event.id} - {self.filename}"

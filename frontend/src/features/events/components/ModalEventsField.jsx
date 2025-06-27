@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import CardField from "../../additional_fields/components/CardField";
 import { useForm } from "react-hook-form";
 import FormSelect from "../../../ui/FormSelect";
 import FieldService from "../../../api/fields.api";
+import useFetchData from "../../../hooks/useFetchData";
 
 function ModalEventsField({
   fieldValues,
@@ -10,7 +11,6 @@ function ModalEventsField({
   eventData,
   readOnly,
 }) {
-  const [fields, setFields] = useState([]);
   const [availableFields, setAvailableFields] = useState([]);
   const [lastId, setLastId] = useState(0);
   const [selectedField, setSelectedField] = useState(null);
@@ -22,23 +22,17 @@ function ModalEventsField({
     setValue,
   } = useForm();
 
-  /* Función para cargar los campos adicionales */
-  const loadFields = useCallback(async () => {
-    try {
-      const response = await FieldService.getFields(
-        undefined,
-        undefined,
-        "True"
-      );
-      setFields(response.data);
-    } catch (error) {
-      console.error("Error obteniendo los campos: ", error);
-    }
-  }, []);
+  //* Cargar todos los campos adicionales
+  const { data: fields } = useFetchData(
+    FieldService.getFields,
+    [undefined, undefined, "True"],
+    []
+  );
 
   const handleSaveFieldValues = (data) => {
     const newFieldValue = {
-      id: lastId + 1,
+      id: null,
+      tempId: lastId + 1,
       add_field_description: selectedField.description, // Agregar la descripción del campo
       ...data,
     };
@@ -51,15 +45,22 @@ function ModalEventsField({
   const loadValues = useCallback(async () => {
     try {
       const response = await FieldService.getFieldValues(eventData?.id);
-      setFieldValues(response.data);
+
+      const enrichedValues = response?.data?.map((values, index) => ({
+        ...values,
+        tempId: index + 1,
+      }));
+
+      setLastId((prevId) => prevId + response?.data?.length);
+      setFieldValues(enrichedValues);
     } catch (error) {
       console.error("Error obteniendo valores: ", error);
     }
   }, [eventData, setFieldValues]);
 
-  const handleDeleteFieldValue = (id) => {
+  const handleDeleteFieldValue = (tempId) => {
     const updatedValues = fieldValues.filter(
-      (fieldValue) => fieldValue.id !== id
+      (fieldValue) => fieldValue.tempId !== tempId
     );
     setFieldValues(updatedValues);
   };
@@ -71,12 +72,8 @@ function ModalEventsField({
   }, [eventData, loadValues]);
 
   useEffect(() => {
-    loadFields();
-  }, [loadFields]);
-
-  useEffect(() => {
     //* Función para filtrar campos ya seleccionados
-    const available = fields.filter(
+    const available = fields?.filter(
       (field) =>
         !fieldValues.some((fv) => String(fv.add_field) === String(field.id))
     );
@@ -88,11 +85,11 @@ function ModalEventsField({
       <form className="mt-3 d-flex gap-2 align-items-start">
         <FormSelect
           className={"col-4"}
-          data={availableFields}
+          data={availableFields || []}
           name={"Campo adicional*"}
           message={"Seleccione un campo"}
           onChange={(selectedId) => {
-            const s = fields.find((f) => f.id === parseInt(selectedId));
+            const s = fields?.find((f) => f.id === parseInt(selectedId));
             setSelectedField(s);
           }}
           errors={errors}
@@ -137,7 +134,7 @@ function ModalEventsField({
           fieldValues.map((fieldValue, index) => (
             <CardField
               key={index}
-              id={fieldValue.id}
+              id={fieldValue.tempId}
               field={fieldValue.add_field_description}
               value={fieldValue.value}
               onDelete={handleDeleteFieldValue}
