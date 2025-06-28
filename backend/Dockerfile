@@ -1,6 +1,3 @@
-# --- /hechos-extraordinarios-nuevo/backend/Dockerfile ---
-
-# Utiliza una imagen base de Python oficial
 FROM python:3.11-slim-buster
 
 # Configuración de locale para es_ES.UTF-8
