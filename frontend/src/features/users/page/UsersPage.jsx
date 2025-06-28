@@ -107,7 +107,7 @@ function UsersPage() {
 
   return (
     <Layout pageTitle="Usuarios">
-      <div className="container-fluid">
+      <div className="container-fluid h-100">
         {/* Barra superior */}
         <TopBar>
           <TopBar.Button
@@ -192,7 +192,7 @@ function UsersPage() {
         </TopBar>
 
         {/* Tabla con los usuarios */}
-        <div className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm">
+        <div className="card h-100 card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
           {loading ? (
             <TableLoader columns={4} />
           ) : (

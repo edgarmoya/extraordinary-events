@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Modal from "../../../ui/modals/Modal";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import UserService from "../../../api/users.api";
@@ -186,12 +186,7 @@ function ModalRoles({ isOpen, title, userId, onClose }) {
                         checked={selectedRoles[role]?.selected || false}
                         onChange={(e) => handleRoleChange(e.target.value)}
                       />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`${role}Checkbox`}
-                      >
-                        {role}
-                      </label>
+                      <label className="form-check-label">{role}</label>
                     </div>
                   ))}
                 </div>
@@ -199,10 +194,12 @@ function ModalRoles({ isOpen, title, userId, onClose }) {
               <GroupCard title="Entidades">
                 <div className="d-flex flex-column gap-1">
                   {activeRole ? (
-                    entities?.map(({ id_entity, description }, index) => {
+                    entities?.map(({ id: id_entity, description }, index) => {
                       const enabled = activeEntities?.some(
-                        (ae) => ae.id_entity === id_entity
+                        (ae) => ae.id === id_entity
                       );
+                      console.log(entities);
+                      console.log(activeEntities);
                       return (
                         <div key={index} className="checkbox-container">
                           <input

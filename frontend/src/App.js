@@ -14,6 +14,7 @@ import SectorsPage from "./features/sectors/pages/SectorsPage";
 import ClassificationsPage from "./features/classifications/pages/ClassificationsPage";
 import FieldsPage from "./features/additional_fields/pages/FieldsPage";
 import UsersPage from "./features/users/page/UsersPage";
+import NotFound from "./layout/NotFound";
 
 function App() {
   return (
@@ -79,6 +80,9 @@ function App() {
               <Route path={Paths.ACTIVE_USERS} element={<UsersPage />} />
               <Route path={Paths.INACTIVE_USERS} element={<UsersPage />} />
             </Route>
+
+            {/* Ruta para 404 */}
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
         <Toaster />

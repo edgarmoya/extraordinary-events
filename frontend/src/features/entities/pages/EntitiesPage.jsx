@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 import Paths from "../../../routes/Paths";
@@ -74,7 +74,7 @@ function EntitiesPage() {
     EntityService.activateEntity,
     {
       onSuccess: (response) => {
-        const { data } = response; // Acceder al la respuesta
+        const { data } = response; // Acceder a la respuesta
 
         if (data.is_active) {
           showSuccessToast("Entidad activada con éxito");
@@ -103,7 +103,7 @@ function EntitiesPage() {
 
   return (
     <Layout pageTitle="Entidades">
-      <div className="container-fluid">
+      <div className="container-fluid h-100">
         {/* Acciones */}
         <TopBar>
           <TopBar.Button
@@ -173,7 +173,7 @@ function EntitiesPage() {
         </TopBar>
 
         {/* Tabla de entidades */}
-        <div className="card card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm justify-content-between">
+        <div className="card h-100 card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
           {loading ? (
             <TableLoader columns={6} />
           ) : (
@@ -231,7 +231,7 @@ function EntitiesPage() {
         onClose={() => {
           setModalDeleteIsOpen(false);
         }}
-        onDelete={() => deleteEntity(selectedRow?.id_entity)}
+        onDelete={() => deleteEntity(selectedRow?.id)}
         message={`Está a punto de eliminar la entidad "${selectedRow?.description}".`}
         loading={deleting}
       />
@@ -244,7 +244,7 @@ function EntitiesPage() {
         }}
         onActivate={() =>
           activateEntity({
-            id: selectedRow?.id_entity,
+            id: selectedRow?.id,
             activated: selectedRow?.is_active,
           })
         }

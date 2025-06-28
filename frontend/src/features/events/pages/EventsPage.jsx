@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  Suspense,
-} from "react";
+import { useContext, useState, useEffect, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import TableLoader from "../../../ui/skeletons/TableLoader";
 import AuthContext from "../../../contexts/AuthContext";
@@ -17,20 +11,23 @@ import GridEvents from "../components/GridEvents";
 import TopBar from "../../../layout/TopBar";
 import ModalEvents from "../components/ModalEvents";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
-import { HttpStatusCode } from "axios";
 import {
   ActiveIcon,
   AddIcon,
   DeleteIcon,
   EyeIcon,
+  LetterIcon,
   UpdateIcon,
+  PdfIcon,
 } from "../../../ui/icons";
 import useRolesInfo from "../../../hooks/useRolesInfo";
+import ModalLetter from "../components/ModalLetter";
+import useFetchData from "../../../hooks/useFetchData";
+import useApiMutation from "../../../hooks/useApiMutation";
 
 function EventsPage() {
   const { user } = useContext(AuthContext);
   const location = useLocation();
-  const [loading, setLoading] = useState(true); // Estado para el loader
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -41,38 +38,29 @@ function EventsPage() {
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
   const [modalCloseIsOpen, setModalCloseIsOpen] = useState(false);
   const [modalWatchIsOpen, setModalWatchIsOpen] = useState(false);
-
+  const [modalLetterIsOpen, setModalLetterIsOpen] = useState(false);
   const rolesInfo = useRolesInfo();
 
-  //* Función para cargar los hechos según la ubicación actual
-  const loadEvents = useCallback(async () => {
-    setLoading(true); // Activa el loader
-    try {
-      let response;
-      if (location.pathname === Paths.OPEN_EVENTS) {
-        response = await EventService.getEvents(
-          currentPage,
-          searchTerm,
-          "open"
-        );
-      } else if (location.pathname === Paths.CLOSE_EVENTS) {
-        response = await EventService.getEvents(
-          currentPage,
-          searchTerm,
-          "closed"
-        );
-      } else {
-        response = await EventService.getEvents(currentPage, searchTerm);
-      }
+  const isOpen =
+    location.pathname === Paths.OPEN_EVENTS
+      ? "open"
+      : location.pathname === Paths.CLOSE_EVENTS
+      ? "closed"
+      : undefined;
 
-      setEvents(response.data.results);
-      setTotalEvents(response.data.count);
-    } catch (error) {
-      console.error("Error obteniendo los hechos: ", error);
-    } finally {
-      setLoading(false); // Desactiva el loader
+  //* Cargar todos los hechos
+  const { data, loading, refetch } = useFetchData(
+    EventService.getEvents,
+    [currentPage, searchTerm, isOpen],
+    [location.pathname, currentPage, searchTerm]
+  );
+
+  useEffect(() => {
+    if (data) {
+      setEvents(data.results || []);
+      setTotalEvents(data.count || 0);
     }
-  }, [location.pathname, currentPage, searchTerm]);
+  }, [data]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -80,48 +68,52 @@ function EventsPage() {
   };
 
   //* Función para eliminar un hecho
-  const handleDeleteEvent = async () => {
-    try {
-      const response = await EventService.deleteEvent(selectedRow.id);
-      if (response.status === HttpStatusCode.NoContent) {
+  const { execute: deleteEvent, loading: deleting } = useApiMutation(
+    EventService.deleteEvent,
+    {
+      onSuccess: () => {
         showSuccessToast("Hecho eliminado con éxito");
-        loadEvents();
+        refetch();
         clearSelectedRow();
-      } else {
-        showErrorToast("Error al eliminar hecho");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
   //* Función para cerrar un hecho
-  const handleCloseEvent = async () => {
-    try {
-      const response = await EventService.closeEvent(
-        selectedRow.id,
-        user.user_id,
-        new Date()
-      );
-      if (response.status === HttpStatusCode.Ok) {
+  const { execute: closeEvent, loading: closing } = useApiMutation(
+    EventService.closeEvent,
+    {
+      onSuccess: () => {
         showSuccessToast("Hecho cerrado con éxito");
-        loadEvents();
+        refetch();
         clearSelectedRow();
-      } else {
-        showErrorToast("Error al cerrar el hecho seleccionado");
-      }
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
+    }
+  );
+
+  const handleDownload = async (id) => {
+    try {
+      const response = await EventService.downloadEvent(id);
+
+      // Crear un blob y un enlace temporal
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `reporte_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
+      console.error("Error descargando el PDF:", error);
     }
   };
 
@@ -130,13 +122,9 @@ function EventsPage() {
     setSelectedRow(null);
   };
 
-  useEffect(() => {
-    loadEvents();
-  }, [loadEvents]);
-
   return (
     <Layout pageTitle="Hechos">
-      <div className="container-fluid">
+      <div className="container-fluid h-100">
         {/* Acciones */}
         <TopBar>
           <TopBar.Button
@@ -161,7 +149,13 @@ function EventsPage() {
               }
             }}
             icon={UpdateIcon}
-            disabled={!rolesInfo.isOperador}
+            disabled={
+              !rolesInfo.isOperador ||
+              !rolesInfo.operador.some(
+                (entity) => entity.id === selectedRow?.entity
+              ) ||
+              selectedRow?.status === "closed"
+            }
           />
           <TopBar.Button
             label="Eliminar"
@@ -173,7 +167,13 @@ function EventsPage() {
               }
             }}
             icon={DeleteIcon}
-            disabled={!rolesInfo.isOperador}
+            disabled={
+              !rolesInfo.isOperador ||
+              !rolesInfo.operador.some(
+                (entity) => entity.id === selectedRow?.entity
+              ) ||
+              selectedRow?.status === "closed"
+            }
           />
           <TopBar.Button
             label="Cerrar"
@@ -191,7 +191,13 @@ function EventsPage() {
               }
             }}
             icon={ActiveIcon}
-            disabled={!rolesInfo.isOperador}
+            disabled={
+              !rolesInfo.isOperador ||
+              !rolesInfo.operador.some(
+                (entity) => entity.id === selectedRow?.entity
+              ) ||
+              selectedRow?.status === "closed"
+            }
           />
           <TopBar.Button
             label="Ver"
@@ -203,7 +209,35 @@ function EventsPage() {
               }
             }}
             icon={EyeIcon}
+            disabled={!selectedRow}
           />
+          <TopBar.Button
+            label="Reporte"
+            onClick={() => {
+              if (selectedRow) {
+                handleDownload(selectedRow.id);
+              } else {
+                showErrorToast(
+                  "Seleccione el hecho que desea descargar el reporte"
+                );
+              }
+            }}
+            icon={PdfIcon}
+            disabled={!selectedRow}
+          />
+          <TopBar.Button
+            label="Generar carta"
+            onClick={() => {
+              if (selectedRow) {
+                setModalLetterIsOpen(true);
+              } else {
+                showErrorToast("Seleccione el hecho deseado");
+              }
+            }}
+            icon={LetterIcon}
+            disabled={!selectedRow}
+          />
+
           <TopBar.Dropdown
             pathAll={Paths.EVENTS}
             textPathAll={"Mostrar todos"}
@@ -223,7 +257,7 @@ function EventsPage() {
         </TopBar>
 
         {/* Tabla de hechos */}
-        <div className="card card-body table-container my-2 py-1 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
+        <div className="card h-100 card-body table-container my-2 py-1 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
           {/* Renderizar el loader o el GridEvents */}
           <Suspense fallback={<TableLoader />}>
             {loading ? (
@@ -249,7 +283,7 @@ function EventsPage() {
         title={"Añadir hecho extraordinario"}
         size={"modal-lg"}
         onRefresh={() => {
-          loadEvents();
+          refetch();
           clearSelectedRow();
         }}
       />
@@ -261,7 +295,7 @@ function EventsPage() {
         title={"Modificar hecho extraordinario"}
         size={"modal-lg"}
         onRefresh={() => {
-          loadEvents();
+          refetch();
           clearSelectedRow();
         }}
         eventData={selectedRow}
@@ -284,12 +318,13 @@ function EventsPage() {
         onClose={() => {
           setModalDeleteIsOpen(false);
         }}
-        onDelete={handleDeleteEvent}
+        onDelete={() => deleteEvent(selectedRow?.id)}
         message={`Está a punto de eliminar el hecho extraordinario con fecha "${
           selectedRow && selectedRow.occurrence_date
         }" perteneciente a la entidad "${
           selectedRow && selectedRow.entity_description
         }".`}
+        loading={deleting}
       />
 
       {/* Modal para cerrar un hecho */}
@@ -298,12 +333,24 @@ function EventsPage() {
         onClose={() => {
           setModalCloseIsOpen(false);
         }}
-        onAction={handleCloseEvent}
+        onAction={() => closeEvent(selectedRow?.id, user.user_id, new Date())}
         message={`Está a punto de cerrar el hecho extraordinario con fecha "${
           selectedRow && selectedRow.occurrence_date
         }" perteneciente a la entidad "${
           selectedRow && selectedRow.entity_description
         }".`}
+        loading={closing}
+      />
+
+      {/* Modal para generar carta */}
+      <ModalLetter
+        isOpen={modalLetterIsOpen}
+        onClose={() => {
+          setModalLetterIsOpen(false);
+        }}
+        title="Carta informativa"
+        size="modal-lg"
+        eventId={selectedRow?.id}
       />
     </Layout>
   );

@@ -176,6 +176,26 @@
   font-weight: 500;
   color: #92979b;
 }
+.bg-pink-badge{
+  background-color: #cf9dd43d;
+  font-weight: 500;
+  color: #ee70e8;
+}
+.bg-violet-badge{
+  background-color: #d49dbf31;
+  font-weight: 500;
+  color: #cd5ff8;
+}
+.bg-orange-badge{
+  background-color: #cab68a34;
+  font-weight: 500;
+  color: #eeb764;
+}
+.bg-green-badge{
+  background-color: #56b13a1c;
+  font-weight: 500;
+  color: #39bd34;
+}
 .bg-primary-badge{
   background-color: #76e3762c;
   font-weight: 500;
@@ -255,6 +275,10 @@
   border-radius: 5px;
 }
 
+.btn-text-bg {
+  color: var(--bs-body-color);
+}
+
 .full-screen {
   position: fixed;
   top: 0;
@@ -276,6 +300,10 @@
 
 .cursor-not-allowed {
   cursor: not-allowed;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 ::selection{
@@ -344,3 +372,6 @@ select option:hover{
   right: -30px;
 }
 
+.text-blue{
+  color: #0d6efd;
+}

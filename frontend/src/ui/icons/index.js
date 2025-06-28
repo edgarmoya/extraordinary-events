@@ -15,3 +15,8 @@ export { default as ShieldIcon } from "./ShieldIcon";
 export { default as SectorIcon } from "./SectorIcon";
 export { default as DataIcon } from "./DataIcon";
 export { default as TypeIcon } from "./TypeIcon";
+export { default as PdfIcon } from "./PdfIcon";
+export { default as LetterIcon } from "./LetterIcon";
+export { default as WarningIcon } from "./WarningIcon";
+export { default as ErrorIcon } from "./ErrorIcon";
+export { default as DownloadIcon } from "./DownloadIcon";

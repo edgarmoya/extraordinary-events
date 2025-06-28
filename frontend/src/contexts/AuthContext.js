@@ -43,6 +43,12 @@ export const AuthProvider = ({ children }) => {
       setStatusMessage("Verificando credenciales...");
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      if (!response || !response.data) {
+        throw new Error(
+          "No se pudo iniciar sesión. Respuesta vacía del servidor."
+        );
+      }
+
       const { access, refresh, first_login, user_id } = response.data;
 
       setAccessToken(access);
@@ -62,8 +68,10 @@ export const AuthProvider = ({ children }) => {
         showLoginToast(jwtDecode(access).username);
       }
     } catch (error) {
-      const { detail } = error.response.data;
-      throw new Error(detail || "Error al iniciar sesión");
+      const detail = error?.response?.data?.detail;
+      throw new Error(
+        detail || "No se pudo iniciar sesión. Error al conectarse al servidor."
+      );
     } finally {
       setLoading(false);
     }
