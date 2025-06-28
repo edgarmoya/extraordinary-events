@@ -3,7 +3,7 @@ FROM node:18-slim AS builder
 WORKDIR /app
 
 # Copia package.json y package-lock.json y luego instala las dependencias
-COPY frontend/package*.json ./ 
+COPY package*.json ./ 
 RUN npm install
 
 # Copia el resto de los archivos de la aplicación React
