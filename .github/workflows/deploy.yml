@@ -28,7 +28,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/hechos-backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/hechosextra-backend:latest
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
@@ -36,4 +36,4 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/hechos-frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/hechosextra-frontend:latest
