@@ -1,6 +1,3 @@
-# --- /hechos-extraordinarios-nuevo/frontend/Dockerfile ---
-
-# Utiliza una imagen base de Node.js para construir la aplicación React
 FROM node:18-slim AS builder
 
 WORKDIR /app
@@ -10,7 +7,7 @@ COPY frontend/package*.json ./
 RUN npm install
 
 # Copia el resto de los archivos de la aplicación React
-COPY frontend/ ./  
+COPY . ./
 
 # Construye la aplicación React optimizada para producción
 RUN npm run build
