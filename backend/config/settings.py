@@ -1,8 +1,6 @@
-# --- /hechos-extraordinarios-nuevo/backend/config/settings.py ---
-
 import os
-from pathlib import Path # <--- AÑADE ESTA LÍNEA
-from datetime import timedelta # <--- AÑADE ESTA LÍNEA (para SIMPLE_JWT)
+from pathlib import Path
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,6 +12,7 @@ ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_STRING.split(',') if hos
 
 # Application definition
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     "colorfield",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,15 +37,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware', # Duplicado, eliminar uno
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware', # Dejar solo uno
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -113,7 +112,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 STATIC_URL = 'static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Para collectstatic en producción
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Para collectstatic en producción
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5433:5432"
+      - "5432:5432"
     restart: unless-stopped # Añadido para que el servicio de BD intente reiniciarse si falla
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"] # Comando para verificar la salud de PostgreSQL
@@ -19,8 +19,10 @@ services:
       start_period: 10s # Da un tiempo inicial para que el servicio
 
   backend:
-    image: edgarmoya/hechosextra-backend:latest
-    container_name: hechos_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hechosextra_backend
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./backend:/app
@@ -37,10 +39,12 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: edgarmoya/hechosextra-frontend:latest
-    container_name: hechos_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hechosextra_frontend
     ports:
-      - "3005:80"
+      - "8085:80"
     env_file:
       - .env
     depends_on:
