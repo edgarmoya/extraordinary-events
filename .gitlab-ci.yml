@@ -1,0 +1,29 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - name: docker:dind
+    command: ["--registry-mirror", "http://172.16.2.64:5000"]
+    alias: docker
+
+stages:
+  - deploy-prod
+ 
+# Deployment for the main branch
+deploy-prod:
+  stage: deploy-prod
+  environment:
+    name: $CI_COMMIT_REF_NAME
+  image: kroniak/ssh-client
+  only:
+    - prod
+  tags:
+    - docker
+  script:
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh $DEPLOY_SSH_HOST "cd ${DEPLOY_PATH} && pwd && git pull origin prod && docker-compose up -d"

@@ -1,18 +1,23 @@
 from rest_framework import permissions
 
 class HasPermissionForAction(permissions.BasePermission):
-
     def has_permission(self, request, view):
-        if view.action == 'create':
-            return request.user.has_perm('classifications.add_classification')
-        if view.action == 'list':
-            return request.user.has_perm('classifications.view_classification')
-        if view.action == 'retrieve':
-            return request.user.has_perm('classifications.view_classification')
-        if view.action == 'update':
-            return request.user.has_perm('classifications.change_classification')
-        if view.action == 'partial_update':
-            return request.user.has_perm('classifications.change_classification')
-        if view.action == 'destroy':
-            return request.user.has_perm('classifications.delete_classification')
-        return False
+        if not request.user or not request.user.is_authenticated:
+            return False  # Bloquear si el usuario no está autenticado
+
+        # Mapeo de acciones a permisos de Django
+        action_permissions = {
+            'create': 'classifications.add_classification',
+            'list': 'classifications.view_classification',
+            'retrieve': 'classifications.view_classification',
+            'update': 'classifications.change_classification',
+            'partial_update': 'classifications.change_classification',
+            'destroy': 'classifications.delete_classification'
+        }
+
+        required_permission = action_permissions.get(view.action)
+        if not required_permission:
+            return False  # Acción no permitida si no está en el mapeo
+
+        # Verificar si el usuario tiene el permiso en sus grupos
+        return required_permission in request.user.get_group_permissions()

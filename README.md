@@ -11,3 +11,26 @@ El desarrollo del proyecto se ajusta a la "Metodología para el Tratamiento de H
 - Frontend: React.js
 - Backend: Django
 - Base de datos: PostgreSQL
+
+## Instalación Local
+
+**Backend (Django)**
+La carpeta ``backend`` contiene el código relacionado con el servidor, API y demás funcionalidades que alimentan la aplicación. Para instrucciones sobre cómo configurar, ejecutar y desplegar, consulta el archivo README.md
+
+**Frontend (React)**
+La carpeta ``frontend`` contiene el código relacionado con la interfaz de usuario de la aplicación, desarrollada con React. Para instrucciones sobre cómo configurar, ejecutar y desplegar, consulta el archivo README.md
+
+**instalar por los pasos del readme.md que esta dentro de la carpeta backend**
+
+## Comandos Docker (Producción)
+```bash
+docker exec -it hechosextra_backend python manage.py migrate
+docker exec -it hechosextra_backend python manage.py createsuperuser
+
+docker exec -it hechosextra_backend python manage.py collectstatic --noinput
+
+docker exec -it hechosextra_backend python manage.py loaddata apps/locations/fixtures/provinces.json
+docker exec -it hechosextra_backend python manage.py loaddata apps/locations/fixtures/municipality.json
+docker exec -it hechosextra_backend python manage.py loaddata apps/grades/fixtures/grades.json
+```
+

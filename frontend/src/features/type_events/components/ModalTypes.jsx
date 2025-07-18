@@ -1,99 +1,75 @@
-import { React, useState } from "react";
 import Modal from "../../../ui/modals/Modal";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { useForm } from "react-hook-form";
 import TypeService from "../../../api/types.api";
-import { HttpStatusCode } from "axios";
+import useApiMutation from "../../../hooks/useApiMutation";
+import Spinner from "../../../ui/Spinner";
 
 function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm();
 
   const handleCloseModal = () => {
     reset();
-    setFormSubmitted(false);
     onClose();
   };
 
-  const handleAddType = async (data) => {
-    try {
-      const response = await TypeService.addType(data);
-      if (response.status === HttpStatusCode.Created) {
+  const { execute: createType, loading: creating } = useApiMutation(
+    TypeService.addType,
+    {
+      onSuccess: () => {
         showSuccessToast("Tipo de hecho agregado con éxito");
-        onRefresh();
-      } else {
-        showErrorToast("Error al agregar tipo de hecho");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    } finally {
-      handleCloseModal();
-    }
-  };
-
-  const handleUpdateType = async (typeId, data) => {
-    try {
-      const response = await TypeService.updateType(typeId, data);
-
-      if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Tipo de hecho actualizado con éxito");
-        onRefresh();
         handleCloseModal();
-      } else {
-        showErrorToast("Error al actualizar tipo de hecho");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    } finally {
-      handleCloseModal();
+        onRefresh();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
-  const handleSaveType = async (data) => {
-    setIsLoading(true);
+  const { execute: updateType, loading: updating } = useApiMutation(
+    TypeService.updateType,
+    {
+      onSuccess: () => {
+        showSuccessToast("Tipo de hecho editado con éxito");
+        handleCloseModal();
+        onRefresh();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
+    }
+  );
+
+  const onSubmit = (data) => {
     if (typeData?.id) {
-      await handleUpdateType(typeData.id, data);
+      // Si hay un tipo, estamos editando
+      updateType({ id: typeData.id, ...data }, setError);
     } else {
-      await handleAddType(data);
+      // Si no hay tipo, estamos creando uno nuevo
+      createType(data, setError);
     }
-    setIsLoading(false);
-  };
-
-  const handleFormSubmit = (data) => {
-    setFormSubmitted(true);
-    handleSubmit(handleSaveType)(data);
   };
 
   return (
-    <div>
+    <>
       <Modal isOpen={isOpen} title={title} onClose={handleCloseModal}>
-        <div className="modal-body">
-          <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="modal-body">
             <div className="form-floating">
               <input
                 type="text"
                 name="description"
                 className={`form-control ${
-                  formSubmitted && errors.description ? "is-invalid" : ""
+                  errors.description ? "is-invalid" : ""
                 }`}
-                defaultValue={typeData ? typeData.description : ""}
+                defaultValue={typeData?.description}
                 {...register("description", { required: true })}
                 autoFocus={true}
               ></input>
@@ -108,7 +84,7 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
               <input
                 className="form-check-input"
                 type="checkbox"
-                defaultChecked={typeData && typeData.is_catastrophic}
+                defaultChecked={typeData?.is_catastrophic}
                 id="flexCheckChecked"
                 {...register("is_catastrophic")}
               />
@@ -119,27 +95,33 @@ function ModalTypes({ isOpen, onClose, onRefresh, title, typeData }) {
                 Catastrófico
               </label>
             </div>
-          </form>
-        </div>
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleCloseModal}
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            onClick={handleFormSubmit}
-            className="btn btn-primary"
-            disabled={isLoading}
-          >
-            {isLoading ? "Guardando..." : typeData ? "Modificar" : "Añadir"}
-          </button>
-        </div>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="submit"
+              className="btn btn-primary text-white"
+              disabled={creating || updating}
+            >
+              {updating || creating ? (
+                <>
+                  <Spinner />
+                  Guardando...
+                </>
+              ) : (
+                "Aceptar"
+              )}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleCloseModal}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </Modal>
-    </div>
+    </>
   );
 }
 

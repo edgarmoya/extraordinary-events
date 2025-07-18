@@ -1,0 +1,43 @@
+# Carpetas innecesarias
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+
+# Entornos virtuales
+env/
+venv/
+.venv/
+
+# Configuración de editor
+.vscode/
+.idea/
+*.swp
+
+# Archivos de configuración y temporales
+*.env
+*.DS_Store
+*.egg-info/
+*.bak
+*.tmp
+*.coverage
+.coverage.*
+
+# Archivos de caché y compilación
+build/
+dist/
+*.egg
+.eggs/
+
+# Archivos de base de datos locales
+db.sqlite3
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Archivos de prueba
+test-results/

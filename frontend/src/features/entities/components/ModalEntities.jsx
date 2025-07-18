@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Modal from "../../../ui/modals/Modal";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { useForm } from "react-hook-form";
@@ -6,7 +6,9 @@ import EntityService from "../../../api/entities.api";
 import SectorService from "../../../api/sectors.api";
 import LocationService from "../../../api/locations.api";
 import FormSelect from "../../../ui/FormSelect";
-import { HttpStatusCode } from "axios";
+import useFetchData from "../../../hooks/useFetchData";
+import useApiMutation from "../../../hooks/useApiMutation";
+import Spinner from "../../../ui/Spinner";
 
 function ModalEntities({
   isOpen,
@@ -17,12 +19,7 @@ function ModalEntities({
   entityData,
   readOnly,
 }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [sectors, setSectors] = useState([]);
-  const [provinces, setProvinces] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState("");
-  const [municipalities, setMunicipalities] = useState([]);
   const [disabledMun, setDisabledMun] = useState(true);
 
   const {
@@ -31,11 +28,11 @@ function ModalEntities({
     formState: { errors },
     reset,
     setValue,
+    setError,
   } = useForm();
 
   const handleCloseModal = () => {
     reset();
-    setFormSubmitted(false);
     setDisabledMun(true);
     onClose();
   };
@@ -49,101 +46,73 @@ function ModalEntities({
   };
 
   //* Función para cargar los sectores activos que se mostrarán para seleccionar
-  const loadActiveSectors = useCallback(async () => {
-    try {
-      const response = await SectorService.getSectors(
-        undefined,
-        undefined,
-        "True"
-      );
-
-      setSectors(response.data);
-    } catch (error) {
-      console.error("Error obteniendo sectores: ", error);
-    }
-  }, []);
+  const { data: activeSectors } = useFetchData(
+    isOpen ? SectorService.getSectors : null,
+    [undefined, undefined, "True"],
+    []
+  );
 
   //* Función para cargar las provincias
-  const loadProvinces = useCallback(async () => {
-    try {
-      const response = await LocationService.getProvinces();
-      setProvinces(response.data.results);
-    } catch (error) {
-      console.error("Error obteniendo provincias: ", error);
-    }
-  }, []);
+  const { data: provinces } = useFetchData(
+    isOpen ? LocationService.getProvinces : null,
+    [],
+    []
+  );
 
   //* Función para cargar los municipios
-  const loadMunicipalities = useCallback(async () => {
-    try {
-      const response = await LocationService.getMunicipalities(
-        selectedProvince
-      );
-      setMunicipalities(response.data.results);
-    } catch (error) {
-      console.error("Error obteniendo los municipios: ", error);
-    }
-  }, [selectedProvince]);
+  const { data: municipalities } = useFetchData(
+    isOpen ? LocationService.getMunicipalities : null,
+    [selectedProvince],
+    [selectedProvince]
+  );
 
   const handleProvinceChange = (selectedValue) => {
     setSelectedProvince(selectedValue);
     handleSelectChange(selectedValue);
   };
 
-  const handleAddEntity = async (data) => {
-    try {
-      const response = await EntityService.addEntity(data);
-      if (response.status === HttpStatusCode.Created) {
+  const { execute: createEntity, loading: creating } = useApiMutation(
+    EntityService.addEntity,
+    {
+      onSuccess: () => {
         showSuccessToast("Entidad agregada con éxito");
-        onRefresh();
         handleCloseModal();
-      } else {
-        showErrorToast("Error al agregar, código existente");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    }
-  };
-
-  const handleUpdateEntity = async (entityId, data) => {
-    try {
-      const response = await EntityService.updateEntity(entityId, data);
-
-      if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Entidad actualizada con éxito");
         onRefresh();
-        handleCloseModal();
-      } else {
-        showErrorToast("Error al actualizar entidad");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
-  const handleSaveEntity = async (data) => {
-    setIsLoading(true);
+  const { execute: updateEntity, loading: updating } = useApiMutation(
+    EntityService.updateEntity,
+    {
+      onSuccess: () => {
+        showSuccessToast("Entidad editada con éxito");
+        handleCloseModal();
+        onRefresh();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
+    }
+  );
+
+  const onSubmit = (data) => {
+    Object.keys(data).forEach((key) => {
+      if (data[key] === "") {
+        data[key] = null;
+      }
+    });
+
     if (entityData?.id_entity) {
-      await handleUpdateEntity(entityData.id_entity, data);
+      // Si hay una entidad, estamos editando
+      updateEntity({ id: entityData.id, ...data }, setError);
     } else {
-      await handleAddEntity(data);
+      // Si no hay entidad, estamos creando uno nuevo
+      createEntity(data, setError);
     }
-    setIsLoading(false);
-  };
-
-  const handleFormSubmit = (data) => {
-    setFormSubmitted(true);
-    handleSubmit(handleSaveEntity)(data);
   };
 
   useEffect(() => {
@@ -152,34 +121,16 @@ function ModalEntities({
     }
   }, [isOpen, entityData]);
 
-  useEffect(() => {
-    if (selectedProvince) {
-      loadMunicipalities();
-    }
-  }, [selectedProvince, loadMunicipalities]);
-
-  useEffect(() => {
-    if (isOpen) {
-      loadActiveSectors();
-    }
-  }, [isOpen, loadActiveSectors]);
-
-  useEffect(() => {
-    if (isOpen) {
-      loadProvinces();
-    }
-  }, [isOpen, loadProvinces]);
-
   return (
-    <div>
+    <>
       <Modal
         isOpen={isOpen}
         title={title}
         size={size}
         onClose={handleCloseModal}
       >
-        <div className="modal-body">
-          <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="modal-body">
             <div className="row g-2">
               <div className="col-md">
                 <div className="form-floating me-0 me-md-2">
@@ -187,9 +138,9 @@ function ModalEntities({
                     type="text"
                     name="id_entity"
                     className={`form-control ${
-                      formSubmitted && errors.id_entity ? "is-invalid" : ""
+                      errors.id_entity ? "is-invalid" : ""
                     }`}
-                    defaultValue={entityData ? entityData.id_entity : ""}
+                    defaultValue={entityData?.id_entity}
                     {...register("id_entity", {
                       required: "Por favor, ingrese el código de la entidad",
                       pattern: {
@@ -216,9 +167,9 @@ function ModalEntities({
                     type="text"
                     name="description"
                     className={`form-control ${
-                      formSubmitted && errors.description ? "is-invalid" : ""
+                      errors.description ? "is-invalid" : ""
                     }`}
-                    defaultValue={entityData ? entityData.description : ""}
+                    defaultValue={entityData?.description}
                     {...register("description", { required: true })}
                     disabled={readOnly}
                   ></input>
@@ -236,7 +187,7 @@ function ModalEntities({
               <div className="col-md">
                 <FormSelect
                   className={"me-0 me-md-2"}
-                  data={provinces}
+                  data={provinces?.results || []}
                   name={"Provincia*"}
                   message={"Seleccione una provincia"}
                   onChange={handleProvinceChange}
@@ -244,13 +195,13 @@ function ModalEntities({
                   register={register}
                   setValue={setValue}
                   registerName={"province"}
-                  defaultValue={entityData ? entityData.province : ""}
+                  defaultValue={entityData?.province}
                   disabled={readOnly}
                 />
               </div>
               <div className="col-md">
                 <FormSelect
-                  data={municipalities}
+                  data={municipalities?.results || []}
                   name={"Municipio*"}
                   message={"Seleccione un municipio"}
                   onChange={() => console.log("municipio cambiado")}
@@ -258,7 +209,7 @@ function ModalEntities({
                   register={register}
                   setValue={setValue}
                   registerName={"municipality"}
-                  defaultValue={entityData ? entityData.municipality : ""}
+                  defaultValue={entityData?.municipality}
                   disabled={disabledMun || readOnly}
                 />
               </div>
@@ -295,7 +246,7 @@ function ModalEntities({
               </div>
               <div className="col-md">
                 <FormSelect
-                  data={sectors}
+                  data={activeSectors || []}
                   name={"Sector*"}
                   message={"Seleccione un sector"}
                   onChange={() => console.log("sector cambiado")}
@@ -303,7 +254,7 @@ function ModalEntities({
                   register={register}
                   setValue={setValue}
                   registerName={"sector"}
-                  defaultValue={entityData ? entityData.sector : ""}
+                  defaultValue={entityData?.sector}
                   disabled={readOnly}
                 />
               </div>
@@ -315,36 +266,42 @@ function ModalEntities({
                   type="text"
                   name="address"
                   className="form-control"
-                  defaultValue={entityData ? entityData.address : ""}
+                  defaultValue={entityData?.address}
                   {...register("address", { required: false })}
                   disabled={readOnly}
                 />
                 <label htmlFor="floatingInput">Dirección</label>
               </div>
             </div>
-          </form>
-        </div>
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleCloseModal}
-          >
-            Cancelar
-          </button>
-          {!readOnly && (
+          </div>
+          <div className="modal-footer">
+            {!readOnly && (
+              <button
+                type="submit"
+                className="btn btn-primary text-white"
+                disabled={creating || updating}
+              >
+                {updating || creating ? (
+                  <>
+                    <Spinner />
+                    Guardando...
+                  </>
+                ) : (
+                  "Aceptar"
+                )}
+              </button>
+            )}
             <button
               type="button"
-              onClick={handleFormSubmit}
-              className="btn btn-primary"
-              disabled={isLoading}
+              className="btn btn-secondary"
+              onClick={handleCloseModal}
             >
-              {isLoading ? "Guardando..." : entityData ? "Modificar" : "Añadir"}
+              Cancelar
             </button>
-          )}
-        </div>
+          </div>
+        </form>
       </Modal>
-    </div>
+    </>
   );
 }
 

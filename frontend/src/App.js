@@ -1,8 +1,7 @@
-import "./App.css";
 import React from "react";
+import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./features/auth/pages/LoginPage";
-import AdminPage from "./features/auth/pages/AdminPage";
 import EventsPage from "./features/events/pages/EventsPage";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -14,6 +13,8 @@ import TypesPage from "./features/type_events/pages/TypesPage";
 import SectorsPage from "./features/sectors/pages/SectorsPage";
 import ClassificationsPage from "./features/classifications/pages/ClassificationsPage";
 import FieldsPage from "./features/additional_fields/pages/FieldsPage";
+import UsersPage from "./features/users/page/UsersPage";
+import NotFound from "./layout/NotFound";
 
 function App() {
   return (
@@ -21,7 +22,6 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path={Paths.EMPTY} element={<Navigate to={Paths.HOME} />} />
-          <Route path={Paths.ADMIN} element={<AdminPage />} />
           <Route path={Paths.LOGIN} element={<LoginPage />} />
 
           <Route element={<PrivateRoute />}>
@@ -74,6 +74,15 @@ function App() {
               <Route path={Paths.ACTIVE_ADDFIELDS} element={<FieldsPage />} />
               <Route path={Paths.INACTIVE_ADDFIELDS} element={<FieldsPage />} />
             </Route>
+
+            <Route path={Paths.USERS} element={<UsersPage />}>
+              {/* Rutas secundarias de USERS */}
+              <Route path={Paths.ACTIVE_USERS} element={<UsersPage />} />
+              <Route path={Paths.INACTIVE_USERS} element={<UsersPage />} />
+            </Route>
+
+            {/* Ruta para 404 */}
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
         <Toaster />

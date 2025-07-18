@@ -49,11 +49,11 @@ function GridEvents({
                   <Grid.Cell>{event.event_type_description}</Grid.Cell>
                   <Grid.Cell>
                     {event.status === "open" ? (
-                      <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
+                      <div className="d-inline px-2 bg-gray-badge rounded-1">
                         abierto
                       </div>
                     ) : (
-                      <div className="d-inline px-2 bg-success-light text-success rounded-1">
+                      <div className="d-inline px-2 bg-primary-badge rounded-1">
                         cerrado
                       </div>
                     )}

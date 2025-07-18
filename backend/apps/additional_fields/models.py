@@ -13,6 +13,7 @@ class AdditionalField(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Activo")
 
     class Meta:
+        db_table = 'add_field'
         verbose_name = 'Campo adicional'
         verbose_name_plural = 'Campos adicionales'
 
@@ -20,11 +21,12 @@ class AdditionalField(models.Model):
         return self.description
 
 class EventFieldValue(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name="Hecho")
+    event = models.ForeignKey(Event, related_name="fields", on_delete=models.CASCADE, verbose_name="Hecho")
     add_field = models.ForeignKey(AdditionalField, on_delete=models.PROTECT, verbose_name="Campo adicional")
     value = models.TextField(verbose_name="Valor")
 
     class Meta:
+        db_table = 'event_field_value'
         verbose_name = 'Valor de campo adicional'
         verbose_name_plural = 'Valores de campos adicionales'
         constraints = [

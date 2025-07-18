@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import CardAttachment from "./CardAttachment";
 import EventService from "../../../api/event.api";
 import { useForm } from "react-hook-form";
@@ -9,21 +9,33 @@ function ModalEventsAttachment({
   eventData,
   readOnly,
 }) {
+  const fileInputRef = useRef(null);
+
   const [lastId, setLastId] = useState(0);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const { register, handleSubmit, reset, watch } = useForm();
+
+  const selectedFiles = watch("attachment");
+  const fileName = selectedFiles?.[0]?.name || "Ningún archivo seleccionado";
+
+  useEffect(() => {
+    fileInputRef.current = document.getElementsByName("attachment")[0];
+  }, []);
+
+  const handleSelectFile = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   const handleSaveAttachment = (data) => {
     const file = data.attachment[0];
-    const url = URL.createObjectURL(file);
     const newAttachment = {
-      id: lastId + 1,
-      url: url,
-      image: file,
+      id: null,
+      tempId: lastId + 1,
+      url: URL.createObjectURL(file),
+      data: file,
+      filename: file.name,
+      content_type: file.type,
     };
     setAttachments([...attachments, newAttachment]);
     setLastId(lastId + 1);
@@ -34,7 +46,23 @@ function ModalEventsAttachment({
   const loadAttachments = useCallback(async () => {
     try {
       const response = await EventService.getAttachments(eventData?.id);
-      setAttachments(response.data);
+
+      const enrichedAttachments = response?.data?.map((attachment, index) => {
+        let fileUrl = null;
+
+        if (attachment.data && attachment.content_type) {
+          fileUrl = `data:${attachment.content_type};base64,${attachment.data}`;
+        }
+
+        return {
+          ...attachment,
+          tempId: index + 1,
+          url: fileUrl,
+        };
+      });
+
+      setLastId((prevId) => prevId + response?.data?.length);
+      setAttachments(enrichedAttachments);
     } catch (error) {
       console.error("Error obteniendo anexos: ", error);
     }
@@ -44,9 +72,9 @@ function ModalEventsAttachment({
     handleSaveAttachment(data);
   };
 
-  const handleDeleteAttachment = (id) => {
+  const handleDeleteAttachment = (tempId) => {
     const updatedAttachments = attachments.filter(
-      (attachment) => attachment.id !== id
+      (attachment) => attachment.tempId !== tempId
     );
     setAttachments(updatedAttachments);
   };
@@ -62,16 +90,22 @@ function ModalEventsAttachment({
       <div className="mt-3">
         {/* New attachment */}
         <form className="input-group">
+          <button
+            type="button"
+            className="btn-select-file"
+            onClick={handleSelectFile}
+          >
+            Seleccionar archivo
+          </button>
+          <span className="form-control text-muted">{fileName}</span>
           <input
             type="file"
             id="inputGroupFile"
             name="attachment"
-            className={`form-control mb-0 ${
-              errors.attachment ? "is-invalid" : ""
-            }`}
+            className="d-none"
             {...register("attachment", { required: true })}
             autoFocus={true}
-            accept="image/*"
+            accept="*/*"
             disabled={readOnly}
           />
           <button
@@ -97,22 +131,15 @@ function ModalEventsAttachment({
           ) : (
             <div className="row d-flex align-content-center">
               {attachments.map((attachment, index) => (
-                <div key={index} className="d-flex col-lg-4 col-md-6 col-sm-12">
-                  {attachment.url ? (
-                    <CardAttachment
-                      id={attachment.id}
-                      imageUrl={attachment.url}
-                      onDelete={handleDeleteAttachment}
-                      readOnly={readOnly}
-                    />
-                  ) : (
-                    <CardAttachment
-                      id={attachment.id}
-                      imageUrl={attachment.image}
-                      onDelete={handleDeleteAttachment}
-                      readOnly={readOnly}
-                    />
-                  )}
+                <div key={index} className="col-lg-4 col-md-6 col-sm-12">
+                  <CardAttachment
+                    id={attachment.tempId}
+                    fileUrl={attachment.url}
+                    onDelete={handleDeleteAttachment}
+                    filename={attachment.filename}
+                    contentType={attachment.content_type}
+                    readOnly={readOnly}
+                  />
                 </div>
               ))}
             </div>

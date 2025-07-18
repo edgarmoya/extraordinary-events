@@ -1,0 +1,56 @@
+services:
+  postgres_hechos:
+    image: postgres:14
+    container_name: postgres_hechos
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    restart: unless-stopped # Añadido para que el servicio de BD intente reiniciarse si falla
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"] # Comando para verificar la salud de PostgreSQL
+      interval: 5s # Verifica cada 5 segundos
+      timeout: 5s # Espera máximo 5 segundos para la respuesta
+      retries: 5 # Intenta 5 veces antes de considerarlo fallido
+      start_period: 10s # Da un tiempo inicial para que el servicio
+
+  hechosextra_backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hechosextra_backend
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings
+      DB_HOST: postgres_hechos
+    depends_on:
+      postgres_hechos:
+        condition: service_healthy
+    restart: unless-stopped
+
+  hechosextra_frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hechosextra_frontend
+    ports:
+      - "8085:80"
+    env_file:
+      - .env
+    depends_on:
+      hechosextra_backend:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

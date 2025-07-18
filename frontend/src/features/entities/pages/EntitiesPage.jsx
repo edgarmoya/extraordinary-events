@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 import Paths from "../../../routes/Paths";
@@ -9,12 +9,19 @@ import GridEntities from "../components/GridEntities";
 import TopBar from "../../../layout/TopBar";
 import ModalEntities from "../components/ModalEntities";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
-import { HttpStatusCode } from "axios";
 import TableLoader from "../../../ui/skeletons/TableLoader";
+import {
+  ActiveIcon,
+  AddIcon,
+  DeleteIcon,
+  EyeIcon,
+  UpdateIcon,
+} from "../../../ui/icons";
+import useFetchData from "../../../hooks/useFetchData";
+import useApiMutation from "../../../hooks/useApiMutation";
 
 function EntitiesPage() {
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
   const [entities, setEntities] = useState([]);
   const [searchTerm, setSearchTerm] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -26,88 +33,67 @@ function EntitiesPage() {
   const [modalActivateIsOpen, setModalActivateIsOpen] = useState(false);
   const [modalWatchIsOpen, setModalWatchIsOpen] = useState(false);
 
-  //* Función para cargar todos las entidades
-  const loadEntities = useCallback(async () => {
-    setLoading(true);
-    try {
-      let response;
-      if (location.pathname === Paths.ACTIVE_ENTITIES) {
-        response = await EntityService.getEntities(
-          currentPage,
-          searchTerm,
-          "True"
-        );
-      } else if (location.pathname === Paths.INACTIVE_ENTITIES) {
-        response = await EntityService.getEntities(
-          currentPage,
-          searchTerm,
-          "False"
-        );
-      } else {
-        response = await EntityService.getEntities(currentPage, searchTerm);
-      }
+  const isActive =
+    location.pathname === Paths.ACTIVE_ENTITIES
+      ? "True"
+      : location.pathname === Paths.INACTIVE_ENTITIES
+      ? "False"
+      : undefined;
 
-      setEntities(response.data.results);
-      setTotalEntities(response.data.count);
-    } catch (error) {
-      console.error("Error obteniendo las entidades: ", error);
-    } finally {
-      setLoading(false);
+  //* Cargar todas las entidades
+  const { data, loading, refetch } = useFetchData(
+    EntityService.getEntities,
+    [currentPage, searchTerm, isActive, "administrador"],
+    [location.pathname, currentPage, searchTerm]
+  );
+
+  useEffect(() => {
+    if (data) {
+      setEntities(data.results || []);
+      setTotalEntities(data.count || 0);
     }
-  }, [location.pathname, currentPage, searchTerm]);
+  }, [data]);
+
+  //* Función para eliminar una entidad
+  const { execute: deleteEntity, loading: deleting } = useApiMutation(
+    EntityService.deleteEntity,
+    {
+      onSuccess: () => {
+        showSuccessToast("Entidad eliminada con éxito");
+        refetch();
+        clearSelectedRow();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
+    }
+  );
+
+  //* Función para activar/inactivar una entidad
+  const { execute: activateEntity, loading: activating } = useApiMutation(
+    EntityService.activateEntity,
+    {
+      onSuccess: (response) => {
+        const { data } = response; // Acceder a la respuesta
+
+        if (data.is_active) {
+          showSuccessToast("Entidad activada con éxito");
+        } else {
+          showSuccessToast("Entidad inactivada con éxito");
+        }
+
+        refetch();
+        clearSelectedRow();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
+    }
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     clearSelectedRow();
-  };
-
-  //* Función para eliminar una entidad
-  const handleDeleteEntity = async () => {
-    try {
-      const response = await EntityService.deleteEntity(selectedRow.id_entity);
-      if (response.status === HttpStatusCode.NoContent) {
-        showSuccessToast("Entidad eliminada con éxito");
-        loadEntities();
-        clearSelectedRow();
-      } else {
-        showErrorToast("Error al eliminar entidad");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    }
-  };
-
-  //* Función para activar/inactivar una entidad
-  const handleActivateEntity = async () => {
-    try {
-      const response = await EntityService.activateEntity(
-        selectedRow.id_entity,
-        selectedRow.is_active
-      );
-      if (response.status === HttpStatusCode.Ok) {
-        if (selectedRow.is_active) {
-          showSuccessToast("Entidad inactivada con éxito");
-        } else {
-          showSuccessToast("Entidad activada con éxito");
-        }
-        loadEntities();
-        clearSelectedRow();
-      } else {
-        showErrorToast("Error al activar o inactivar entidad");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    }
   };
 
   //* Función para limpiar la fila seleccionada
@@ -115,63 +101,79 @@ function EntitiesPage() {
     setSelectedRow(null);
   };
 
-  useEffect(() => {
-    loadEntities();
-  }, [loadEntities]);
-
   return (
     <Layout pageTitle="Entidades">
-      <div className="container-fluid">
-        {/* Accions */}
-        <TopBar
-          searchMessage={"Buscar entidad ..."}
-          watchButton={true}
-          searchInput={true}
-          pathAll={Paths.ENTITIES}
-          pathActive={Paths.ACTIVE_ENTITIES}
-          pathInactive={Paths.INACTIVE_ENTITIES}
-          onAdd={() => setModalAddIsOpen(true)}
-          onUpdate={() => {
-            if (selectedRow) {
-              setModalUpdateIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la entidad que desea modificar");
-            }
-          }}
-          onDelete={() => {
-            if (selectedRow) {
-              setModalDeleteIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la entidad que desea eliminar");
-            }
-          }}
-          onActivate={() => {
-            if (selectedRow) {
-              setModalActivateIsOpen(true);
-            } else {
-              showErrorToast(
-                "Seleccione la entidad que desea activar o inactivar"
-              );
-            }
-          }}
-          onWatch={() => {
-            if (selectedRow) {
-              setModalWatchIsOpen(true);
-            } else {
-              showErrorToast("Seleccione la entidad que desea visualizar");
-            }
-          }}
-          onSearch={(term) => {
-            clearSelectedRow();
-            setSearchTerm(term);
-            setCurrentPage(1);
-          }}
-        />
-        {/* Grid */}
-        <div
-          className="card card-body mt-2 py-2 px-3 border-secondary-subtle shadow-sm mx-1 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 115px)" }}
-        >
+      <div className="container-fluid h-100">
+        {/* Acciones */}
+        <TopBar>
+          <TopBar.Button
+            label="Nueva"
+            onClick={() => setModalAddIsOpen(true)}
+            icon={AddIcon}
+          />
+          <TopBar.Button
+            label="Editar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalUpdateIsOpen(true);
+              } else {
+                showErrorToast("Seleccione la entidad que desea editar");
+              }
+            }}
+            icon={UpdateIcon}
+          />
+          <TopBar.Button
+            label="Eliminar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalDeleteIsOpen(true);
+              } else {
+                showErrorToast("Seleccione la entidad que desea eliminar");
+              }
+            }}
+            icon={DeleteIcon}
+          />
+          <TopBar.Button
+            label="Activar/Inactivar"
+            onClick={() => {
+              if (selectedRow) {
+                setModalActivateIsOpen(true);
+              } else {
+                showErrorToast(
+                  "Seleccione la entidad que desea activar o inactivar"
+                );
+              }
+            }}
+            icon={ActiveIcon}
+          />
+          <TopBar.Button
+            label="Ver"
+            onClick={() => {
+              if (selectedRow) {
+                setModalWatchIsOpen(true);
+              } else {
+                showErrorToast("Seleccione la entidad que desea visualizar");
+              }
+            }}
+            icon={EyeIcon}
+          />
+          <TopBar.Dropdown
+            pathAll={Paths.ENTITIES}
+            pathActive={Paths.ACTIVE_ENTITIES}
+            pathInactive={Paths.INACTIVE_ENTITIES}
+          />
+          <TopBar.Search
+            searchMessage={"Buscar entidad ..."}
+            onSearch={(term) => {
+              clearSelectedRow();
+              setSearchTerm(term);
+              setCurrentPage(1);
+            }}
+          />
+        </TopBar>
+
+        {/* Tabla de entidades */}
+        <div className="card h-100 card-body table-container mt-2 py-2 px-0 border-secondary-subtle shadow-sm overflow-x-hidden justify-content-between">
           {loading ? (
             <TableLoader columns={6} />
           ) : (
@@ -191,10 +193,10 @@ function EntitiesPage() {
       <ModalEntities
         isOpen={modalAddIsOpen}
         onClose={() => setModalAddIsOpen(false)}
-        title={"Añadir entidad"}
+        title={"Nueva entidad"}
         size={"modal-lg"}
         onRefresh={() => {
-          loadEntities();
+          refetch();
           clearSelectedRow();
         }}
       />
@@ -203,10 +205,10 @@ function EntitiesPage() {
       <ModalEntities
         isOpen={modalUpdateIsOpen}
         onClose={() => setModalUpdateIsOpen(false)}
-        title={"Modificar entidad"}
+        title={"Editar entidad"}
         size={"modal-lg"}
         onRefresh={() => {
-          loadEntities();
+          refetch();
           clearSelectedRow();
         }}
         entityData={selectedRow}
@@ -229,10 +231,9 @@ function EntitiesPage() {
         onClose={() => {
           setModalDeleteIsOpen(false);
         }}
-        onDelete={handleDeleteEntity}
-        message={`Está a punto de eliminar la entidad "${
-          selectedRow && selectedRow.description
-        }".`}
+        onDelete={() => deleteEntity(selectedRow?.id)}
+        message={`Está a punto de eliminar la entidad "${selectedRow?.description}". ¿Desea continuar?`}
+        loading={deleting}
       />
 
       {/* Modal para activar/inactivar una entidad */}
@@ -241,11 +242,16 @@ function EntitiesPage() {
         onClose={() => {
           setModalActivateIsOpen(false);
         }}
-        onActivate={handleActivateEntity}
+        onActivate={() =>
+          activateEntity({
+            id: selectedRow?.id,
+            activated: selectedRow?.is_active,
+          })
+        }
         message={`Está a punto de ${
-          selectedRow && selectedRow.is_active ? "inactivar" : "activar"
-        } la entidad "${selectedRow && selectedRow.description}".`}
-        activated={selectedRow && selectedRow.is_active}
+          selectedRow?.is_active ? "inactivar" : "activar"
+        } la entidad "${selectedRow?.description}". ¿Desea continuar?`}
+        loading={activating}
       />
     </Layout>
   );

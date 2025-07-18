@@ -32,7 +32,7 @@ const ThemeToggle = ({ onSwitchTheme, theme }) => {
             aria-pressed="true"
             onClick={() => handleThemeSwitch("light")}
           >
-            <SunFill className="me-2 opacity-50" />
+            <SunFill className="me-2" />
             Claro
             <Check2
               className={`ms-auto ${theme === "light" ? "" : "d-none"}`}
@@ -48,7 +48,9 @@ const ThemeToggle = ({ onSwitchTheme, theme }) => {
             aria-pressed="true"
             onClick={() => handleThemeSwitch("dark")}
           >
-            <MoonStarsFill className="me-2 opacity-50" />
+            <MoonStarsFill
+              className={`me-2 ${theme === "dark" ? "" : "opacity-50"}`}
+            />
             Oscuro
             <Check2 className={`ms-auto ${theme === "dark" ? "" : "d-none"}`} />
           </button>

@@ -1,109 +1,75 @@
-import { React, useState } from "react";
 import Modal from "../../../ui/modals/Modal";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { useForm } from "react-hook-form";
 import SectorsService from "../../../api/sectors.api";
-import { HttpStatusCode } from "axios";
+import Spinner from "../../../ui/Spinner";
+import useApiMutation from "../../../hooks/useApiMutation";
 
 function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm();
 
   const handleCloseModal = () => {
     reset();
-    setFormSubmitted(false);
     onClose();
   };
 
-  const handleAddSector = async (data) => {
-    try {
-      const response = await SectorsService.addSector(data);
-      if (response.status === HttpStatusCode.Created) {
+  const { execute: createSector, loading: creating } = useApiMutation(
+    SectorsService.addSector,
+    {
+      onSuccess: () => {
         showSuccessToast("Sector agregado con éxito");
-        onRefresh();
-      } else {
-        showErrorToast("Error al agregar sector");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      } else if (error.request) {
-        // La solicitud fue hecha pero no se recibió respuesta
-        showErrorToast(
-          "No se pudo conectar al servidor. Por favor, verifique su conexión"
-        );
-        console.error("Error de conexión:", error.message);
-      } else {
-        // Algo sucedió al configurar la solicitud
-        showErrorToast("Error al realizar la solicitud");
-        console.error("Error:", error.message);
-      }
-    } finally {
-      handleCloseModal();
-    }
-  };
-
-  const handleUpdateSector = async (sectorId, data) => {
-    try {
-      const response = await SectorsService.updateSector(sectorId, data);
-
-      if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Sector actualizado con éxito");
-        onRefresh();
         handleCloseModal();
-      } else {
-        showErrorToast("Error al actualizar sector");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    } finally {
-      handleCloseModal();
+        onRefresh();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
-  const handleSaveSector = async (data) => {
-    setIsLoading(true);
+  const { execute: updateSector, loading: updating } = useApiMutation(
+    SectorsService.updateSector,
+    {
+      onSuccess: () => {
+        showSuccessToast("Sector editado con éxito");
+        handleCloseModal();
+        onRefresh();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
+    }
+  );
+
+  const onSubmit = (data) => {
     if (sectorData?.id) {
-      await handleUpdateSector(sectorData.id, data);
+      // Si hay un sector, estamos editando
+      updateSector({ id: sectorData.id, ...data }, setError);
     } else {
-      await handleAddSector(data);
+      // Si no hay sector, estamos creando uno nuevo
+      createSector(data, setError);
     }
-    setIsLoading(false);
-  };
-
-  const handleFormSubmit = (data) => {
-    setFormSubmitted(true);
-    handleSubmit(handleSaveSector)(data);
   };
 
   return (
     <>
       <Modal isOpen={isOpen} title={title} onClose={handleCloseModal}>
-        <div className="modal-body">
-          <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="modal-body">
             <div className="form-floating">
               <input
                 type="text"
                 name="description"
                 className={`form-control ${
-                  formSubmitted && errors.description ? "is-invalid" : ""
+                  errors.description ? "is-invalid" : ""
                 }`}
-                defaultValue={sectorData ? sectorData.description : ""}
+                defaultValue={sectorData?.description}
                 {...register("description", { required: true })}
                 autoFocus={true}
               ></input>
@@ -114,25 +80,31 @@ function ModalSectors({ isOpen, onClose, onRefresh, title, sectorData }) {
                 </div>
               )}
             </div>
-          </form>
-        </div>
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleCloseModal}
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            onClick={handleFormSubmit}
-            className="btn btn-primary"
-            disabled={isLoading}
-          >
-            {isLoading ? "Guardando..." : sectorData ? "Modificar" : "Añadir"}
-          </button>
-        </div>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="submit"
+              className="btn btn-primary text-white"
+              disabled={creating || updating}
+            >
+              {updating || creating ? (
+                <>
+                  <Spinner />
+                  Guardando...
+                </>
+              ) : (
+                "Aceptar"
+              )}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleCloseModal}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </Modal>
     </>
   );

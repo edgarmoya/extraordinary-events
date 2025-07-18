@@ -19,3 +19,18 @@ export const showErrorToast = (message) => {
     },
   });
 };
+
+export const showLoginToast = (user) => {
+  toast.error(
+    <span>
+      Bienvenido/a <b>{user}</b>
+    </span>,
+    {
+      icon: "👋",
+      position: "top-center",
+      style: {
+        maxWidth: "450px",
+      },
+    }
+  );
+};

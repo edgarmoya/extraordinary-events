@@ -49,12 +49,12 @@ function GridEntities({
                   <Grid.Cell>{entity.email}</Grid.Cell>
                   <Grid.Cell>
                     {entity.is_active ? (
-                      <div className="d-inline px-2 bg-primary-light text-primary rounded-1">
-                        activo
+                      <div className="d-inline px-2 bg-primary-badge rounded-1">
+                        activa
                       </div>
                     ) : (
-                      <div className="d-inline px-2 bg-danger-light text-danger rounded-1">
-                        inactivo
+                      <div className="d-inline px-2 bg-danger-badge rounded-1">
+                        inactiva
                       </div>
                     )}
                   </Grid.Cell>

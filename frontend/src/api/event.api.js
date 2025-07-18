@@ -11,6 +11,10 @@ const EventService = {
     });
   },
 
+  downloadEvent: async (id) => {
+    return axiosInstance.get(`/event/${id}/pdf`, { responseType: "blob" });
+  },
+
   addEvent: async (event) => {
     return axiosInstance.post(`/events/`, event);
   },
@@ -19,7 +23,7 @@ const EventService = {
     return axiosInstance.delete(`/events/${id}/`);
   },
 
-  updateEvent: async (id, event) => {
+  updateEvent: async ({ id, event }) => {
     return axiosInstance.put(`/events/${id}/`, event);
   },
 

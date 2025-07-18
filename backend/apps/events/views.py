@@ -4,10 +4,21 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import EventSerializer, MeasureSerializer, AttachmentSerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import Event, Measure, Attachment
+from apps.users.models import CustomUserGroup
 from .permissions import HasPermissionForAction
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
-
+from django.http import HttpResponse
+from rest_framework.views import APIView
+from apps.dashboard.services import get_event_summary
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import (
+    SimpleDocTemplate, Table, TableStyle,
+    Paragraph, Spacer
+)
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from datetime import datetime
 
 class EventPagination(PageNumberPagination):
     page_size = 25
@@ -31,9 +42,23 @@ class EventView(viewsets.ModelViewSet):
         # Obtiene los parámetros de búsqueda y estado de la solicitud
         search_term = self.request.query_params.get('search', '')
         status = self.request.query_params.get('status', '')
+        user = self.request.user # Usuario autenticado
 
-        # Obtiene todos los eventos disponibles inicialmente
-        queryset = Event.objects.all()
+        # Si el usuario es superusuario, devuelve todos los usuarios
+        if user.is_superuser:
+            queryset = Event.objects.all()
+        else:
+            # Obtiene las entidades donde el usuario autenticado es operador o consultor
+            entities = CustomUserGroup.objects.filter(
+                user=user, group__name__in=['operador', 'consultor']
+            ).values_list('entity', flat=True)
+
+            # Si el usuario no es operador o consultor en ninguna entidad, devuelve un queryset vacío
+            if not entities:
+                return Event.objects.none()
+
+            # Filtra los hechos que pertenecen a esas entidades
+            queryset = Event.objects.filter(entity__id__in=entities).distinct()
 
         # Aplica el filtro por término de búsqueda si está presente
         if search_term:
@@ -92,7 +117,6 @@ class EventView(viewsets.ModelViewSet):
             )
         return super().handle_exception(exc)
 
-
 class MeasureView(viewsets.ModelViewSet):
     # Define las clases de permisos requeridas
     permission_classes = [IsAuthenticated, ]
@@ -139,7 +163,6 @@ class MeasureView(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class AttachmentView(viewsets.ModelViewSet):
     # Define las clases de permisos requeridas
     permission_classes = [IsAuthenticated, ]
@@ -185,3 +208,144 @@ class AttachmentView(viewsets.ModelViewSet):
             return NotFound(f'Anexo no encontrado')
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def header_footer(canvas, doc):
+    canvas.saveState()
+    logo_path = "static/logo.jpg"
+    LEFT_MARGIN = 80
+
+    # ENCABEZADO
+    try:
+        canvas.drawImage(logo_path, LEFT_MARGIN, letter[1] - 60, width=50, height=50, preserveAspectRatio=True)
+    except:
+        pass  # Si no encuentra el logo, que no falle
+
+    fecha_reporte = datetime.now().strftime("%d/%m/%Y, %H:%M")
+    canvas.setFont('Helvetica-Bold', 14)
+    canvas.drawString(LEFT_MARGIN + 60, letter[1] - 30, "Reporte de hecho")
+
+    canvas.setFont('Helvetica', 9)
+    canvas.drawString(LEFT_MARGIN + 60, letter[1] - 45, f"Fecha de reporte: {fecha_reporte}")
+
+    # PIE DE PÁGINA
+    canvas.setFont('Helvetica', 9)
+    canvas.drawString(LEFT_MARGIN, 30, "Elaborado por Hechos Extraordinarios")
+    canvas.drawRightString(letter[0] - 40, 30, f"Página {doc.page}")
+
+    canvas.restoreState()
+
+class ReportPDFView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, event_id, *args, **kwargs):
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            return Response(
+                {'detail': 'El hecho extraordinario con ese id no fue encontrado'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        summary_data = get_event_summary(event=event)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="reporte_hecho_{event_id}.pdf"'
+
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        style_centered_heading = ParagraphStyle(
+            name='CenteredHeading',
+            parent=styles['Heading2'],
+            alignment=1  # 0 = izquierda, 1 = centro, 2 = derecha
+        )
+
+        table_style = TableStyle([
+            ('SPAN', (0, 0), (1, 0)),  # El título ocupa las dos columnas
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ])
+
+        # Entidad asociada
+        entity = summary_data.get("entity", {})
+        entidad_data = [
+            ("Nombre", entity.get("name", "")),
+            ("Dirección", entity.get("address", "") or "No especificada"),
+            ("Municipio", entity.get("municipality", "")),
+            ("Provincia", entity.get("province", "")),
+            ("Sector", entity.get("sector", "")),
+        ]
+
+        header_entity_table = [Paragraph("Entidad Asociada", style_centered_heading)]
+        table_entity = Table([[header_entity_table[0]]] + entidad_data, hAlign='LEFT', colWidths=[150, 350])
+        table_entity.setStyle(table_style)
+        elements.append(table_entity)
+        elements.append(Spacer(1, 12))
+
+        # Campos principales
+        campos_principales = [
+            ("Síntesis", Paragraph(summary_data.get("synthesis", ""), styles['Normal'])),
+            ("Causa", Paragraph(summary_data.get("cause", "") or "No especificada", styles['Normal'])),
+            ("Alcance", summary_data.get("scope", "")),
+            ("Fecha del hecho", summary_data.get("occurrence_date", "")),
+            ("Clasificación", Paragraph(summary_data.get("classification", ""), styles['Normal'])),
+            ("Tipo de evento", summary_data.get("event_type", "")),
+            ("Estado", summary_data.get("status", "")),
+            ("Creado por", summary_data.get("created_by", "")),
+            ("Fecha de creación", summary_data.get("created_date", "")),
+            ("Cerrado por", summary_data.get("closed_by", "")),
+            ("Fecha de cierre", summary_data.get("closed_date", "")),
+        ]
+
+        header_general_table = [Paragraph("Información General", style_centered_heading)]
+        table = Table([[header_general_table[0]]] + campos_principales, hAlign='LEFT', colWidths=[150, 350])
+        table.setStyle(table_style)
+        elements.append(table)
+        elements.append(Spacer(1, 12))
+
+        # Medidas tomadas
+        table_measure_style = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ])
+
+        measures = summary_data.get("measures", [])
+        if measures:
+            # Construir el texto con viñetas
+            bullet_measures = ""
+            for measure in measures:
+                desc = str(measure.get("description", ""))
+                bullet_measures += f"• {desc}<br/>"
+
+            bullet_paragraph = Paragraph(bullet_measures, styles['Normal'])
+            measures_data = [[Paragraph("Medidas tomadas", style_centered_heading)],
+                    [bullet_paragraph]]
+
+            table_measures = Table(measures_data, hAlign='LEFT', colWidths=[500])
+            table_measures.setStyle(table_measure_style)
+            elements.append(table_measures)
+            elements.append(Spacer(1, 12))
+
+        # Campos adicionales
+        additional_fields = summary_data.get("additional_fields", [])
+        if additional_fields:
+            adicionales = [[Paragraph("Campos Adicionales", style_centered_heading)]]
+            for item in additional_fields:
+                campo = item.get("field", "")
+                valor = Paragraph(str(item.get("value", "")), styles['Normal'])  # Soporte para textos largos
+                adicionales.append([campo, valor])
+
+            table_additional = Table(adicionales, hAlign='LEFT', colWidths=[150, 350])
+            table_additional.setStyle(table_style)
+            elements.append(table_additional)
+            elements.append(Spacer(1, 12))
+
+        doc.build(elements, onFirstPage=header_footer, onLaterPages=header_footer)
+        return response

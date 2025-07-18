@@ -1,43 +1,46 @@
 //* Generales
 export const EMPTY = "/";
-export const ADMIN = "/admin";
-export const HOME = "/home";
+export const HOME = "/resumen";
 export const LOGIN = "/login";
 export const LOGOUT = "/logout";
 
 //* Hechos
-export const EVENTS = "/events";
-export const OPEN_EVENTS = "/events/open";
-export const CLOSE_EVENTS = "/events/close";
+export const EVENTS = "/hechos";
+export const OPEN_EVENTS = "/hechos/abiertos";
+export const CLOSE_EVENTS = "/hechos/cerrados";
 
 //* Sectores
-export const SECTORS = "/sectors";
-export const ACTIVE_SECTORS = "/sectors/active";
-export const INACTIVE_SECTORS = "/sectors/inactive";
+export const SECTORS = "/sectores";
+export const ACTIVE_SECTORS = "/sectores/activos";
+export const INACTIVE_SECTORS = "/sectores/inactivos";
 
 //* Entidades
-export const ENTITIES = "/entities";
-export const ACTIVE_ENTITIES = "/entities/active";
-export const INACTIVE_ENTITIES = "/entities/inactive";
+export const ENTITIES = "/entidades";
+export const ACTIVE_ENTITIES = "/entidades/activas";
+export const INACTIVE_ENTITIES = "/entidades/inactivas";
 
 //* Tipos de hechos
-export const TYPES = "/types";
-export const ACTIVE_TYPES = "/types/active";
-export const INACTIVE_TYPES = "/types/inactive";
+export const TYPES = "/tipos";
+export const ACTIVE_TYPES = "/tipos/activos";
+export const INACTIVE_TYPES = "/tipos/inactivos";
 
 //* Clasificaciones
-export const CLASSIFICATIONS = "/classifications";
-export const ACTIVE_CLASSIFICATIONS = "/classifications/active";
-export const INACTIVE_CLASSIFICATIONS = "/classifications/inactive";
+export const CLASSIFICATIONS = "/clasificaciones";
+export const ACTIVE_CLASSIFICATIONS = "/clasificaciones/activas";
+export const INACTIVE_CLASSIFICATIONS = "/clasificaciones/inactivas";
 
 //* Datos adicionales
-export const ADDFIELDS = "/addfields";
-export const ACTIVE_ADDFIELDS = "/addfields/active";
-export const INACTIVE_ADDFIELDS = "/addfields/inactive";
+export const ADDFIELDS = "/campos";
+export const ACTIVE_ADDFIELDS = "/campos/activos";
+export const INACTIVE_ADDFIELDS = "/campos/inactivos";
+
+//* Usuarios
+export const USERS = "/usuarios";
+export const ACTIVE_USERS = "/usuarios/activos";
+export const INACTIVE_USERS = "/usuarios/inactivos";
 
 const Paths = {
   EMPTY,
-  ADMIN,
   HOME,
   LOGIN,
   LOGOUT,
@@ -59,6 +62,9 @@ const Paths = {
   ADDFIELDS,
   ACTIVE_ADDFIELDS,
   INACTIVE_ADDFIELDS,
+  USERS,
+  ACTIVE_USERS,
+  INACTIVE_USERS,
 };
 
 export default Paths;

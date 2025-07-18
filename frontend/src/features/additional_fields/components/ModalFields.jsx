@@ -1,14 +1,13 @@
-import { React, useState } from "react";
+import { useState } from "react";
 import Modal from "../../../ui/modals/Modal";
 import { showSuccessToast, showErrorToast } from "../../../utils/toastUtils";
 import { useForm } from "react-hook-form";
 import FieldService from "../../../api/fields.api";
 import FormSelect from "../../../ui/FormSelect";
-import { HttpStatusCode } from "axios";
+import Spinner from "../../../ui/Spinner";
+import useApiMutation from "../../../hooks/useApiMutation";
 
 function ModalFields({ isOpen, onClose, onRefresh, title, fieldData }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
   const [typeChoices] = useState([
     {
       id: "text",
@@ -30,88 +29,67 @@ function ModalFields({ isOpen, onClose, onRefresh, title, fieldData }) {
     formState: { errors },
     reset,
     setValue,
+    setError,
   } = useForm();
 
   const handleCloseModal = () => {
     reset();
-    setFormSubmitted(false);
     onClose();
   };
 
   //* Función para agregar nuevo campo adicional
-  const handleAddField = async (data) => {
-    try {
-      const response = await FieldService.addField(data);
-      if (response.status === HttpStatusCode.Created) {
+  const { execute: createField, loading: creating } = useApiMutation(
+    FieldService.addField,
+    {
+      onSuccess: () => {
         showSuccessToast("Campo adicional agregado con éxito");
+        handleCloseModal();
         onRefresh();
-      } else {
-        showErrorToast("Error al agregar campo adicional");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    } finally {
-      handleCloseModal();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
   //* Función para actualizar campo
-  const handleUpdateField = async (fieldId, data) => {
-    try {
-      const response = await FieldService.updateField(fieldId, data);
-
-      if (response.status === HttpStatusCode.Ok) {
-        showSuccessToast("Campo adicional actualizado con éxito");
-        onRefresh();
+  const { execute: updateField, loading: updating } = useApiMutation(
+    FieldService.updateField,
+    {
+      onSuccess: () => {
+        showSuccessToast("Campo adicional editado con éxito");
         handleCloseModal();
-      } else {
-        showErrorToast("Error al actualizar campo adicional");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data?.detail || "Error desconocido";
-        showErrorToast(errorMessage);
-        console.error(`Error ${status}: ${errorMessage}`);
-      }
-    } finally {
-      handleCloseModal();
+        onRefresh();
+      },
+      onError: (message) => {
+        showErrorToast(message);
+      },
     }
-  };
+  );
 
-  const handleSaveField = async (data) => {
-    setIsLoading(true);
+  const onSubmit = (data) => {
     if (fieldData?.id) {
-      await handleUpdateField(fieldData.id, data);
+      // Si hay un campo, estamos editando
+      updateField({ id: fieldData.id, ...data }, setError);
     } else {
-      await handleAddField(data);
+      // Si no hay campo, estamos creando uno nuevo
+      createField(data, setError);
     }
-    setIsLoading(false);
-  };
-
-  const handleFormSubmit = (data) => {
-    setFormSubmitted(true);
-    handleSubmit(handleSaveField)(data);
   };
 
   return (
-    <div>
+    <>
       <Modal isOpen={isOpen} title={title} onClose={handleCloseModal}>
-        <div className="modal-body">
-          <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="modal-body">
             <div className="form-floating">
               <input
                 type="text"
                 name="description"
                 className={`form-control ${
-                  formSubmitted && errors.description ? "is-invalid" : ""
+                  errors.description ? "is-invalid" : ""
                 }`}
-                defaultValue={fieldData ? fieldData.description : ""}
+                defaultValue={fieldData?.description}
                 {...register("description", { required: true })}
                 autoFocus={true}
               ></input>
@@ -132,29 +110,35 @@ function ModalFields({ isOpen, onClose, onRefresh, title, fieldData }) {
               register={register}
               setValue={setValue}
               registerName={"field_type"}
-              defaultValue={fieldData ? fieldData.field_type : ""}
+              defaultValue={fieldData?.field_type}
             />
-          </form>
-        </div>
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleCloseModal}
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            onClick={handleFormSubmit}
-            className="btn btn-primary"
-            disabled={isLoading}
-          >
-            {isLoading ? "Guardando..." : fieldData ? "Modificar" : "Añadir"}
-          </button>
-        </div>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="submit"
+              className="btn btn-primary text-white"
+              disabled={creating || updating}
+            >
+              {updating || creating ? (
+                <>
+                  <Spinner />
+                  Guardando...
+                </>
+              ) : (
+                "Aceptar"
+              )}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleCloseModal}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </Modal>
-    </div>
+    </>
   );
 }
 

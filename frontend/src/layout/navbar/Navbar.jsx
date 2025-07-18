@@ -4,6 +4,7 @@ import ModalConfirmLogout from "./ModalConfirmLogout";
 import ModalChangePassword from "./ModalChangePassword";
 import ModalProfile from "./ModalProfile";
 import ThemeToggle from "./ThemeToggle";
+import { MenuIcon } from "../../ui/icons";
 
 function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   const { user, logoutUser } = useContext(AuthContext);
@@ -38,25 +39,18 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
   };
 
   return (
-    <React.Fragment>
+    <>
       <header className="navbar bg-body-secondary">
-        <div className="container-fluid">
+        <div className="container-fluid mx-3 px-0">
           <div className="col-auto">
             {/* Sidebar Toggle */}
             <button
               id="toggleSidebarBtn"
               type="button"
               onClick={onToggleSidebar}
-              className="btn btn-home text-body-secondary bg-body-secondary px-2 ms-2"
+              className="btn btn-home text-body-secondary bg-body-secondary px-1 px-md-2"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                height={"1.5rem"}
-              >
-                <path d="M0,3.5c0-.83,.67-1.5,1.5-1.5H17.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5H1.5c-.83,0-1.5-.67-1.5-1.5Zm17.5,14.5H1.5c-.83,0-1.5,.67-1.5,1.5s.67,1.5,1.5,1.5H17.5c.83,0,1.5-.67,1.5-1.5s-.67-1.5-1.5-1.5Zm5-8H6.5c-.83,0-1.5,.67-1.5,1.5s.67,1.5,1.5,1.5H22.5c.83,0,1.5-.67,1.5-1.5s-.67-1.5-1.5-1.5Z" />
-              </svg>
+              <MenuIcon />
             </button>
           </div>
           {/* Title */}
@@ -81,17 +75,16 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
           <div className="col-auto">
             <div className="dropdown">
               <button
-                className="dropdown-toggle border-0 bg-body-secondary mx-1"
+                className="dropdown-toggle border-0 bg-body-secondary ms-1 d-flex align-items-center"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <img
-                  src={"/images/profile.png"}
-                  alt="profile"
-                  width="24"
-                  height="24"
-                  className="rounded-circle me-2"
-                ></img>
+                <div
+                  className="bg-profile-icon me-md-2 rounded-circle"
+                  style={{ width: 24, height: 24 }}
+                >
+                  <span>{user.username.charAt(0).toUpperCase()}</span>
+                </div>
                 <strong className="d-none d-sm-inline">{user.username}</strong>
               </button>
               <ul className="dropdown-menu dropdown-menu-end text-small p-1 shadow">
@@ -116,7 +109,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
                 </li>
                 <li>
                   <button
-                    className="dropdown-item rounded-1"
+                    className="w-100 border-0 py-1 px-3 text-start rounded-1 dropdown-item-danger"
                     onClick={handleLogout}
                   >
                     Cerrar sesión
@@ -137,9 +130,10 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
 
       {/* Modal para cambiar contraseña */}
       <ModalChangePassword
+        title="Cambiar contraseña"
         isOpen={modalChangeIsOpen}
+        userId={user.user_id}
         onClose={() => setModalChangeIsOpen(false)}
-        onChangePassword={onToggleSidebar}
       />
 
       {/* Modal para ver perfil */}
@@ -147,7 +141,7 @@ function Navbar({ onToggleSidebar, onSwitchTheme, pageTitle, theme }) {
         isOpen={modalProfileIsOpen}
         onClose={() => setModalProfileIsOpen(false)}
       />
-    </React.Fragment>
+    </>
   );
 }
 

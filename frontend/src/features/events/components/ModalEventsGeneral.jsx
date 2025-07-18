@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { useState } from "react";
 import EntityService from "../../../api/entities.api";
 import TypeService from "../../../api/types.api";
 import ClassificationService from "../../../api/classifications.api";
@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import { format } from "date-fns";
+import useFetchData from "../../../hooks/useFetchData";
 
 function ModalEventsGeneral({
   register,
@@ -18,9 +19,7 @@ function ModalEventsGeneral({
   eventData,
   readOnly,
 }) {
-  const [classifications, setClassifications] = useState([]);
-  const [entities, setEntities] = useState([]);
-  const [types, setTypes] = useState([]);
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState(false);
   const [scopeChoices] = useState([
     {
       id: "relevant",
@@ -31,7 +30,6 @@ function ModalEventsGeneral({
       description: "Corrupción",
     },
   ]);
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState(false);
 
   registerLocale("es", es);
 
@@ -41,59 +39,30 @@ function ModalEventsGeneral({
   };
 
   //* Función para cargar las clasificaciones activas que se mostrarán para seleccionar
-  const loadActiveClassifications = async () => {
-    try {
-      const response = await ClassificationService.getClassifications(
-        undefined,
-        undefined,
-        "True"
-      );
-
-      setClassifications(response.data);
-    } catch (error) {
-      console.error("Error obteniendo clasificaciones: ", error);
-    }
-  };
+  const { data: classifications } = useFetchData(
+    ClassificationService.getClassifications,
+    [undefined, undefined, "True"],
+    []
+  );
 
   //* Función para cargar las entidades activas que se mostrarán para seleccionar
-  const loadActiveEntities = async () => {
-    try {
-      const response = await EntityService.getEntities(
-        undefined,
-        undefined,
-        "True"
-      );
-
-      const transform = response.data.map((entity) => ({
-        id: entity.id_entity,
-        description: entity.description,
-      }));
-
-      setEntities(transform);
-    } catch (error) {
-      console.error("Error obteniendo entidades: ", error);
-    }
-  };
+  const { data: entities } = useFetchData(
+    EntityService.getEntities,
+    readOnly
+      ? [undefined, undefined, undefined, "operador,consultor"]
+      : [undefined, undefined, "True", "operador"],
+    [readOnly]
+  );
 
   //* Función para cargar los tipos de hechos activos que se mostrarán para seleccionar
-  const loadActiveTypes = async () => {
-    try {
-      const response = await TypeService.getTypes(undefined, undefined, "True");
-
-      setTypes(response.data);
-    } catch (error) {
-      console.error("Error obteniendo tipos: ", error);
-    }
-  };
-
-  useEffect(() => {
-    loadActiveClassifications();
-    loadActiveEntities();
-    loadActiveTypes();
-  }, []);
+  const { data: types } = useFetchData(
+    TypeService.getTypes,
+    [undefined, undefined, "True"],
+    []
+  );
 
   return (
-    <div>
+    <>
       <div className="mt-3">
         <form>
           <div className="row g-2">
@@ -123,7 +92,7 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"scope"}
-                defaultValue={eventData ? eventData.scope : ""}
+                defaultValue={eventData?.scope || ""}
                 disabled={readOnly}
               />
             </div>
@@ -148,7 +117,7 @@ function ModalEventsGeneral({
             <div className="col-md">
               <FormSelect
                 className={"me-0 me-md-2"}
-                data={entities}
+                data={entities || []}
                 name={"Entidad*"}
                 message={"Seleccione una entidad"}
                 onChange={(value) => console.log(value)}
@@ -156,13 +125,13 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"entity"}
-                defaultValue={eventData ? eventData.entity : ""}
+                defaultValue={eventData?.entity || ""}
                 disabled={readOnly}
               />
             </div>
             <div className="col-md">
               <FormSelect
-                data={types}
+                data={types || []}
                 name={"Tipo de hecho*"}
                 message={"Seleccione un tipo de hecho"}
                 onChange={(value) => console.log(value)}
@@ -170,7 +139,7 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"event_type"}
-                defaultValue={eventData ? eventData.event_type : ""}
+                defaultValue={eventData?.event_type || ""}
                 disabled={readOnly}
               />
             </div>
@@ -179,7 +148,7 @@ function ModalEventsGeneral({
           <div className="row g-1 mt-2">
             <div className="col-md">
               <FormSelect
-                data={classifications}
+                data={classifications || []}
                 name={"Clasificación*"}
                 message={"Seleccione una clasificación"}
                 onChange={(value) => console.log(value)}
@@ -187,7 +156,7 @@ function ModalEventsGeneral({
                 register={register}
                 setValue={setValue}
                 registerName={"classification"}
-                defaultValue={eventData ? eventData.classification : ""}
+                defaultValue={eventData?.classification || ""}
                 disabled={readOnly}
               />
             </div>
@@ -201,11 +170,16 @@ function ModalEventsGeneral({
                 className={`form-control ${
                   errors.synthesis ? "is-invalid" : ""
                 }`}
-                defaultValue={eventData ? eventData.synthesis : ""}
+                defaultValue={eventData?.synthesis || ""}
                 {...register("synthesis", { required: true })}
                 disabled={readOnly}
               />
               <label htmlFor="floatingInput">Síntesis*</label>
+              {errors.synthesis && (
+                <div className="invalid-feedback">
+                  Por favor, inserte la síntesis del hecho
+                </div>
+              )}
             </div>
           </div>
 
@@ -215,7 +189,7 @@ function ModalEventsGeneral({
                 type="text"
                 name="cause"
                 className={`form-control ${errors.cause ? "is-invalid" : ""}`}
-                defaultValue={eventData ? eventData.cause : ""}
+                defaultValue={eventData?.cause || ""}
                 {...register("cause", { required: false })}
                 disabled={readOnly}
               />
@@ -224,7 +198,7 @@ function ModalEventsGeneral({
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 }
 
